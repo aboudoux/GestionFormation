@@ -1,0 +1,19 @@
+﻿<dx:DXWindow xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+    x:Class="GestionFormation.App.Views.Logins.LoginWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    Title="Gestion de formation TREND" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:CurrentWindowService ClosingCommand="{Binding WindowClosingCommand}"/>
+        <dxmvvm:KeyToCommand KeyGesture="Esc" EventName="KeyDown" MarkRoutedEventsAsHandled="True" Command="{DXCommand Execute='@e(window).Close()'}"/>
+        <dxmvvm:KeyToCommand KeyGesture="Enter" Command="{Binding Path=ValiderCommand}"/>
+    </dxmvvm:Interaction.Behaviors>
+    <StackPanel>
+        <Image Margin="0,10,0,0" Source="/Images/Login.png" Width="128"></Image>
+        <dxe:TextEdit Margin="10" NullText="Nom d'utilisateur" Text="{Binding Path=Username, UpdateSourceTrigger=PropertyChanged}" />
+        <dxe:PasswordBoxEdit Margin="10,0,10,10" NullText="Mot de passe" Text="{Binding Path=Password, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Margin="10,0,10,5" Command="{Binding Path=ValiderCommand}">Connecter</Button>
+    </StackPanel>
+</dx:DXWindow>

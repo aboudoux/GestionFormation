@@ -1,0 +1,115 @@
+﻿<dx:DXWindow
+    x:Class="GestionFormation.App.Views.Places.PlacesWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    Title="{Binding Path=Title}" Height="500" Width="600">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:CurrentWindowService ClosingCommand="{Binding WindowClosingCommand}"/>
+        <dxmvvm:KeyToCommand KeyGesture="Esc" EventName="KeyDown" MarkRoutedEventsAsHandled="True" Command="{DXCommand Execute='@e(window).Close()'}"/>
+    </dxmvvm:Interaction.Behaviors>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Background="AliceBlue" Grid.Column="0" Margin="5">
+                <TextBlock Text="{Binding Path=SessionInfos.FormationName, StringFormat=Formation {0}}"/>
+                <TextBlock Text="{Binding Path=SessionInfos.FormationDuree}"/>
+                <TextBlock Text="{Binding Path=SessionInfos.FormateurName, StringFormat=Assurée par {0}}"/>
+                <TextBlock Text="{Binding Path=SessionInfos.FormationLieu, StringFormat=à {0}}"/>
+            </StackPanel>
+
+            <StackPanel Margin="5"  Background="AliceBlue" Grid.Column="1">
+                <TextBlock Text="{Binding Path=PlacesTotal, StringFormat=Nombre de places : {0}}"/>
+                <TextBlock FontWeight="Bold" Text="{Binding Path=PlacesDisponibles, StringFormat=- {0} place(s) disponible(s)}"/>
+                <TextBlock Text="{Binding Path=PlacesReservees, StringFormat=- {0} réservée(s)}"/>
+                <TextBlock Foreground="Orange" Text="{Binding Path=PlacesAttenteValidation, StringFormat=- {0} en attente de validation}"/>
+                <TextBlock Foreground="Green" Text="{Binding Path=PlacesValide, StringFormat=- {0} validée(s)}"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="20">Réserver une nouvelle place</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0">Stagiaire :</TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="0">société :</TextBlock>
+                <dxe:ComboBoxEdit Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Stagiaires}" EditValue="{Binding Path=SelectedStagiaire, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
+                    <dxe:ComboBoxEdit.Buttons>
+                        <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=CreateStagiaireCommand}"/>
+                    </dxe:ComboBoxEdit.Buttons>
+                </dxe:ComboBoxEdit>
+                <dxe:ComboBoxEdit Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Path=Societes}" EditValue="{Binding Path=SelectedSociete, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
+                    <dxe:ComboBoxEdit.Buttons>
+                        <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=CreateSocieteCommand}"/>
+                    </dxe:ComboBoxEdit.Buttons>
+                </dxe:ComboBoxEdit>
+                <dx:SimpleButton Grid.Row="3" Grid.Column="1" Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddPlaceCommand}">Reserver</dx:SimpleButton>
+            </Grid>
+            <dxb:BarContainerControl ContainerType="Top" Margin="0,20,0,0">
+                <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">
+                    <dxb:BarButtonItem Content="Rafraichir" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshPlaceCommand}"/>
+                    <dxb:BarItemLinkSeparator></dxb:BarItemLinkSeparator>
+                    <dxb:BarButtonItem Content="Annuler" Glyph="{dx:DXImage Image=Clear_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=AnnulerPlaceCommand}" IsVisible="{Binding Path=Security[3]}"/>
+                    <dxb:BarItemLinkSeparator></dxb:BarItemLinkSeparator>
+                    <dxb:BarButtonItem Content="Valider" Glyph="{dx:DXImage Image=Apply_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=ValiderPlaceCommand}" IsVisible="{Binding Path=Security[2]}"/>
+                    <dxb:BarButtonItem Content="Refuser" Glyph="{dx:DXImage Image=Cancel_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefuserPlaceCommand}" IsVisible="{Binding Path=Security[2]}"/>
+                    <dxb:BarItemLinkSeparator></dxb:BarItemLinkSeparator>
+                    <dxb:BarButtonItem Content="Créer la convention" Glyph="{dx:DXImage Image=DocumentProperties_32x32.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=GenererConventionCommand}" IsVisible="{Binding Path=Security[3]}"/>
+                </dxb:ToolBarControl>
+            </dxb:BarContainerControl>
+            <dxg:GridControl ItemsSource="{Binding Path=Places}" SelectionMode="Row" SelectedItems="{Binding Path=SelectedPlaces}">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="StagiaireNom"  Header="Stagiaire"/>
+                    <!--<dxg:GridColumn.EditSettings>
+                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=Stagiaires}" ValueMember="Id" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains" IsCaseSensitiveFilter="False"></dxe:ComboBoxEditSettings>
+                    </dxg:GridColumn.EditSettings>-->
+
+                    <dxg:GridColumn FieldName="SocieteNom" Header="Société"/>
+                    <dxg:GridColumn FieldName="Etat" Header="Etat"/>
+                    <dxg:GridColumn FieldName="Raison" Header="Raison"/>
+                    <dxg:GridColumn FieldName="Convention" Header="Convention">
+                        <dxg:GridColumn.EditSettings>
+                        <dxe:ButtonEditSettings AllowDefaultButton="False">
+                            <dxe:ButtonEditSettings.Buttons>
+                                    <dxe:ButtonInfo Command="{Binding Path=OpenConventionCommand}" GlyphKind="Regular"/>
+                            </dxe:ButtonEditSettings.Buttons>
+                        </dxe:ButtonEditSettings>
+                    </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="EtatConvention" Header="Etat"/>
+                </dxg:GridControl.Columns>
+
+                <dxg:GridControl.View>
+                    <dxg:TableView AutoWidth="True" AllowGrouping="False" ShowGroupPanel="False">
+                    </dxg:TableView>
+                </dxg:GridControl.View>
+            </dxg:GridControl>
+        </StackPanel>
+        <dx:SimpleButton Command="{Binding Path=AnnulerCommand}" Grid.Row="2" Glyph="{dx:DXImage Image=Close_32x32.png}">Fermer</dx:SimpleButton>
+    </Grid>
+    
+</dx:DXWindow>

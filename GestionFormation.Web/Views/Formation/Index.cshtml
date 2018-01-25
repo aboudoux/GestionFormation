@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Gestion des formations";    
+}
+
+<h2>Catalogue des formations</h2>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CreateFormationModal">
+    Ajouter
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="CreateFormationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajouter une nouvelle formation</h5>                
+            </div>
+            <div class="modal-body">                
+                <input id="NomFormation" class="form-control" type="text" placeholder="Indiquez le nom de la formation..."/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button id="save" type="button" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="FormationList" class="list-group">        
+</div>
+
+@section scripts
+{
+    <script>
+        $('#CreateFormationModal').on('shown.bs.modal',
+            function() {
+                $('#NomFormation').focus();
+            });
+
+        $('#save').on('click',
+            function() {
+
+                var nom = $('#NomFormation').val();
+
+                $.post('/api/v1/formation/command/create',
+                    "=" + nom,
+                    function () {
+                        
+                        $('#NomFormation').val('');
+                        $('#CreateFormationModal').modal('toggle');
+
+                        FeedFormationList();
+
+                    }).fail(function(data) {
+                        alert(data.responseJSON.Message);
+                });
+            });
+
+        function FeedFormationList() {
+            $('#FormationList').empty();
+
+            $.getJSON('/api/v1/formation/query/retrieve',
+                function (data) {
+                    $.each(data,
+                        function (key, value) {
+                            $('#FormationList')
+                                .append('<a href="#" formation-id="' + value.Id + '" class="list-group-item list-group-item-action justify-content-between">' + value.Nom + '<button type="button" class="btn btn-danger badge badge-default badge-pill">Supprimer</button><button type="button" class="btn btn-danger badge badge-default badge-pill">Renommer</button></a>');
+                        });
+                });
+        }
+
+        $(document).ready(function() {
+            FeedFormationList();
+        });
+    </script>
+}

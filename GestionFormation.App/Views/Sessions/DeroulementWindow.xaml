@@ -1,0 +1,40 @@
+﻿<dx:DXWindow
+    x:Class="GestionFormation.App.Views.Sessions.DeroulementWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    Title="{Binding Path=Title}" Height="350" Width="525">
+    <StackPanel>
+        <dxb:BarContainerControl ContainerType="Top" Margin="0,20,0,0">
+            <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">
+                <dxb:BarButtonItem Content="Rafraichir" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshCommand}"/>
+                <dxb:BarItemLinkSeparator></dxb:BarItemLinkSeparator>
+                <dxb:BarButtonItem Content="Absent" Glyph="{dx:DXImage Image=User_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=AbscenceCommand}"/>
+            </dxb:ToolBarControl>
+        </dxb:BarContainerControl>
+        <dxg:GridControl ItemsSource="{Binding Path=Places}" SelectionMode="Row" SelectedItems="{Binding Path=SelectedPlace}">
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="Stagiaire"  Header="Stagiaire"/>
+                <dxg:GridColumn FieldName="Societe" Header="Société"/>
+                <dxg:GridColumn FieldName="Contact" Header="Contact"/>
+                <dxg:GridColumn FieldName="Telephone" Header="Telephone"/>
+                <dxg:GridColumn FieldName="Email" Header="Email">
+                    <!--<dxg:GridColumn.EditSettings>
+                        <dxe:ButtonEditSettings AllowDefaultButton="False">
+                            <dxe:ButtonEditSettings.Buttons>
+                                <dxe:ButtonInfo Command="{Binding Path=OpenConventionCommand}" GlyphKind="Regular"/>
+                            </dxe:ButtonEditSettings.Buttons>
+                        </dxe:ButtonEditSettings>
+                    </dxg:GridColumn.EditSettings>-->
+                </dxg:GridColumn>
+            </dxg:GridControl.Columns>
+
+            <dxg:GridControl.View>
+                <dxg:TableView AutoWidth="True" AllowGrouping="False" ShowGroupPanel="False">
+                </dxg:TableView>
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </StackPanel>
+</dx:DXWindow>
