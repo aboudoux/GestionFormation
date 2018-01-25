@@ -1,4 +1,5 @@
 ﻿using System;
+using GestionFormation.CoreDomain.Conventions;
 using GestionFormation.CoreDomain.Places.Projections;
 
 namespace GestionFormation.CoreDomain.Places.Queries
@@ -13,5 +14,6 @@ namespace GestionFormation.CoreDomain.Places.Queries
         Guid? ConventionId { get; }
         string NumeroConvention { get; }
         bool ConventionSigned { get; }
+        TypeConvention TypeConvention { get; }
     }
 }

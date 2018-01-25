@@ -2,9 +2,9 @@
 {
     public interface IPlaceValidatedResult
     {
-        string Stagiaire { get; }
+        NomComplet Stagiaire { get; }
         string Societe { get; }
-        string Contact { get; }
+        NomComplet Contact { get; }
         string Telephone { get; }
         string Email { get; }
     }

@@ -10,7 +10,7 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
 {
     public class SessionSqlQueries : ISessionQueries, IRuntimeDependency
     {
-        public IReadOnlyList<ISessionResult> GetAll()
+        public IEnumerable<ISessionResult> GetAll()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -18,7 +18,7 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             }
         }
 
-        public IReadOnlyList<ISessionResult> GetAll(Guid formationId)
+        public IEnumerable<ISessionResult> GetAll(Guid formationId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -26,7 +26,7 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             }
         }
 
-        public IReadOnlyList<ICompleteSessionResult> GetAllCompleteSession()
+        public IEnumerable<ICompleteSessionResult> GetAllCompleteSession()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -34,13 +34,13 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
                     join formation in context.Formations on session.FormationId equals formation.FormationId
                     join formateur in context.Formateurs on session.FormateurId equals formateur.FormateurId
                     join lieu in context.Lieux on session.LieuId equals lieu.Id 
-                    select new {session, Formation = formation.Nom, Formateur = formateur.Prenom + " " + formateur.Nom, Lieu = lieu.Nom};                                       
+                    select new {session, Formation = formation.Nom, PrenomFormateur = formateur.Prenom, NomFormateur = formateur.Nom, Lieu = lieu.Nom};                                       
 
-                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.Formation, a.Formateur, a.Lieu)).ToList();
+                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.Formation, a.Lieu, a.NomFormateur, a.PrenomFormateur)).ToList();
             }
         }
 
-        public IReadOnlyList<string> GetAllLieux()
+        public IEnumerable<string> GetAllLieux()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -57,25 +57,25 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
                 join formation in context.Formations on session.FormationId equals formation.FormationId
                 join formateur in context.Formateurs on session.FormateurId equals formateur.FormateurId
                 join lieu in context.Lieux on session.LieuId equals lieu.Id
-                select new { session, Formation = formation.Nom, Formateur = formateur.Prenom + " " + formateur.Nom, Lieu = lieu.Nom };
+                select new { session, Formation = formation.Nom, PrenomFormateur = formateur.Prenom, NomFormateur = formateur.Nom, Lieu = lieu.Nom };
 
                 var result = query.FirstOrDefault();
-                return result == null ? null : new CompleteSessionResult(result.session, result.Formation, result.Formateur, result.Lieu);
+                return result == null ? null : new CompleteSessionResult(result.session, result.Formation, result.Lieu, result.NomFormateur, result.PrenomFormateur);
             }
         }
     }
 
     public class CompleteSessionResult : SessionResult, ICompleteSessionResult
     {       
-        public CompleteSessionResult(SessionSqlEntity session, string formationName, string formateurName, string lieu): base(session)
+        public CompleteSessionResult(SessionSqlEntity session, string formationName, string lieu, string nomFormateur, string prenomFormateur): base(session)
         {
             Formation = formationName;
-            Formateur = formateurName;
+            Formateur = new NomComplet(nomFormateur, prenomFormateur);
             Lieu = lieu;
         }
        
-        public string Formation { get; set; }
-        public string Formateur { get; set; }
-        public string Lieu { get; set; }
+        public string Formation { get; }
+        public NomComplet Formateur { get;  }
+        public string Lieu { get;  }
     }
 }

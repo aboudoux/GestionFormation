@@ -35,9 +35,9 @@ namespace GestionFormation.Tests
         public void GenerateFeuillepresence()
         {
             var participants = new List<Participant>();
-            participants.Add(new Participant("boudoux", "aurelien", "DOT SHARK"));
-            participants.Add(new Participant("revel", "alexandre", "TREND"));
-            participants.Add(new Participant("Aldebert", "Gregory", "TREND"));
+            participants.Add(new Participant(new NomComplet("boudoux", "aurelien"), "DOT SHARK"));
+            participants.Add(new Participant(new NomComplet("revel", "alexandre"), "TREND"));
+            participants.Add(new Participant(new NomComplet("Aldebert", "Gregory"), "TREND"));
             
             var repo = new DocumentRepository(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
             var doc = repo.CreateFeuillePresence("SET Niveau I", new DateTime(2018,1,23),3,"Saint PRIEST", new NomComplet("cordier", "fabrice"), participants);
@@ -51,6 +51,32 @@ namespace GestionFormation.Tests
             var repo = new DocumentRepository(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
             var doc = repo.CreateQuestionnaire(new NomComplet("cordier", "fabrice"), "SET Niveau II");
             File.Exists(doc).Should().BeTrue();
+            //Process.Start(doc);
+        }
+
+        [TestMethod]
+        public void GenerateConventionGratuite()
+        {
+            var participants = new List<Participant>();
+            participants.Add(new Participant(new NomComplet("boudoux", "aurelien"), "DOT SHARK"));
+            participants.Add(new Participant(new NomComplet("revel", "alexandre"), "TREND"));
+            participants.Add(new Participant(new NomComplet("Aldebert", "Gregory"), "TREND"));
+
+            var repo = new DocumentRepository(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
+            var doc = repo.CreateConventionGratuite("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new NomComplet("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018,1,23), 3, "Saint PRIEST", participants   );
+            //Process.Start(doc);
+        }
+
+        [TestMethod]
+        public void GenerateConventionPayante()
+        {
+            var participants = new List<Participant>();
+            participants.Add(new Participant(new NomComplet("boudoux", "aurelien"), "DOT SHARK"));
+            participants.Add(new Participant(new NomComplet("revel", "alexandre"), "TREND"));
+            participants.Add(new Participant(new NomComplet("Aldebert", "Gregory"), "TREND"));
+
+            var repo = new DocumentRepository(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
+            var doc = repo.CreateConventionPayante("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new NomComplet("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", participants);
             //Process.Start(doc);
         }
     }

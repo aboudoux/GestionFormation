@@ -16,6 +16,8 @@ namespace GestionFormation.Infrastructure
         private const string Diplome = "Diplome.rtf";
         private const string FeuillePresence = "Presence.rtf";
         private const string Questionnaire = "Questionnaire.rtf";
+        private const string ConventionGratuite = "ConventionG.rtf";
+        private const string ConventionPayante = "ConventionP.rtf";
 
         public DocumentRepository()
         {
@@ -80,8 +82,7 @@ namespace GestionFormation.Infrastructure
                 if (participants.Count >= i)
                     document.Merge($"$stagiaire{i}$", participants[i - 1].Stagiaire.ToString()).Merge($"$societe{i}$", participants[i-1].Societe);
                 else
-                    document.Merge($"$stagiaire{i}$", string.Empty).Merge($"$societe{i}$", string.Empty);
-                        
+                    document.Merge($"$stagiaire{i}$", string.Empty).Merge($"$societe{i}$", string.Empty);                        
             }
             return document.Generate();
         }
@@ -93,6 +94,79 @@ namespace GestionFormation.Infrastructure
                 .Merge("$formation$", formation)
                 .Merge("$date$", DateTime.Now.ToString("d"))
                 .Generate();
+        }
+
+        public string CreateConventionGratuite(string numero, string societe, string addresse, string codePostal, string ville,
+            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu,
+            IReadOnlyList<Participant> participants)
+        {
+            if (participants == null)
+                throw new ArgumentNullException(nameof(participants));
+            if (!participants.Any())
+                throw new Exception("Impossible de générer votre document car il n'y a aucun participant.");
+            if (participants.Count() > 8)
+                throw new Exception("Impossible de générer une convention avec plus de 8 participants");
+
+            var document = MakeDocument(ConventionGratuite)
+                .Merge("$numero$", numero)
+                .Merge("$societe$", societe)
+                .Merge("$adresse$", addresse)
+                .Merge("$cp$", codePostal)
+                .Merge("$ville$", ville)
+                .Merge("$contact$", contact.ToString())
+                .Merge("$formation$", formation)
+                .Merge("$datedebut$", dateDebut.ToString("d"))
+                .Merge("$datefin$", dateDebut.AddDays(durée-1).ToString("d"))
+                .Merge("$duree$", durée.ToString())
+                .Merge("$lieu$", lieu)
+                .Merge("$longdate$", DateTime.Now.ToString("D"));
+
+            for (var i = 1; i <= 8; i++)
+            {
+                if (participants.Count >= i)
+                    document.Merge($"$stagiaire{i}$", participants[i - 1].Stagiaire.ToString());
+                else
+                    document.Merge($"$stagiaire{i}$", string.Empty);
+            }
+
+            return document.Generate();
+        }
+
+        public string CreateConventionPayante(string numero, string societe, string addresse, string codePostal, string ville,
+            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu,
+            IReadOnlyList<Participant> participants)
+        {
+            if (participants == null)
+                throw new ArgumentNullException(nameof(participants));
+            if (!participants.Any())
+                throw new Exception("Impossible de générer votre document car il n'y a aucun participant.");
+            if (participants.Count() > 8)
+                throw new Exception("Impossible de générer une convention avec plus de 8 participants");
+
+            var document = MakeDocument(ConventionPayante)
+                .Merge("$numero$", numero)
+                .Merge("$societe$", societe)
+                .Merge("$adresse$", addresse)
+                .Merge("$cp$", codePostal)
+                .Merge("$ville$", ville)
+                .Merge("$contact$", contact.ToString())
+                .Merge("$formation$", formation)
+                .Merge("$datedebut$", dateDebut.ToString("d"))
+                .Merge("$datefin$", dateDebut.AddDays(durée - 1).ToString("d"))
+                .Merge("$duree$", durée.ToString())
+                .Merge("$lieu$", lieu)
+                .Merge("$prix$", (participants.Count() * 450 * durée).ToString())
+                .Merge("$longdate$", DateTime.Now.ToString("D"));
+
+            for (var i = 1; i <= 8; i++)
+            {
+                if (participants.Count >= i)
+                    document.Merge($"$stagiaire{i}$", participants[i - 1].Stagiaire.ToString());
+                else
+                    document.Merge($"$stagiaire{i}$", string.Empty);
+            }
+
+            return document.Generate();
         }
 
         private DocumentGenerator MakeDocument(string templateName)

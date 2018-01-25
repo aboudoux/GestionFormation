@@ -24,6 +24,7 @@ namespace GestionFormation.CoreDomain.Conventions.Projections
                 entity.ConventionId = @event.AggregateId;
                 entity.ContactId = @event.ContactId;
                 entity.ConventionNumber = @event.Convention;
+                entity.TypeConvention = @event.TypeConvention;
                 
                 context.SaveChanges();
             }

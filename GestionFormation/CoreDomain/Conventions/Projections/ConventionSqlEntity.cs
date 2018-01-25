@@ -12,5 +12,6 @@ namespace GestionFormation.CoreDomain.Conventions.Projections
         public Guid ContactId { get; set; }
         public Guid? DocumentId { get; set; }    
         public string ConventionNumber { get; set; }
+        public TypeConvention TypeConvention { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     public interface ICompleteSessionResult : ISessionResult
     {
         string Formation { get; }
-        string Formateur { get; } 
+        NomComplet Formateur { get; }         
         string Lieu { get; }
     }
 }

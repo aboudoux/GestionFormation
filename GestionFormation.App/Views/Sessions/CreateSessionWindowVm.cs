@@ -173,7 +173,7 @@ namespace GestionFormation.App.Views.Sessions
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer une formation", new EditableFormation());
             if (vm.IsValidated)
             {
-                await HandleMessageBoxError.Execute( async ()=>{
+                await HandleMessageBoxError.ExecuteAsync( async ()=>{
                     var item = vm.Item as EditableFormation;
                     var newItem = await Task.Run(() => _applicationService.Command<CreateFormation>().Execute(item.Nom, item.Places));
                     await InitFormations(newItem.AggregateId);
@@ -187,7 +187,7 @@ namespace GestionFormation.App.Views.Sessions
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un lieu", new EditableLieu());
             if (vm.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async () => {                   
+                await HandleMessageBoxError.ExecuteAsync(async () => {                   
                     var item = vm.Item as EditableLieu;
                     var newItem = await Task.Run(() => _applicationService.Command<CreateLieu>().Execute(item.Nom, item.Addresse, item.Places));
                     await InitLieux(newItem.AggregateId);
@@ -201,7 +201,7 @@ namespace GestionFormation.App.Views.Sessions
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un formateur", new EditableFormateur());
             if (vm.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async () => {
+                await HandleMessageBoxError.ExecuteAsync(async () => {
                     var item = vm.Item as EditableFormateur;
                     var newItem = await Task.Run(() => _applicationService.Command<CreateFormateur>().Execute(item.Nom, item.Prenom, item.Email));
                     await InitFormateurs(newItem.AggregateId);

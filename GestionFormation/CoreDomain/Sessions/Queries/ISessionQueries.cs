@@ -5,11 +5,11 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
 {
     public interface ISessionQueries
     {
-        IReadOnlyList<ISessionResult> GetAll();
-        IReadOnlyList<ISessionResult> GetAll(Guid formationId);
+        IEnumerable<ISessionResult> GetAll();
+        IEnumerable<ISessionResult> GetAll(Guid formationId);
 
-        IReadOnlyList<ICompleteSessionResult> GetAllCompleteSession();
-        IReadOnlyList<string> GetAllLieux();
+        IEnumerable<ICompleteSessionResult> GetAllCompleteSession();
+        IEnumerable<string> GetAllLieux();
         ICompleteSessionResult GetSession(Guid sessionId);
     }
 }

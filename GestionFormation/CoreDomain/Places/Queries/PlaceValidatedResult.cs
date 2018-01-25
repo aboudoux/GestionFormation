@@ -2,17 +2,17 @@
 {
     public class PlaceValidatedResult : IPlaceValidatedResult
     {
-        public PlaceValidatedResult(string stagiaire, string societe, string contact, string telephone, string email)
+        public PlaceValidatedResult(string nomStagiaire, string prenomStagiaire, string societe, string nomContact, string prenomContact, string telephone, string email)
         {
-            Stagiaire = stagiaire;
+            Stagiaire = new NomComplet(nomStagiaire, prenomStagiaire);
             Societe = societe;
-            Contact = contact;
+            Contact = new NomComplet(nomContact, prenomContact);
             Telephone = telephone;
             Email = email;
         }
-        public string Stagiaire { get; }
+        public NomComplet Stagiaire { get; }
         public string Societe { get; }
-        public string Contact { get; }
+        public NomComplet Contact { get; }
         public string Telephone { get; }
         public string Email { get; }
     }

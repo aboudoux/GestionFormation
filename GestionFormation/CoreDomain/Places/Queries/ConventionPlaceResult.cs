@@ -2,7 +2,10 @@
 {
     public class ConventionPlaceResult : IConventionPlaceResult
     {    
-        public string Stagiaire { get; set; }
+        public NomComplet Stagiaire { get; set; }
         public string Societe { get; set; }
+        public string Adresse { get; set; }
+        public string CodePostal { get; set; }
+        public string Ville { get; set; }
     }
 }

@@ -20,15 +20,15 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             RaisonAnnulation = entity.RaisonAnnulation;
         }
 
-        public Guid SessionId { get; set; }
-        public Guid FormationId { get; set; }
-        public DateTime DateDebut { get; set; }
-        public int Durée { get; set; }
+        public Guid SessionId { get; }
+        public Guid FormationId { get; }
+        public DateTime DateDebut { get; }
+        public int Durée { get; }
         public int Places { get; set; }
-        public int PlacesReservées { get; set; }
-        public Guid? LieuId { get; set; }
-        public Guid? FormateurId { get; set; }
-        public bool Annulé { get; set; }
-        public string RaisonAnnulation { get; set; }
+        public int PlacesReservées { get; }
+        public Guid? LieuId { get; }
+        public Guid? FormateurId { get; }
+        public bool Annulé { get; }
+        public string RaisonAnnulation { get; }
     }
 }

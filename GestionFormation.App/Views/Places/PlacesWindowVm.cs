@@ -9,6 +9,7 @@ using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
+using GestionFormation.CoreDomain.Conventions;
 using GestionFormation.CoreDomain.Places;
 using GestionFormation.CoreDomain.Places.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
@@ -183,7 +184,7 @@ namespace GestionFormation.App.Views.Places
                 return;
             }
 
-            await HandleMessageBoxError.Execute(async () =>
+            await HandleMessageBoxError.ExecuteAsync(async () =>
             {
                 await Task.Run(() => _applicationService.Command<ReservePlace>().Execute(_sessionId, SelectedStagiaire.Id, SelectedSociete.Id));
                 await RefreshPlaces();
@@ -205,7 +206,7 @@ namespace GestionFormation.App.Views.Places
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un stagiaire", new EditableStagiaire());
             if (vm.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async ()=>{                
+                await HandleMessageBoxError.ExecuteAsync(async ()=>{                
                     var item = vm.Item as EditableStagiaire;
                     var newStagiaire = await Task.Run(() => _applicationService.Command<CreateStagiaire>().Execute(item.Nom, item.Prenom));
 
@@ -222,7 +223,7 @@ namespace GestionFormation.App.Views.Places
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer une société", new EditableSociete());
             if (vm.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async () => { 
+                await HandleMessageBoxError.ExecuteAsync(async () => { 
                     var item = vm.Item as EditableSociete;
                     var newSociete = await Task.Run(() => _applicationService.Command<CreateSociete>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
 
@@ -248,7 +249,7 @@ namespace GestionFormation.App.Views.Places
                 var vm = await _applicationService.OpenPopup<RaisonWindowVm>();
                 if (vm.IsValidated)
                 {
-                    await HandleMessageBoxError.Execute(async () => {
+                    await HandleMessageBoxError.ExecuteAsync(async () => {
                         await Task.Run(() => _applicationService.Command<AnnulerPlace>().Execute(selectedPlace.PlaceId, vm.Raison));                        
                     });
                 }
@@ -260,7 +261,7 @@ namespace GestionFormation.App.Views.Places
         {
             foreach (var selectedPlace in SelectedPlaces)
             {
-                await HandleMessageBoxError.Execute(async () =>
+                await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
                     await Task.Run(() => _applicationService.Command<ValiderPlace>().Execute(selectedPlace.PlaceId));                    
                 });
@@ -275,7 +276,7 @@ namespace GestionFormation.App.Views.Places
                 var vm = await _applicationService.OpenPopup<RaisonWindowVm>();
                 if (vm.IsValidated)
                 {
-                    await HandleMessageBoxError.Execute(async () =>
+                    await HandleMessageBoxError.ExecuteAsync(async () =>
                     {
                         await Task.Run(() => _applicationService.Command<RefuserPlace>().Execute(selectedPlace.PlaceId, vm.Raison));                        
                     });
@@ -302,8 +303,8 @@ namespace GestionFormation.App.Views.Places
         {
             var place = SelectedPlaces.First();
             if (place.ConventionId.HasValue && !string.IsNullOrWhiteSpace(place.Convention))
-            {
-                await _applicationService.OpenPopup<GestionConventionWindowVm>(place.ConventionId);
+            {                
+                await _applicationService.OpenPopup<GestionConventionWindowVm>(place.ConventionId, _sessionInfos.Result, place.TypeConvention, place.Convention);
                 await RefreshPlaces();
             }
         }      
@@ -322,6 +323,7 @@ namespace GestionFormation.App.Views.Places
             Raison = result.Raison;
             ConventionId = result.ConventionId;
             Convention = result.NumeroConvention;
+            TypeConvention = result.TypeConvention;
 
             if (result.ConventionId.HasValue)
             {
@@ -363,6 +365,7 @@ namespace GestionFormation.App.Views.Places
         public string Convention { get; }
         public string EtatConvention { get; }
         public Guid? ConventionId { get; }
+        public TypeConvention TypeConvention { get; }
     }
 
     public class Item
@@ -373,10 +376,13 @@ namespace GestionFormation.App.Views.Places
 
     public class SessionInfos
     {
+        public ICompleteSessionResult Result { get; }
+
         public SessionInfos(ICompleteSessionResult result)
         {
+            Result = result;
             FormationName = result.Formation;
-            FormateurName = result.Formateur;
+            FormateurName = result.Formateur.ToString();
             FormationLieu = result.Lieu;
             FormationDuree = $"Le {result.DateDebut:d} sur {result.Durée} jour(s)";
         }

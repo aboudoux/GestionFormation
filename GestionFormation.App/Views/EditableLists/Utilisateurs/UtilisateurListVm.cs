@@ -55,7 +55,7 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
             var popup = await ApplicationService.OpenPopup<ChangePasswordWindowVm>();
             if (popup.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async () => { 
+                await HandleMessageBoxError.ExecuteAsync(async () => { 
                     await Task.Run(()=>ApplicationService.Command<ChangePassword>().Execute(SelectedItem.GetId(), popup.Password1));
                     MessageBox.Show("Le mot de passe a été changé avec succès !", "Mot de passe changé", MessageBoxButton.OK, MessageBoxImage.Information);
                 });
@@ -68,7 +68,7 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
             var popup = await ApplicationService.OpenPopup<ChangeRoleWindowVm>(SelectedItem.GetRole());
             if (popup.IsValidated)
             {
-                await HandleMessageBoxError.Execute(async () => {
+                await HandleMessageBoxError.ExecuteAsync(async () => {
                     await Task.Run(() => ApplicationService.Command<ChangeRole>().Execute(SelectedItem.GetId(), popup.Role));
                     await LoadCommand.ExecuteAsync();
                 });

@@ -6,11 +6,20 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-    Title="Création d'une convention" Height="264.362" Width="483.112">
+    xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Utilisateurs;assembly=GestionFormation"
+    xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
+    xmlns:conventions="clr-namespace:GestionFormation.CoreDomain.Conventions;assembly=GestionFormation"
+    Title="Création d'une convention" Height="400" Width="483.112">
+    <dx:DXWindow.Resources>
+        <ResourceDictionary>
+            <utilisateurs:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
+        </ResourceDictionary>
+    </dx:DXWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
         <dxg:GridControl Grid.Row="0" ItemsSource="{Binding Path=Places}">
@@ -25,8 +34,13 @@
                 </dxe:ComboBoxEdit.Buttons>
             </dxe:ComboBoxEdit>
         </dxlc:LayoutItem>
+        <StackPanel Grid.Row="2" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:TypeConvention.Gratuite}}" >Gratuite</RadioButton>
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:TypeConvention.Payante}}" >Payante</RadioButton>
+            <Button Margin="5,0,5,0" Command="{Binding Path=UnknowTypeConventionCommand}">Je ne sais pas...</Button>
+        </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <dx:SimpleButton Height="32" Margin="5" Width="100" Command="{Binding Path=AnnulerCommand}" Glyph="{dx:DXImage Image=Cancel_32x32.png}">Annuler</dx:SimpleButton>
             <dx:SimpleButton Height="32" Margin="5" Width="100" Command="{Binding Path=ValiderCommand}" Glyph="{dx:DXImage Image=Apply_32x32.png}">Valider</dx:SimpleButton>
         </StackPanel>

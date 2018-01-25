@@ -11,6 +11,7 @@ using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
+using GestionFormation.CoreDomain.Conventions;
 using GestionFormation.CoreDomain.Conventions.Queries;
 using GestionFormation.CoreDomain.Places.Queries;
 using GestionFormation.Tests.Tools;
@@ -64,9 +65,9 @@ namespace GestionFormation.Tests
             
             var contact = service.Command<CreateContact>().Execute("CONTACT", "CONVENTION TEST","","");
 
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId});
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId});
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId});
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, TypeConvention.Gratuite);
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, TypeConvention.Gratuite);
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, TypeConvention.Gratuite);
 
             // when
             var conventionQueries = new ConventionQueries();
@@ -102,8 +103,8 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place3.AggregateId);
 
             var contact = service.Command<CreateContact>().Execute("CONTACT", "CONVENTION TEST", "", "");
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId });
-            var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId });
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, TypeConvention.Gratuite);
+            var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, TypeConvention.Gratuite);
             service.Command<SignConvention>().Execute(convention2.AggregateId, Guid.NewGuid());
 
             var query = new PlacesQueries();

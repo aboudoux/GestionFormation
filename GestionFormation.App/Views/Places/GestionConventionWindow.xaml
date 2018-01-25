@@ -52,6 +52,7 @@
         </Grid>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <dx:SimpleButton Height="32" Margin="5" Width="110" Command="{Binding Path=PrintCommand}" Glyph="{dx:DXImage Image=Printer_32x32.png}">Imprimer</dx:SimpleButton>
             <dx:SimpleButton Height="32" Margin="5" Width="100" Command="{Binding Path=AnnulerCommand}" Glyph="{dx:DXImage Image=Cancel_32x32.png}">Annuler</dx:SimpleButton>
             <dx:SimpleButton Height="32" Margin="5" Width="100" Command="{Binding Path=ValiderCommand}" Glyph="{dx:DXImage Image=Apply_32x32.png}">Valider</dx:SimpleButton>
         </StackPanel>

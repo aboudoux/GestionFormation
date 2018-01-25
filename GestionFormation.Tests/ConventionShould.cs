@@ -21,8 +21,8 @@ namespace GestionFormation.Tests
         public void raise_conventionCreated_when_create_convention()
         {
             var contactId = Guid.NewGuid();
-            var convention = Convention.Create(contactId, 6000);
-            convention.UncommitedEvents.GetStream().Should().Contain(new ConventionCreated(Guid.Empty, 0, contactId, 6000));
+            var convention = Convention.Create(contactId, 6000, TypeConvention.Gratuite);
+            convention.UncommitedEvents.GetStream().Should().Contain(new ConventionCreated(Guid.Empty, 0, contactId, 6000, TypeConvention.Gratuite));
         }
 
         [TestMethod]
@@ -81,7 +81,7 @@ namespace GestionFormation.Tests
             eventStore.Save(new PlaceValided(place2Id, 2));
 
             var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), eventStore), new FakeConventionQueries());
-            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id});
+            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id}, TypeConvention.Gratuite);
 
             action.ShouldThrow<ConventionSocieteException>();
         }
@@ -91,7 +91,7 @@ namespace GestionFormation.Tests
         {
             var placeId = Guid.NewGuid();
             var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeConventionQueries());
-            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() { placeId, placeId});
+            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() { placeId, placeId},TypeConvention.Gratuite);
 
             action.ShouldThrow<ArgumentException>();
         }
@@ -111,7 +111,7 @@ namespace GestionFormation.Tests
         private TestConventionContext CreateConvention()
         {
             var contactId = Guid.NewGuid();
-            var builder = Aggregate.Make<Convention>().AddEvent(new ConventionCreated(Guid.Empty, 1, contactId, 6000));
+            var builder = Aggregate.Make<Convention>().AddEvent(new ConventionCreated(Guid.Empty, 1, contactId, 6000, TypeConvention.Gratuite));
             return new TestConventionContext(builder, contactId);
         }
     }

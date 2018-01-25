@@ -126,7 +126,7 @@ namespace GestionFormation.Tests
             var place1 = _context.CreatePlace();            
             var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
-            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId});
+            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, TypeConvention.Gratuite);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
             result.Where(a=>a.AggregateId == convention.AggregateId && a.AggregateType == typeof(Convention).Name && a.RappelType == RappelType.ConventionToSign );
@@ -143,7 +143,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
             var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId});
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, TypeConvention.Gratuite);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
 
@@ -161,7 +161,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
             var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId });
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
             _context.App.Command<AnnulerPlace>().Execute(place2.AggregateId, "test");

@@ -17,14 +17,14 @@ namespace GestionFormation.CoreDomain.Conventions
             player.Add<ConventionRevoked>(e => _isRevoked = true);
         }
 
-        public static Convention Create(Guid contactId, long numeroConvention)
+        public static Convention Create(Guid contactId, long numeroConvention, TypeConvention typeConvention)
         {
             if(contactId == Guid.Empty)
                 throw new ArgumentNullException(nameof(contactId));
 
             var convention = new Convention(History.Empty);
             convention.AggregateId = Guid.NewGuid();
-            convention.UncommitedEvents.Add(new ConventionCreated(convention.AggregateId, 1, contactId, numeroConvention));
+            convention.UncommitedEvents.Add(new ConventionCreated(convention.AggregateId, 1, contactId, numeroConvention, typeConvention));
             return convention;
         }
 

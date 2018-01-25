@@ -17,7 +17,7 @@ namespace GestionFormation.Applications.Conventions
             _conventionQueries = conventionQueries ?? throw new ArgumentNullException(nameof(conventionQueries));
         }
 
-        public Convention Execute(Guid contactId, IEnumerable<Guid> placesIds)
+        public Convention Execute(Guid contactId, IEnumerable<Guid> placesIds, TypeConvention typeConvention)
         {
             CheckThereAreNoDuplicate(placesIds);
             var aggregatesToCommit = new List<AggregateRoot>();
@@ -27,7 +27,7 @@ namespace GestionFormation.Applications.Conventions
             if( numeroConvention <= 0)
                 throw new Exception("Impossible d'obtenir le numéro de convention.");
 
-            var convention = Convention.Create(contactId, numeroConvention);
+            var convention = Convention.Create(contactId, numeroConvention, typeConvention);
             aggregatesToCommit.Add(convention);
 
             foreach (var placeId in placesIds)

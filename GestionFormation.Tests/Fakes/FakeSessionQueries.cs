@@ -20,22 +20,22 @@ namespace GestionFormation.Tests.Fakes
             _session.Add(sessionResult);
         }
 
-        public IReadOnlyList<ISessionResult> GetAll()
+        public IEnumerable<ISessionResult> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public IReadOnlyList<ISessionResult> GetAll(Guid formationId)
+        public IEnumerable<ISessionResult> GetAll(Guid formationId)
         {
             return _session;
         }
 
-        public IReadOnlyList<ICompleteSessionResult> GetAllCompleteSession()
+        public IEnumerable<ICompleteSessionResult> GetAllCompleteSession()
         {
             throw new NotImplementedException();
         }
 
-        public IReadOnlyList<string> GetAllLieux()
+        public IEnumerable<string> GetAllLieux()
         {
             throw new NotImplementedException();
         }

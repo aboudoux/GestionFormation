@@ -94,10 +94,10 @@
                     <dxg:GridColumn FieldName="Convention" Header="Convention">
                         <dxg:GridColumn.EditSettings>
                         <dxe:ButtonEditSettings AllowDefaultButton="False">
-                            <dxe:ButtonEditSettings.Buttons>
-                                    <dxe:ButtonInfo Command="{Binding Path=OpenConventionCommand}" GlyphKind="Regular"/>
-                            </dxe:ButtonEditSettings.Buttons>
-                        </dxe:ButtonEditSettings>
+                                <dxe:ButtonEditSettings.Buttons>
+                                    <dxe:ButtonInfo Command="{Binding Path=OpenConventionCommand}" GlyphKind="Edit"/>
+                                </dxe:ButtonEditSettings.Buttons>
+                            </dxe:ButtonEditSettings>
                     </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="EtatConvention" Header="Etat"/>

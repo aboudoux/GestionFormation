@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
@@ -36,10 +35,13 @@ namespace GestionFormation.CoreDomain.Places.Queries
                     {
                         StagiaireNom = stagiaire.Nom,
                         StagiairePrenom = stagiaire.Prenom,
-                        SocieteNom = societe.Nom
+                        SocieteNom = societe.Nom,
+                        societe.Addresse,
+                        societe.CodePostal,
+                        societe.Ville,                        
                     };
 
-                return querie.ToList().Select(a=>new ConventionPlaceResult(){ Societe = a.SocieteNom, Stagiaire = a.StagiaireNom + " " + a.StagiairePrenom});
+                return querie.ToList().Select(a=>new ConventionPlaceResult(){ Societe = a.SocieteNom, Stagiaire = new NomComplet(a.StagiaireNom , a.StagiairePrenom), Adresse = a.Addresse, CodePostal = a.CodePostal, Ville = a.Ville});
             }
         }
 
@@ -64,7 +66,7 @@ namespace GestionFormation.CoreDomain.Places.Queries
                         Email = contact.Email
                     };
 
-                return querie.ToList().Select(a => new PlaceValidatedResult(a.StagiaireNom + " " + a.StagiairePrenom, a.SocieteNom, a.ContactNom + " " + a.ContactPrenom, a.Telephone, a.Email));
+                return querie.ToList().Select(a => new PlaceValidatedResult(a.StagiaireNom,  a.StagiairePrenom, a.SocieteNom, a.ContactNom, a.ContactPrenom, a.Telephone, a.Email));
             }
         }
     }

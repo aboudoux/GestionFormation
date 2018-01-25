@@ -7,10 +7,12 @@ namespace GestionFormation.CoreDomain.Conventions.Events
     {
         public Guid ContactId { get; }
         public string Convention { get; }
+        public TypeConvention TypeConvention { get; }
 
-        public ConventionCreated(Guid aggregateId, int sequence, Guid contactId, long numeroConvention) : base(aggregateId, sequence)
+        public ConventionCreated(Guid aggregateId, int sequence, Guid contactId, long numeroConvention, TypeConvention typeConvention) : base(aggregateId, sequence)
         {
             ContactId = contactId;
+            TypeConvention = typeConvention;
             Convention = DateTime.Now.Year + " " + numeroConvention + " T";
         }
     }

@@ -48,7 +48,7 @@ namespace GestionFormation.App.Views.Logins
                 await Task.Run(()=> _applicationService.Command<CreateUtilisateur>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UtilisateurRole.Admin));
 
             var command = new Logon(_utilisateurQueries);
-            await HandleMessageBoxError.Execute(async () =>
+            await HandleMessageBoxError.ExecuteAsync(async () =>
             {
                 var loggedUser = await Task.Run(() => command.Execute(Username, Password));
                 Bootstrapper.SetLoggedUser(loggedUser);
