@@ -31,7 +31,7 @@
                 <dxb:BarButtonItem Content="Editer" Glyph="{dx:DXImage Image=EditTask_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=EditCommand}" IsVisible="{Binding Path=Security[2]}"/>
                 <dxb:BarItemLinkSeparator/>
                 <dxb:BarButtonItem Content="Places" Glyph="/Images/chair_16x16.png" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenPlacesCommand}" IsVisible="{Binding Path=Security[3]}"/>
-                <dxb:BarButtonItem Content="Déroulement" Glyph="{dx:DXImage Image=PublicFix_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenDeroulementCommand}" IsVisible="{Binding Path=Security[3]}"/>
+                <dxb:BarButtonItem Content="Déroulement" Glyph="{dx:DXImage Image=PublicFix_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenDeroulementCommand}" IsVisible="{Binding Path=Security[4]}"/>
             </dxb:ToolBarControl>
         </dxb:BarContainerControl>
 
@@ -41,8 +41,14 @@
             </dxe:DateNavigator.StyleSettings>
         </dxe:DateNavigator>
 
-        <dxsch:SchedulerControl x:Name="scheduler" Grid.Row="1" Grid.Column="1" ActiveViewIndex="3" AppointmentWindowShowing="SchedulerControl_OnAppointmentWindowShowing"
-                                AppointmentDrop="Scheduler_OnAppointmentDrop" SelectedAppointmentsSource="{Binding Path=SelectedSessions}" AllowAppointmentMultiSelect="False" AllowAppointmentResize="False">
+        <dxsch:SchedulerControl x:Name="scheduler" Grid.Row="1" Grid.Column="1" ActiveViewIndex="3"
+                                AppointmentWindowShowing="SchedulerControl_OnAppointmentWindowShowing"
+                                AppointmentDrop="Scheduler_OnAppointmentDrop" 
+                                SelectedAppointmentsSource="{Binding Path=SelectedSessions}" 
+                                AllowAppointmentMultiSelect="False" AllowAppointmentResize="False"
+                                AllowAppointmentEdit="False"
+                                PopupMenuShowing="Scheduler_OnPopupMenuShowing"
+                                >
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="InitNewAppointment" Command="{Binding Path=CreateSession}" PassEventArgsToCommand="True"/>
             </dxmvvm:Interaction.Behaviors>
@@ -54,7 +60,7 @@
             <dxsch:SchedulerControl.OptionsContextMenu>
             <dxsch:OptionsContextMenu>
                     <dxsch:OptionsContextMenu.CellContextMenuActions>
-                        <dxb:UpdateAction ElementName="{x:Static Member=dxsch:DefaultBarItemNames.ContextMenu_Items_Cell_Actions_NewAppointment}" PropertyName="Content" Value="Nouvelle session" IsEnabled="{Binding Path=Security[2]}" />
+                        <dxb:UpdateAction ElementName="{x:Static Member=dxsch:DefaultBarItemNames.ContextMenu_Items_Cell_Actions_NewAppointment}" PropertyName="Content" Value="Nouvelle session" />
                     <dxb:RemoveAction ElementName="{x:Static Member=dxsch:DefaultBarItemNames.ContextMenu_Items_Cell_Actions_NewAllDayEvent}"/>
                     <dxb:RemoveAction ElementName="{x:Static Member=dxsch:DefaultBarItemNames.ContextMenu_Items_Cell_Actions_NewRecurringAppointment}"/>
                     <dxb:RemoveAction ElementName="{x:Static Member=dxsch:DefaultBarItemNames.ContextMenu_Items_Cell_Actions_NewRecurringEvent}"/>

@@ -1,4 +1,4 @@
-﻿<Window xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  x:Class="GestionFormation.App.MainWindow"
+﻿<Window xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"  xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  x:Class="GestionFormation.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,19 +19,18 @@
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition ></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
-        <dxb:BarContainerControl ContainerType="Top" Grid.Row="0">
-            <dxb:MainMenuControl Caption="Main Menu">
-                <dxb:BarButtonItem Content="Rafraichir mes actions" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshRappels}"/>
-                <dxb:BarSubItem Content="Liste" Glyph="{dx:DXImage Image=Table_32x32.png}" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[3]}">
-                    <dxb:BarButtonItem Content="Formations" Glyph="{dx:DXImage Image=TableProperties_32x32.png}" Command="{Binding Path=OpenFormationList}" IsVisible="{Binding Path=Security[2]}"/>
+
+        <dxb:BarContainerControl ContainerType="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+            <dxb:MainMenuControl Caption="Main Menu" HorizontalAlignment="Stretch">
+                <dxb:BarSubItem Content="Référenciel" Glyph="{dx:DXImage Image=MoreFunctions_32x32.png}" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[3]}" LargeGlyph="{dx:DXImage Image=MoreFunctions_32x32.png}">
+                    <dxb:BarButtonItem Content="Formations" Glyph="{dx:DXImage Image=TableProperties_32x32.png}" LargeGlyph="{dx:DXImage Image=TableProperties_32x32.png}" Command="{Binding Path=OpenFormationList}" IsVisible="{Binding Path=Security[2]}"/>
                     <dxb:BarButtonItem Content="Stagiaires" Glyph="{dx:DXImage Image=User_32x32.png}" Command="{Binding Path=OpenStagiaireList}" IsVisible="{Binding Path=Security[3]}"/>
                     <dxb:BarButtonItem Content="Formateurs" Glyph="{dx:DXImage Image=Employee_32x32.png}" Command="{Binding Path=OpenFormateurList}" IsVisible="{Binding Path=Security[2]}" />
                     <dxb:BarButtonItem Content="Lieux" Glyph="{dx:DXImage Image=DefaultMap_32x32.png}" Command="{Binding Path=OpenLieuList}" IsVisible="{Binding Path=Security[2]}" />
@@ -39,35 +38,38 @@
                     <dxb:BarButtonItem Content="Sociétés" Glyph="/Images/company_16x16.png" Command="{Binding Path=OpenSocieteList}" IsVisible="{Binding Path=Security[3]}" />
                     <dxb:BarButtonItem Content="Utilisateurs" Glyph="{dx:DXImage Image=UserGroup_32x32.png}" Command="{Binding Path=OpenUtilisateurList}" LargeGlyph="{dx:DXImage Image=Contact_32x32.png}" IsVisible="{Binding Path=Security[1]}"  />
                 </dxb:BarSubItem>
-                <dxb:BarButtonItem Content="Calendrier des formations" Glyph="{dx:DXImage Image=Calendar_32x32.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenScheduler}" IsVisible="{Binding Path=Security[4]}"/>
-                <dxb:BarButtonItem Content="Technique" Glyph="{dx:DXImage Image=RenameDataSource_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenEventReplayer}" IsVisible="{Binding Path=Security[1]}"/>
-                <dxb:BarButtonItem Content="Historique" Glyph="{dx:DXImage Image=RenameDataSource_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenHistorique}" IsVisible="{Binding Path=Security[1]}"/>
-                <!--<dxb:BarSubItem Content="Edit">
-                    <dxb:BarButtonItem x:Name="btnCut" Content="Cut" Glyph="{dx:DXImage Image=Cut_16x16.png}"/>
-                    <dxb:BarButtonItem x:Name="btnCopy" Content="Copy" Glyph="{dx:DXImage Image=Copy_16x16.png}"/>
-                    <dxb:BarButtonItem x:Name="btnPaste" Content="Paste" Glyph="{dx:DXImage Image=Paste_16x16.png}"/>
-                </dxb:BarSubItem>-->
+                <dxb:BarButtonItem Content="Calendrier des formations" Glyph="{dx:DXImage Image=Calendar_32x32.png}" LargeGlyph="{dx:DXImage Image=Calendar_32x32.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenScheduler}" IsVisible="{Binding Path=Security[5]}"/>
+                <dxb:BarSubItem Content="Listes" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[5]}" LargeGlyph="{dx:DXImage Image=TableProperties_32x32.png}" Glyph="{dx:DXImage Image=TableProperties_16x16.png}">
+                    <dxb:BarButtonItem Content="Conventions" Glyph="{dx:DXImage Image=Reading_16x16.png}" BarItemDisplayMode="ContentAndGlyph"/>
+                </dxb:BarSubItem>
+                <dxb:BarSubItem Content="Administration technique" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[1]}" LargeGlyph="{dx:DXImage Image=PageSetup_32x32.png}">
+                    <dxb:BarButtonItem Content="Hydratation base de données" Glyph="{dx:DXImage Image=Database_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenEventReplayer}" IsVisible="{Binding Path=Security[1]}" LargeGlyph="{dx:DXImage Image=Database_32x32.png}"/>
+                    <dxb:BarButtonItem Content="Historique" Glyph="{dx:DXImage Image=BOChangeHistory_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenHistorique}" IsVisible="{Binding Path=Security[1]}" LargeGlyph="{dx:DXImage Image=HistoryItem_32x32.png}"/>
+                </dxb:BarSubItem>
             </dxb:MainMenuControl>
-            <!--<dxb:ToolBarControl Caption="File" RotateWhenVertical="True">
-                <dxb:BarButtonItemLink BarItemName="btnNew"/>
-                <dxb:BarButtonItemLink BarItemName="btnOpen"/>
-                <dxb:BarButtonItemLink BarItemName="btnClose"/>
-            </dxb:ToolBarControl>
-            <dxb:ToolBarControl Caption="Edit" RotateWhenVertical="True">
-                <dxb:BarButtonItemLink BarItemName="btnCut"/>
-                <dxb:BarButtonItemLink BarItemName="btnCopy"/>
-                <dxb:BarButtonItemLink BarItemName="btnPaste"/>
-            </dxb:ToolBarControl>-->
         </dxb:BarContainerControl>
 
-        <dxdo:DockLayoutManager Margin="12" Name="dockManager1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+
+        <dxdo:DockLayoutManager  Name="dockManager1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <dxdo:LayoutGroup Orientation="Horizontal">
-                <dxdo:LayoutPanel x:Name="paneToolbox" Caption="Mes actions" ItemWidth="150">
-                    <dxe:ListBoxEdit ItemsSource="{Binding Path=Rappels}" SelectionMode="Single" SelectedItem="{Binding Path=SelectedRappel}">
-                        <dxmvvm:Interaction.Behaviors>
-                            <dxmvvm:EventToCommand EventName="PreviewMouseDoubleClick" Command="{Binding OpenRappelCommand}" />
-                        </dxmvvm:Interaction.Behaviors>
-                    </dxe:ListBoxEdit>
+                <dxdo:LayoutPanel x:Name="paneToolbox" Caption="Mes actions" ItemWidth="300">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <dxb:BarContainerControl ContainerType="Top" Grid.Row="0">
+                            <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">
+                                <dxb:BarButtonItem Content="Rafraichir" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshRappels}"/>
+                            </dxb:ToolBarControl>
+                        </dxb:BarContainerControl>
+                        <dxe:ListBoxEdit Grid.Row="1" ItemsSource="{Binding Path=Rappels}" SelectionMode="Single" SelectedItem="{Binding Path=SelectedRappel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:EventToCommand EventName="PreviewMouseDoubleClick" Command="{Binding OpenRappelCommand}" />
+                            </dxmvvm:Interaction.Behaviors>
+                        </dxe:ListBoxEdit>
+                    </Grid>
+                    
                 </dxdo:LayoutPanel>
                 
                 <dxdo:DocumentGroup x:Name="DocumentGroup"/>

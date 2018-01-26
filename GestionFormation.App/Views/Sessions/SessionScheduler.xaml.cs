@@ -26,6 +26,11 @@ namespace GestionFormation.App.Views.Sessions
             var appointmentVm = e.ViewModels[0].Appointment;
             vm?.DropSession.ExecuteAsync(new SessionDropped((Guid)appointmentVm.Id, e.HitInterval.Start, appointmentVm.Duration.Days));
         }
-       
+
+        private void Scheduler_OnPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
+        {
+            if(e.MenuType != ContextMenuType.CellContextMenu)
+                e.Cancel = true;
+        }
     }
 }

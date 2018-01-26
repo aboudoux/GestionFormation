@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using DevExpress.Xpf.Core;
 
 namespace GestionFormation.App
 {
@@ -6,6 +7,6 @@ namespace GestionFormation.App
     /// Logique d'interaction pour App.xaml
     /// </summary>
     public partial class App
-    {
+    {        
     }
 }

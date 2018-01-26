@@ -89,7 +89,21 @@
                     </dxg:GridColumn.EditSettings>-->
 
                     <dxg:GridColumn FieldName="SocieteNom" Header="Société"/>
-                    <dxg:GridColumn FieldName="Etat" Header="Etat"/>
+                    <dxg:GridColumn FieldName="Etat"  Header="Etat">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:ComboBoxEditSettings>
+                                <dxe:ComboBoxEditSettings.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="16" Height="16" Source="{Binding Path=EtatImage}"></Image>
+                                            <TextBlock Text="{Binding Path=Etat}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dxe:ComboBoxEditSettings.ItemTemplate>
+                            </dxe:ComboBoxEditSettings>
+                        </dxg:GridColumn.EditSettings>
+
+                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="Raison" Header="Raison"/>
                     <dxg:GridColumn FieldName="Convention" Header="Convention">
                         <dxg:GridColumn.EditSettings>

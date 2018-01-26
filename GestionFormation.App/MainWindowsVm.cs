@@ -75,6 +75,11 @@ namespace GestionFormation.App
 
             Title = "Gestion formation - " + _applicationService.LoggedUser;
             RaisePropertyChanged(()=>Security);
+
+            var t1 = RefreshRappels.ExecuteAsync();
+            var t2 = OpenScheduler.ExecuteAsync();
+
+            await Task.WhenAll(t1, t2);
         }
 
         public RelayCommandAsync RefreshRappels { get; }

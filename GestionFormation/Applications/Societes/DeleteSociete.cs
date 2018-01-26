@@ -6,7 +6,7 @@ namespace GestionFormation.Applications.Societes
 {
     public class DeleteSociete : ActionCommand
     {
-        protected DeleteSociete(EventBus eventBus) : base(eventBus)
+        public DeleteSociete(EventBus eventBus) : base(eventBus)
         {
         }
 

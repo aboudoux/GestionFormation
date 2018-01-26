@@ -23,6 +23,7 @@
             <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Admin}}" >Administrateur</RadioButton>
             <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.GestionnaireFormation}}" >Gestionnaire formation</RadioButton>
             <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.ServiceFormation}}" >Service formation</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Formateur}}" >Formateur</RadioButton>
             <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Invité}}" >Invité</RadioButton>
         </StackPanel>
 

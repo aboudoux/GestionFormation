@@ -333,7 +333,9 @@ namespace GestionFormation.App.Views.Places
                     EtatConvention = (result.ConventionSigned ? "Signée" : "Attente de signature");                
             }
             else
-                EtatConvention = "Non générée";            
+                EtatConvention = "Non générée";    
+            
+            Etat = new EtatPlace(result.Status);
         }
 
         public Guid PlaceId { get; }
@@ -347,25 +349,41 @@ namespace GestionFormation.App.Views.Places
         public PlaceStatus Statut { get; set; }
         public string Raison { get; }
 
-        public string Etat
-        {
-            get
-            {
-                switch (Statut)
-                {
-                    case PlaceStatus.AValider: return "Attente de validation";
-                    case PlaceStatus.Annulé: return "Annulée";
-                    case PlaceStatus.Refusé: return "Refusée";
-                    case PlaceStatus.Validé: return "Validée";
-                        default: throw new Exception($"Le statut {Statut} est introuvable");
-                }
-            }
-        }    
+        public EtatPlace Etat { get; }
         
         public string Convention { get; }
         public string EtatConvention { get; }
         public Guid? ConventionId { get; }
         public TypeConvention TypeConvention { get; }
+
+        public class EtatPlace
+        {
+            private PlaceStatus Statut;
+            public EtatPlace(PlaceStatus status)
+            {
+                Statut = status;
+            }
+
+            public string Etat
+            {
+                get
+                {
+                    switch (Statut)
+                    {
+                        case PlaceStatus.AValider: return "Attente de validation";
+                        case PlaceStatus.Annulé: return "Annulée";
+                        case PlaceStatus.Refusé: return "Refusée";
+                        case PlaceStatus.Validé: return "Validée";
+                        default: throw new Exception($"Le statut {Statut} est introuvable");
+                    }
+                }
+            }
+
+            public string EtatImage
+            {
+                get { return "/Images/chair_16x16.png"; }
+            }
+        }
     }
 
     public class Item
