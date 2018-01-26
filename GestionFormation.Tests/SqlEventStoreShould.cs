@@ -75,5 +75,6 @@ namespace GestionFormation.Tests
         }
 
         public string Label { get; }
+        protected override string Description { get; }
     }
 }

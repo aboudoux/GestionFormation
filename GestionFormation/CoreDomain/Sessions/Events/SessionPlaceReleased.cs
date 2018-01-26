@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
         public SessionPlaceReleased(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Place libérée";
     }
 }

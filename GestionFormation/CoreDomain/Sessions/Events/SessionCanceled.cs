@@ -11,5 +11,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
         {
             Raison = raison;
         }
+
+        protected override string Description => "Session annulée";
     }
 }

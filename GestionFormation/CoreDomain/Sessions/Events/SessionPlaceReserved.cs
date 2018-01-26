@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
         public SessionPlaceReserved(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Place reservée";
     }
 }

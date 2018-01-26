@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
         public FormateurDisabled(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Formateur désactivé";
     }
 }

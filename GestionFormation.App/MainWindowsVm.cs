@@ -8,6 +8,7 @@ using GestionFormation.App.Core;
 using GestionFormation.App.Views;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.App.Views.EditableLists.Utilisateurs;
+using GestionFormation.App.Views.Historiques;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Places;
 using GestionFormation.App.Views.Sessions;
@@ -41,6 +42,7 @@ namespace GestionFormation.App
             OpenLoginWindow = new RelayCommandAsync(ExecuteOpenLoginAsync);
             RefreshRappels = new RelayCommandAsync(ExecuteRefreshRappelAsync);
             OpenRappelCommand = new RelayCommandAsync(ExecuteOpenRappelAsync);
+            OpenHistorique = new RelayCommandAsync(async()=>await OpenDocument<HistoriqueWindowVm>());
 
             Title = "Gestion formation - non connecté";
             Security = new Security(applicationService);
@@ -63,6 +65,7 @@ namespace GestionFormation.App
         public RelayCommandAsync OpenContactList { get; }
         public RelayCommandAsync OpenUtilisateurList { get; }
         public RelayCommandAsync OpenEventReplayer { get; }
+        public RelayCommandAsync OpenHistorique { get; }
         public RelayCommandAsync OpenLoginWindow { get; }
         private async Task ExecuteOpenLoginAsync()
         {

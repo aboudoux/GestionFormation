@@ -7,6 +7,9 @@ namespace GestionFormation.CoreDomain.Conventions.Queries
     {
         IEnumerable<IConventionResult> GetAll(Guid sessionId);
 
+        IPrintableConventionResult GetPrintableConvention(Guid conventionId);
+
+
         long GetNextConventionNumber();
     }
 }

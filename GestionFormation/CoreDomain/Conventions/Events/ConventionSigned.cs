@@ -11,5 +11,7 @@ namespace GestionFormation.CoreDomain.Conventions
         {
             DocumentId = documentId;
         }
+
+        protected override string Description => "Convention signée";
     }
 }

@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Conventions.Events
         public ConventionDisassociated(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Convention désassociée";
     }
 }

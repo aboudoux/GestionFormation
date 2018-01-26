@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Societes
         public SocieteDeleted(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Société supprimée";
     }
 }

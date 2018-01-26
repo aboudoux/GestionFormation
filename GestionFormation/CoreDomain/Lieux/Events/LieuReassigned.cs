@@ -17,5 +17,7 @@ namespace GestionFormation.CoreDomain.Lieux.Events
             NewDateDebut = newDateDebut;
             NewDurée = newDurée;
         }
+
+        protected override string Description => "Lieu réassigné";
     }
 }

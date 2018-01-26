@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Conventions.Events
         public ConventionRevoked(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Convention révoquée";
     }
 }

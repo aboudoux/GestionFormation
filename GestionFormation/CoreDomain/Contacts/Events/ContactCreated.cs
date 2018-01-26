@@ -17,5 +17,7 @@ namespace GestionFormation.CoreDomain.Contacts.Events
             Email = email;
             Telephone = telephone;
         }
+
+        protected override string Description => "Contact créé";
     }
 }

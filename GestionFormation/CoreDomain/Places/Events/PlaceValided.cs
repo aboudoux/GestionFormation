@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Places.Events
         public PlaceValided(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
-    }
+
+        protected override string Description => "Place validée";
+    }    
 }

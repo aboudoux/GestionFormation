@@ -13,5 +13,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
             DateDebut = dateDebut;
             Durée = durée;
         }
+
+        protected override string Description => "Formateur désassigné";
     }
 }

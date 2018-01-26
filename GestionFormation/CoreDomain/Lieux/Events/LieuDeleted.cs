@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Lieux.Events
         public LieuDeleted(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Lieu supprimé";
     }
 }

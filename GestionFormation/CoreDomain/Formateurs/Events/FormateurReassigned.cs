@@ -17,5 +17,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
             NewDateDebut = newDateDebut;
             NewDurée = newDurée;
         }
+
+        protected override string Description => "Formateur réassigné";
     }
 }

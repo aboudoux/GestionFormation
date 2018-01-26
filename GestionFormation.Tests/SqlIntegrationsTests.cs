@@ -126,6 +126,6 @@ namespace GestionFormation.Tests
             place_3.ConventionId.Should().NotBeNull();
             place_3.NumeroConvention.Should().NotBeNullOrWhiteSpace();
             place_3.ConventionSigned.Should().BeTrue();
-        }
+        }      
     }
 }

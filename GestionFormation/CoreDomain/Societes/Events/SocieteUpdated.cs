@@ -17,5 +17,7 @@ namespace GestionFormation.CoreDomain.Societes
             Codepostal = codepostal;
             Ville = ville;
         }
+
+        protected override string Description => "Société modifiée";
     }
 }

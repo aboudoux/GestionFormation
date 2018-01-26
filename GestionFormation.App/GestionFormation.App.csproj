@@ -85,6 +85,7 @@
     <Reference Include="DevExpress.Xpf.LayoutControl.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Xpf.Ribbon.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -199,6 +200,10 @@
       <DependentUpon>ChangeRoleWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindowVm.cs" />
+    <Compile Include="Views\Historiques\HistoriqueWindow.xaml.cs">
+      <DependentUpon>HistoriqueWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Historiques\HistoriqueWindowVm.cs" />
     <Compile Include="Views\Places\CreateConventionWindow.xaml.cs">
       <DependentUpon>CreateConventionWindow.xaml</DependentUpon>
     </Compile>
@@ -268,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditableLists\Utilisateurs\ChangeRoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Historiques\HistoriqueWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

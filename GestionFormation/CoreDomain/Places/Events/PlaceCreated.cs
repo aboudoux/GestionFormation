@@ -15,5 +15,7 @@ namespace GestionFormation.CoreDomain.Places.Events
             StagiaireId = stagiaireId;
             SocieteId = societeId;
         }
+
+        protected override string Description => "Place créée";
     }
 }

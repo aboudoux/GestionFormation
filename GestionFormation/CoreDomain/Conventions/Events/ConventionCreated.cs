@@ -15,5 +15,7 @@ namespace GestionFormation.CoreDomain.Conventions.Events
             TypeConvention = typeConvention;
             Convention = DateTime.Now.Year + " " + numeroConvention + " T";
         }
+
+        protected override string Description => "Convention créée";
     }
 }

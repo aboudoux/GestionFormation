@@ -63,14 +63,4 @@ namespace GestionFormation.CoreDomain.Utilisateurs
                 RaiseEvent(new UtilisateurRoleChanged(AggregateId, GetNextSequence(), role));
         }
     }
-
-    public class UtilisateurRoleChanged : DomainEvent
-    {
-        public UtilisateurRole Role { get; }
-
-        public UtilisateurRoleChanged(Guid aggregateId, int sequence, UtilisateurRole role) : base(aggregateId, sequence)
-        {
-            Role = role;
-        }
-    }
 }

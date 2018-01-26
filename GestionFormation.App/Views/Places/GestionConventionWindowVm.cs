@@ -11,6 +11,7 @@ using GestionFormation.Applications.Conventions;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Contacts.Queries;
 using GestionFormation.CoreDomain.Conventions;
+using GestionFormation.CoreDomain.Conventions.Queries;
 using GestionFormation.CoreDomain.Places.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
 
@@ -20,12 +21,10 @@ namespace GestionFormation.App.Views.Places
     {
         private readonly Guid _conventionId;
         private readonly IApplicationService _applicationService;
-        private readonly ICompleteSessionResult _sessionResult;
         private readonly IPlacesQueries _placesQueries;
         private readonly IContactQueries _contactQueries;
         private readonly IDocumentRepository _documentRepository;
-        private readonly TypeConvention _typeConvention;
-        private readonly string _numeroConvention;
+        private readonly IConventionQueries _conventionQueries;
         private string _nom;
         private string _prenom;
         private string _email;
@@ -33,19 +32,19 @@ namespace GestionFormation.App.Views.Places
         private ObservableCollection<IConventionPlaceResult> _places;
         private string _documentPath;
 
-        public GestionConventionWindowVm(Guid conventionId, ICompleteSessionResult sessionResult, TypeConvention typeConvention, string numeroConvention, IPlacesQueries placesQueries, IApplicationService applicationService, IContactQueries contactQueries, IDocumentRepository documentRepository)
+        public GestionConventionWindowVm(Guid conventionId, IPlacesQueries placesQueries, IApplicationService applicationService, IContactQueries contactQueries, IDocumentRepository documentRepository, IConventionQueries conventionQueries)
         {
             _conventionId = conventionId;
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));            
             _placesQueries = placesQueries ?? throw new ArgumentNullException(nameof(placesQueries));
             _contactQueries = contactQueries ?? throw new ArgumentNullException(nameof(contactQueries));
             _documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));
-            _typeConvention = typeConvention;
-            _numeroConvention = numeroConvention;
-            _sessionResult = sessionResult ?? throw new ArgumentNullException(nameof(sessionResult));
+            _conventionQueries = conventionQueries ?? throw new ArgumentNullException(nameof(conventionQueries));
 
             ChooseDocumentCommand = new RelayCommand(ExecuteChooseDocumentAsync);
-            PrintCommand = new RelayCommand(ExecutePrintCommand);
+            PrintCommand = new RelayCommandAsync(ExecutePrintAsync);
+
+            SetValiderCommandCanExecute(()=>File.Exists(DocumentPath));
         }
         
         public override async Task Init()
@@ -103,7 +102,11 @@ namespace GestionFormation.App.Views.Places
         public string DocumentPath
         {
             get => _documentPath;
-            set { Set(()=>DocumentPath, ref _documentPath, value); }
+            set
+            {
+                Set(()=>DocumentPath, ref _documentPath, value);
+                ValiderCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public RelayCommand ChooseDocumentCommand { get; }
@@ -119,16 +122,20 @@ namespace GestionFormation.App.Views.Places
                 DocumentPath = openFileDialog1.FileName;
         }
 
-        public RelayCommand PrintCommand { get; }
-        private void ExecutePrintCommand()
+        public RelayCommandAsync PrintCommand { get; }
+        private async Task ExecutePrintAsync()
         {
-            HandleMessageBoxError.Execute(()=>{
+            await HandleMessageBoxError.ExecuteAsync(async ()=>{
+
                 var firstPlace = Places.First();
                 string doc;
-                if(_typeConvention == TypeConvention.Gratuite)
-                    doc = _documentRepository.CreateConventionGratuite(_numeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), _sessionResult.Formation, _sessionResult.DateDebut, _sessionResult.Durée, _sessionResult.Lieu, Places.Select(a=>new Participant(a.Stagiaire, a.Societe)).ToList());
+
+                var conv = await Task.Run(()=>_conventionQueries.GetPrintableConvention(_conventionId));
+
+                if (conv.TypeConvention == TypeConvention.Gratuite)
+                    doc = _documentRepository.CreateConventionGratuite(conv.NumeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), conv.Formation, conv.DateDebut, conv.Durée, conv.Lieu, Places.Select(a=>new Participant(a.Stagiaire, a.Societe)).ToList());
                 else
-                    doc = _documentRepository.CreateConventionPayante(_numeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), _sessionResult.Formation, _sessionResult.DateDebut, _sessionResult.Durée, _sessionResult.Lieu, Places.Select(a => new Participant(a.Stagiaire, a.Societe)).ToList());
+                    doc = _documentRepository.CreateConventionPayante(conv.NumeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), conv.Formation, conv.DateDebut, conv.Durée, conv.Lieu, Places.Select(a => new Participant(a.Stagiaire, a.Societe)).ToList());
 
                 Process.Start(doc);
             });

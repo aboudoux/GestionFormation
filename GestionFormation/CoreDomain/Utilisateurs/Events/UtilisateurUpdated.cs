@@ -17,5 +17,7 @@ namespace GestionFormation.CoreDomain.Utilisateurs.Events
             Email = email;
             IsEnabled = isEnabled;
         }
+
+        protected override string Description => "Utilisateur modifié";
     }
 }

@@ -15,5 +15,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
             Prenom = prenom;
             Email = email;
         }
+
+        protected override string Description => "Formateur créé";
     }
 }

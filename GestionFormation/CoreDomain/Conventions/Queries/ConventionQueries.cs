@@ -28,6 +28,32 @@ namespace GestionFormation.CoreDomain.Conventions.Queries
             }
         }
 
+        public IPrintableConventionResult GetPrintableConvention(Guid conventionId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var query = from convention in context.Conventions
+                    where convention.ConventionId == conventionId
+                    join place in context.Places on convention.ConventionId equals place.AssociatedConventionId
+                    join session in context.Sessions on place.SessionId equals session.SessionId
+                    join formation in context.Formations on session.FormationId equals formation.FormationId
+                    join lieu in context.Lieux on session.LieuId equals lieu.Id 
+                    select new { convention.ConventionNumber, convention.TypeConvention,Formation = formation.Nom, session.DateDebut, session.DuréeEnJour, Lieu = lieu.Nom};
+
+                var conv = query.First();
+
+                return new PrintableConventionResult()
+                {
+                    NumeroConvention = conv.ConventionNumber,
+                    TypeConvention = conv.TypeConvention,
+                    Formation = conv.Formation,
+                    Lieu = conv.Lieu,
+                    DateDebut = conv.DateDebut,
+                    Durée = conv.DuréeEnJour
+                };                    
+            }
+        }
+
         public long GetNextConventionNumber()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))

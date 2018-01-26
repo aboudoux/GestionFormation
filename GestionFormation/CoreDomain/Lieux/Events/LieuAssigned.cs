@@ -13,5 +13,7 @@ namespace GestionFormation.CoreDomain.Lieux.Events
             DebutSession = debutSession;
             Durée = durée;
         }
+
+        protected override string Description => "Lieu assigné";
     }
 }

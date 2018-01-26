@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
         public SessionDeleted(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Session supprimé";
     }
 }

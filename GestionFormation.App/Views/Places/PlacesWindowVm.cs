@@ -304,7 +304,7 @@ namespace GestionFormation.App.Views.Places
             var place = SelectedPlaces.First();
             if (place.ConventionId.HasValue && !string.IsNullOrWhiteSpace(place.Convention))
             {                
-                await _applicationService.OpenPopup<GestionConventionWindowVm>(place.ConventionId, _sessionInfos.Result, place.TypeConvention, place.Convention);
+                await _applicationService.OpenPopup<GestionConventionWindowVm>(place.ConventionId);
                 await RefreshPlaces();
             }
         }      

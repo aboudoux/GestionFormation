@@ -13,5 +13,7 @@ namespace GestionFormation.CoreDomain.Formations.Events
             Nom = nom;
             Places = places;
         }
+
+        protected override string Description => "Formation modifiée";
     }
 }

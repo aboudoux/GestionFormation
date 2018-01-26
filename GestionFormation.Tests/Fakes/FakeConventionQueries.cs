@@ -11,6 +11,11 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
+        public IPrintableConventionResult GetPrintableConvention(Guid conventionId)
+        {
+            throw new NotImplementedException();
+        }
+
         public long GetNextConventionNumber()
         {
             return 6001;

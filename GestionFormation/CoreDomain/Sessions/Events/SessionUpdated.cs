@@ -21,5 +21,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
             FormateurId = formateurId;
             FormationId = formationId;
         }
+
+        protected override string Description => "Session modifiée";
     }
 }

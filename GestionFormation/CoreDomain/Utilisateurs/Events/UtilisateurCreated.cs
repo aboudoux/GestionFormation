@@ -21,5 +21,7 @@ namespace GestionFormation.CoreDomain.Utilisateurs.Events
             Email = email;
             Role = role;
         }
+
+        protected override string Description => "Utilisateur créé";
     }
 }

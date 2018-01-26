@@ -13,5 +13,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
             DebutSession = debutSession;
             Durée = durée;
         }
+
+        protected override string Description => "Formateur assigné";
     }
 }

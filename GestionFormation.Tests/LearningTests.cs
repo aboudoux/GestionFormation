@@ -101,6 +101,8 @@ namespace GestionFormation.Tests
         {
             Test = test;
         }
+
+        protected override string Description { get; }
     }
 
     public class LocalEvent : IDomainEvent

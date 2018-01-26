@@ -37,5 +37,12 @@ namespace GestionFormation.Kernel
 
         public Guid AggregateId { get; }
         public int Sequence { get; }
+
+        protected abstract string Description { get; }
+
+        public override string ToString()
+        {
+            return Description;
+        }
     }
 }

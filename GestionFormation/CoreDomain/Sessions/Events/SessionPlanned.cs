@@ -21,5 +21,7 @@ namespace GestionFormation.CoreDomain.Sessions.Events
             LieuId = lieuId;
             FormateurId = formateurId;
         }
+
+        protected override string Description => "Session planifiée";
     }
 }

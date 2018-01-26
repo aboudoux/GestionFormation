@@ -15,5 +15,7 @@ namespace GestionFormation.CoreDomain.Lieux.Events
             Addresse = addresse;
             Places = places;
         }
+
+        protected override string Description => "Lieu créé";
     }
 }

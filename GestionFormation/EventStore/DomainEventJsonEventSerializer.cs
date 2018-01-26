@@ -4,13 +4,18 @@ using Newtonsoft.Json.Serialization;
 
 namespace GestionFormation.EventStore
 {
-    public class DomainEventJsonEventSerializer : IEventSerializer
+    public class DomainEventJsonEventSerializer : IEventSerializer, IRuntimeDependency
     {
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
         };
+
+        public DomainEventJsonEventSerializer() : this(null)
+        {
+            
+        }
 
         public DomainEventJsonEventSerializer(ISerializationBinder binder = null)
         {

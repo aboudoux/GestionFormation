@@ -10,5 +10,7 @@ namespace GestionFormation.CoreDomain.Places.Events
         {
             Reason = reason;
         }
+
+        protected override string Description => "Place annulée";
     }
 }

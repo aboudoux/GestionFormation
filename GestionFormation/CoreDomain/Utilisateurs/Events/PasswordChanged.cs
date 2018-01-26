@@ -11,5 +11,7 @@ namespace GestionFormation.CoreDomain.Utilisateurs
         {
             EncryptedPassword = encryptedPassword;
         }
+
+        protected override string Description => "Mot de passe changé";
     }
 }

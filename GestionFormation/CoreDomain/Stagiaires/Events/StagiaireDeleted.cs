@@ -9,5 +9,7 @@ namespace GestionFormation.CoreDomain.Stagiaires.Events
         {
             
         }
+
+        protected override string Description => "Stagiaire supprimé";
     }
 }

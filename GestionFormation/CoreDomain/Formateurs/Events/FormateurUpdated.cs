@@ -14,5 +14,7 @@ namespace GestionFormation.CoreDomain.Formateurs.Events
             Nom = nom;
             Prenom = prenom;
         }
+
+        protected override string Description => "Formateur modifié";
     }
 }

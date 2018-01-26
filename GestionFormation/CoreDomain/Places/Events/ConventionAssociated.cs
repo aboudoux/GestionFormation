@@ -11,5 +11,7 @@ namespace GestionFormation.CoreDomain.Places.Events
         {
             ConventionId = conventionId;
         }
+
+        protected override string Description => "Convention associée";
     }
 }

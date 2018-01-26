@@ -8,5 +8,7 @@ namespace GestionFormation.CoreDomain.Formations.Events
         public FormationDeleted(Guid aggregateId, int sequence) : base(aggregateId, sequence)
         {
         }
+
+        protected override string Description => "Formation supprimé";
     }
 }

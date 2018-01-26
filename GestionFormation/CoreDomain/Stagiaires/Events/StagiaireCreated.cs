@@ -13,5 +13,7 @@ namespace GestionFormation.CoreDomain.Stagiaires.Events
             Nom = nom;
             Prenom = prenom;            
         }
+
+        protected override string Description => "Stagiaire créé";
     }
 }

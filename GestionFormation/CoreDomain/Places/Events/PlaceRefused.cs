@@ -11,5 +11,7 @@ namespace GestionFormation.CoreDomain.Places.Events
         {
             Raison = raison;
         }
+
+        protected override string Description => "Place refusée";
     }
 }
