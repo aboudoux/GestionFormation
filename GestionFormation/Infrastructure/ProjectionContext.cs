@@ -1,3 +1,4 @@
+using System;
 using System.Data.Entity;
 using GestionFormation.CoreDomain.Contacts.Projections;
 using GestionFormation.CoreDomain.Conventions.Projections;
@@ -16,7 +17,7 @@ namespace GestionFormation.Infrastructure
     public class ProjectionContext : DbContext
     {
         public ProjectionContext(string nameOrConnectionString) : base(nameOrConnectionString)
-        {            
+        {
         }
 
         public DbSet<StagiaireSqlEntity> Stagiaires { get; set; }
@@ -30,5 +31,14 @@ namespace GestionFormation.Infrastructure
         public DbSet<ConventionSqlEntity> Conventions { get; set; }
         public DbSet<UtilisateurSqlEntity> Utilisateurs { get; set; }
         public DbSet<RappelSqlEntity> Rappels { get; set; }
+
+
+        public T GetEntity<T>(Guid id) where T : class
+        {
+            var entity = Set<T>().Find(id);
+            if (entity == null)
+                throw new EntityNotFoundException(id, typeof(T).Name);
+            return entity;
+        }
     }
 }

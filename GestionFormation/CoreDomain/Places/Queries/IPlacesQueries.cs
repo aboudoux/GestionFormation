@@ -8,5 +8,6 @@ namespace GestionFormation.CoreDomain.Places.Queries
         IEnumerable<IPlaceResult> GetAll(Guid sessionId);
         IEnumerable<IConventionPlaceResult> GetConventionPlaces(Guid conventionId);
         IEnumerable<IPlaceValidatedResult> GetValidatedPlaces(Guid sessionId);
+        IEnumerable<IListePlace> GetPlacesList();
     }
 }

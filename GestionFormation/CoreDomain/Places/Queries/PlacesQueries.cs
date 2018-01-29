@@ -69,5 +69,60 @@ namespace GestionFormation.CoreDomain.Places.Queries
                 return querie.ToList().Select(a => new PlaceValidatedResult(a.StagiaireNom,  a.StagiairePrenom, a.SocieteNom, a.ContactNom, a.ContactPrenom, a.Telephone, a.Email));
             }
         }
+
+        public IEnumerable<IListePlace> GetPlacesList()
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var querie = from p in context.Places
+                        join stagiaire in context.Stagiaires on p.StagiaireId equals stagiaire.StagiaireId
+                        join societe in context.Societes on p.SocieteId equals societe.SocieteId
+                        join session in context.Sessions on p.SessionId equals session.SessionId
+                        join formateur in context.Formateurs on session.FormateurId equals formateur.FormateurId
+                        join formation in context.Formations on session.FormationId equals formation.FormationId
+                        join convention in context.Conventions on p.AssociatedConventionId equals convention.ConventionId into conventions
+                        from convention in conventions.DefaultIfEmpty()
+                        join contact in context.Contacts on convention.ContactId equals contact.ContactId into contacts
+                        from contact in contacts.DefaultIfEmpty()
+
+                        select new ListePlaceResult()
+                        {
+                            EtatPlace = p.Status,
+                            Societe = societe.Nom,
+                            StagiaireNom = stagiaire.Nom,
+                            StagiairePrenom = stagiaire.Prenom,
+                            FormateurNom = formateur.Nom,
+                            FormateurPrenom = formateur.Prenom,
+                            Formation = formation.Nom,
+                            DateDebut = session.DateDebut,
+                            Duree = session.DuréeEnJour,
+                            NumeroConvention = convention == null ? "" : convention.ConventionNumber,
+                            ContactNom = convention == null ? "" : contact.Nom,
+                            ContactPrenom = convention == null ? "" : contact.Prenom,
+                            Telephone = convention == null ? "" : contact.Telephone,
+                            Email = convention == null ? "" : contact.Email
+                        };
+
+                return querie.ToList();
+            }
+        }
+    }
+
+    public class ListePlaceResult : IListePlace
+    {
+        public PlaceStatus EtatPlace { get; set; }
+        public string Societe { get; set; }
+        public string StagiaireNom { get; set; }
+        public string StagiairePrenom { get; set; }
+        public string FormateurNom { get; set; }
+        public string FormateurPrenom { get; set; }
+        public string Formation { get; set; }
+        public DateTime DateDebut { get; set; }
+        public int Duree { get; set; }
+        public string NumeroConvention { get; set; }
+        public string ContactNom { get; set; }
+        public string ContactPrenom { get; set; }
+        public string Telephone { get; set; }
+        public string Email { get; set; }
     }
 }

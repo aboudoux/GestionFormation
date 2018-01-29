@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Utilisateurs;
+using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Utilisateurs;
 using GestionFormation.CoreDomain.Utilisateurs.Queries;
 
@@ -13,18 +14,27 @@ namespace GestionFormation.App.Views.Logins
     {       
         private readonly IApplicationService _applicationService;
         private readonly IUtilisateurQueries _utilisateurQueries;
+        private readonly IComputerService _computerService;
         private string _username;
         private string _password;
         private bool _connecting;
 
-        public LoginWindowsVm(IApplicationService applicationService, IUtilisateurQueries utilisateurQueries)
+        public LoginWindowsVm(IApplicationService applicationService, IUtilisateurQueries utilisateurQueries, IComputerService computerService)
         {
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
-            _utilisateurQueries = utilisateurQueries ?? throw new ArgumentNullException(nameof(utilisateurQueries));  
-            
+            _utilisateurQueries = utilisateurQueries ?? throw new ArgumentNullException(nameof(utilisateurQueries));
+            _computerService = computerService ?? throw new ArgumentNullException(nameof(computerService));
+
             SetValiderCommandCanExecute(()=>!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !Connecting);
         }
-        
+
+
+        public override Task Init()
+        {
+            Username = _computerService.GetLocalUserName();
+            return base.Init();
+        }
+
         public string Username
         {
             get => _username;

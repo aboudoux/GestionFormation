@@ -1,16 +1,10 @@
-using GestionFormation.Kernel;
-
 namespace GestionFormation.CoreDomain
 {
     public interface IComputerService
     {
-        void OpenTypeConventionMail();
-    }
+        void OpenTypeConventionMail(string subject, string body);
 
-    public class ComputerService : IComputerService, IRuntimeDependency
-    {
-        public void OpenTypeConventionMail()
-        {            
-        }
+        string GetLocalUserName();
+
     }
 }

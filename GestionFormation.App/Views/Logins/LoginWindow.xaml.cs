@@ -17,10 +17,10 @@ namespace GestionFormation.App.Views.Logins
         public LoginWindow()
         {
             InitializeComponent();
-            LoginTextEdit.Focus();
+            PasswordEdit.Focus();
         }
 
-        private void LoginWindow_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+       /* private void LoginWindow_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             _context = (LoginWindowsVm) e.NewValue;
             if(_context != null)
@@ -37,8 +37,6 @@ namespace GestionFormation.App.Views.Logins
                 else
                     sb.Stop();
             }
-        }
-    }
-
-    
+        }*/
+    }    
 }

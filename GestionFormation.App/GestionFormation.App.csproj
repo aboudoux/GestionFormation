@@ -211,6 +211,14 @@
       <DependentUpon>HistoriqueWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Historiques\HistoriqueWindowVm.cs" />
+    <Compile Include="Views\Listers\ListerWindow.xaml.cs">
+      <DependentUpon>ListerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Listers\ListerWindowVm.cs" />
+    <Compile Include="Views\Listers\PlacesListerVm.cs" />
+    <Compile Include="Views\Logins\LoginImage.xaml.cs">
+      <DependentUpon>LoginImage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Places\CreateConventionWindow.xaml.cs">
       <DependentUpon>CreateConventionWindow.xaml</DependentUpon>
     </Compile>
@@ -284,6 +292,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Historiques\HistoriqueWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Listers\ListerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Logins\LoginImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -414,6 +430,28 @@
   <ItemGroup>
     <Resource Include="Images\Login.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\Etats\Places\canceled.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\pending_validation.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\refused.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\validated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\students.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Etats\Conventions\revoked.png" />
+    <Resource Include="Images\Etats\Conventions\signature_pending.png" />
+    <Resource Include="Images\Etats\Conventions\signed.png" />
+    <Resource Include="Images\Etats\Conventions\to_create.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

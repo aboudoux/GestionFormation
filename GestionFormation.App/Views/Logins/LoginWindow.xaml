@@ -5,49 +5,19 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:logins="clr-namespace:GestionFormation.App.Views.Logins"
-    Title="Gestion de formation TREND" Height="300" Width="400" WindowStartupLocation="CenterScreen" DataContextChanged="LoginWindow_OnDataContextChanged">
+    Title="Gestion de formation TREND" Height="300" Width="400" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <dxmvvm:BooleanNegationConverter x:Key="BooleanNegationConverter"/>
-        <Storyboard x:Key="Storyboard_ImageLogin">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
-                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="Storyboard_connecting">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" Storyboard.TargetName="image" RepeatBehavior="Forever">
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="360"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
     </Window.Resources>
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource Storyboard_ImageLogin}"/>
-        </EventTrigger>
-    </Window.Triggers>
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:CurrentWindowService ClosingCommand="{Binding WindowClosingCommand}"/>
         <dxmvvm:KeyToCommand KeyGesture="Esc" EventName="KeyDown" MarkRoutedEventsAsHandled="True" Command="{DXCommand Execute='@e(window).Close()'}"/>
         <dxmvvm:KeyToCommand KeyGesture="Enter" Command="{Binding Path=ValiderCommand}"/>
     </dxmvvm:Interaction.Behaviors>
     <StackPanel>
-        <Image x:Name="image" Margin="0,10,0,0" Source="/Images/Login.png" Width="128" RenderTransformOrigin="0.5,0.5">
-            <Image.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Image.RenderTransform>
-        </Image>
+        <logins:LoginImage Connecting="{Binding Path=Connecting}"/>
         <dxe:TextEdit x:Name="LoginTextEdit" Margin="10" NullText="Nom d'utilisateur" Text="{Binding Path=Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Connecting, Converter={StaticResource BooleanNegationConverter}}" />
-        <dxe:PasswordBoxEdit Margin="10,0,10,10" NullText="Mot de passe" Text="{Binding Path=Password, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Connecting, Converter={StaticResource BooleanNegationConverter}}" />
+        <dxe:PasswordBoxEdit x:Name="PasswordEdit" Margin="10,0,10,10" NullText="Mot de passe" Text="{Binding Path=Password, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Path=Connecting, Converter={StaticResource BooleanNegationConverter}}" />
         <Button Margin="10,0,10,5" Command="{Binding Path=ValiderCommand}">Connecter</Button>
     </StackPanel>
 </dx:DXWindow>

@@ -4,7 +4,11 @@ using GestionFormation.CoreDomain.Conventions;
 using GestionFormation.CoreDomain.Conventions.Events;
 using GestionFormation.CoreDomain.Places;
 using GestionFormation.CoreDomain.Places.Events;
+using GestionFormation.CoreDomain.Places.Projections;
 using GestionFormation.CoreDomain.Sessions;
+using GestionFormation.CoreDomain.Sessions.Projections;
+using GestionFormation.CoreDomain.Societes.Projections;
+using GestionFormation.CoreDomain.Stagiaires.Projections;
 using GestionFormation.CoreDomain.Utilisateurs;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
@@ -33,7 +37,7 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                     context.Rappels.Add(entity);
                 }
 
-                var stagiaire = context.Stagiaires.Find(@event.StagiaireId);
+                var stagiaire = context.GetEntity<StagiaireSqlEntity>(@event.StagiaireId);
 
                 entity.Id = @event.AggregateId;
                 entity.Label = $"Place de {stagiaire.Nom} {stagiaire.Prenom} à valider.";
@@ -57,18 +61,19 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
 
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {            
-                var place = context.Places.Find(@event.AggregateId);
-                var societe = context.Societes.Find(place.SocieteId);
-                if (!context.Rappels.Any(a => a.SocieteId == societe.SocieteId))
+                var place = context.GetEntity<PlaceSqlentity>(@event.AggregateId);
+                var societe = context.GetEntity<SocieteSqlEntity>(place.SocieteId);
+                if (!context.Rappels.Any(a => a.SocieteId == societe.SocieteId && a.AggregateId == place.SessionId))
                 {
+                    var session = context.GetEntity<SessionSqlEntity>(place.SessionId);
                     var entity = new RappelSqlEntity();
                     entity.Id = @event.AggregateId;
                     entity.AggregateId = place.SessionId;
                     entity.AggregateType = typeof(Session).Name;
                     entity.RappelType = RappelType.ConventionToCreate;
                     entity.SocieteId = societe.SocieteId;
-                    entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                    entity.Label = $"Convention à créer pour la société {societe.Nom}";
+                    entity.AffectedRole = UtilisateurRole.ServiceFormation;                    
+                    entity.Label = $"{societe.Nom} - Convention à créer";
 
                     context.Rappels.Add(entity);
                     context.SaveChanges();
@@ -98,14 +103,14 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                 entity.AggregateType = typeof(Convention).Name;
                 entity.RappelType = RappelType.ConventionToSign;
                 entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                entity.Label = $"Convention {@event.Convention} à retourner signée";
+                entity.Label = $"{@event.Convention} - Convention à retourner signée";
                 context.Rappels.Add(entity);
                 context.SaveChanges();
             }
         }
 
         public void Handle(ConventionRevoked @event)
-        {
+        {            
             RemoveRappel(@event.AggregateId);
             
             using (var context = new ProjectionContext(ConnectionString.Get()))
@@ -113,7 +118,8 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                 var placeEntity = context.Places.FirstOrDefault(a => a.AssociatedConventionId == @event.AggregateId && a.Status == PlaceStatus.Validé);
                 if (placeEntity != null)
                 {
-                    var societe = context.Societes.Find(placeEntity.SocieteId);
+                    RemoveRappel(placeEntity.PlaceId);
+                    var societe = context.GetEntity<SocieteSqlEntity>(placeEntity.SocieteId);
 
                     var entity = new RappelSqlEntity();
                     entity.Id = @event.AggregateId;
@@ -122,7 +128,7 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                     entity.RappelType = RappelType.ConventionToCreate;
                     entity.SocieteId = placeEntity.SocieteId;
                     entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                    entity.Label = $"Convention à créer pour la société {societe.Nom}";
+                    entity.Label = $"{societe.Nom} - Convention à créer";
 
                     context.Rappels.Add(entity);
                     context.SaveChanges();

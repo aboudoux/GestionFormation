@@ -294,7 +294,7 @@ namespace GestionFormation.App.Views.Places
         public RelayCommandAsync GenererConventionCommand { get; }
         private async Task ExecuteGenererConventionAsync()
         {
-            await _applicationService.OpenPopup<CreateConventionWindowVm>(SelectedPlaces.ToList());
+            await _applicationService.OpenPopup<CreateConventionWindowVm>(_sessionInfos, SelectedPlaces.ToList());
             await RefreshPlaces();
         }
 
@@ -325,17 +325,8 @@ namespace GestionFormation.App.Views.Places
             Convention = result.NumeroConvention;
             TypeConvention = result.TypeConvention;
 
-            if (result.ConventionId.HasValue)
-            {
-                if (string.IsNullOrWhiteSpace(result.NumeroConvention))
-                    EtatConvention = "Révoquée";
-                else                
-                    EtatConvention = (result.ConventionSigned ? "Signée" : "Attente de signature");                
-            }
-            else
-                EtatConvention = "Non générée";    
-            
-            Etat = new EtatPlace(result.Status);
+            EtatConvention = new EtatConvention(result);
+            EtatPlace = new EtatPlace(result.Status);            
         }
 
         public Guid PlaceId { get; }
@@ -349,42 +340,91 @@ namespace GestionFormation.App.Views.Places
         public PlaceStatus Statut { get; set; }
         public string Raison { get; }
 
-        public EtatPlace Etat { get; }
+        public EtatPlace EtatPlace { get; }
         
         public string Convention { get; }
-        public string EtatConvention { get; }
+        public EtatConvention EtatConvention { get; }
         public Guid? ConventionId { get; }
-        public TypeConvention TypeConvention { get; }
+        public TypeConvention TypeConvention { get; }               
+    }
 
-        public class EtatPlace
+    public class EtatPlace
+    {
+        private PlaceStatus Statut;
+        public EtatPlace(PlaceStatus status)
         {
-            private PlaceStatus Statut;
-            public EtatPlace(PlaceStatus status)
-            {
-                Statut = status;
-            }
+            Statut = status;
+        }
 
-            public string Etat
+        public string Label
+        {
+            get
             {
-                get
+                switch (Statut)
                 {
-                    switch (Statut)
-                    {
-                        case PlaceStatus.AValider: return "Attente de validation";
-                        case PlaceStatus.Annulé: return "Annulée";
-                        case PlaceStatus.Refusé: return "Refusée";
-                        case PlaceStatus.Validé: return "Validée";
-                        default: throw new Exception($"Le statut {Statut} est introuvable");
-                    }
+                    case PlaceStatus.AValider: return "Attente de validation";
+                    case PlaceStatus.Annulé: return "Annulée";
+                    case PlaceStatus.Refusé: return "Refusée";
+                    case PlaceStatus.Validé: return "Validée";
+                    default: throw new Exception($"Le statut {Statut} est introuvable");
                 }
             }
+        }
 
-            public string EtatImage
+        public string Icon
+        {
+            get
             {
-                get { return "/Images/chair_16x16.png"; }
+                var iconPath = "/Images/Etats/Places/";
+                switch (Statut)
+                {
+                    case PlaceStatus.AValider: return iconPath + "pending_validation.png";
+                    case PlaceStatus.Annulé: return iconPath + "canceled.png";
+                    case PlaceStatus.Refusé: return iconPath + "refused.png";
+                    case PlaceStatus.Validé: return iconPath + "validated.png";
+                    default: throw new Exception($"Le statut {Statut} est introuvable");
+                }
             }
         }
     }
+
+    public class EtatConvention
+    {
+        public EtatConvention(IPlaceResult result)
+        {
+            if (result == null) throw new ArgumentNullException(nameof(result));
+
+            if (result.ConventionId.HasValue)
+            {
+                if (string.IsNullOrWhiteSpace(result.NumeroConvention))
+                    Label = "Révoquée";
+                else
+                    Label = (result.ConventionSigned ? "Signée" : "Attente de signature");
+            }
+            else
+                Label = "Non générée";
+        }
+
+        public string Label { get; }
+
+        public string Icon
+        {
+            get
+            {
+                var iconPath = "/Images/Etats/Conventions/";
+                switch (Label)
+                {
+                    case "Révoquée": return iconPath + "revoked.png";
+                    case "Signée": return iconPath + "signed.png";
+                    case "Attente de signature": return iconPath + "signature_pending.png";
+                    case "Non générée": return iconPath + "to_create.png";
+
+                    default: throw new Exception($"le statut {Label} est introuvable.");
+                }
+            }
+        }
+    }
+
 
     public class Item
     {

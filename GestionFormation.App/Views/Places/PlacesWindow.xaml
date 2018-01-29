@@ -84,25 +84,16 @@
             <dxg:GridControl ItemsSource="{Binding Path=Places}" SelectionMode="Row" SelectedItems="{Binding Path=SelectedPlaces}">
                 <dxg:GridControl.Columns>
                     <dxg:GridColumn FieldName="StagiaireNom"  Header="Stagiaire"/>
-                    <!--<dxg:GridColumn.EditSettings>
-                        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=Stagiaires}" ValueMember="Id" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains" IsCaseSensitiveFilter="False"></dxe:ComboBoxEditSettings>
-                    </dxg:GridColumn.EditSettings>-->
-
                     <dxg:GridColumn FieldName="SocieteNom" Header="Société"/>
-                    <dxg:GridColumn FieldName="Etat"  Header="Etat">
-                        <dxg:GridColumn.EditSettings>
-                            <dxe:ComboBoxEditSettings>
-                                <dxe:ComboBoxEditSettings.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Width="16" Height="16" Source="{Binding Path=EtatImage}"></Image>
-                                            <TextBlock Text="{Binding Path=Etat}"></TextBlock>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </dxe:ComboBoxEditSettings.ItemTemplate>
-                            </dxe:ComboBoxEditSettings>
-                        </dxg:GridColumn.EditSettings>
-
+                    <dxg:GridColumn FieldName="EtatPlace.Label"  Header="Etat">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding RowData.Row.EtatPlace.Icon}" Width="16" Height="16"></Image>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding RowData.Row.EtatPlace.Label}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
                     </dxg:GridColumn>
                     <dxg:GridColumn FieldName="Raison" Header="Raison"/>
                     <dxg:GridColumn FieldName="Convention" Header="Convention">
@@ -114,7 +105,16 @@
                             </dxe:ButtonEditSettings>
                     </dxg:GridColumn.EditSettings>
                     </dxg:GridColumn>
-                    <dxg:GridColumn FieldName="EtatConvention" Header="Etat"/>
+                    <dxg:GridColumn FieldName="EtatConvention.Label" Header="Etat">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding RowData.Row.EtatConvention.Icon}" Width="16" Height="16"/>
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding RowData.Row.EtatConvention.Label}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
                 </dxg:GridControl.Columns>
 
                 <dxg:GridControl.View>

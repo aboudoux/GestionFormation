@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DevExpress.Xpf.Docking;
@@ -42,7 +41,7 @@ namespace GestionFormation.Tests
 
         [TestMethod]
         public void test_auto_register_queries()
-        {            
+        {
             var applicationService = new ApplicationService(PageLocator.With().Build(), new DocumentGroup(), new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeMessenger());
             applicationService.AutoRegisterSimpleDependencies(Assembly.GetExecutingAssembly());
             applicationService.Command<TestCommand>().Execute().Should().Be("{43B94367-F832-42F7-B4E0-18FC065E4915}");
@@ -53,7 +52,7 @@ namespace GestionFormation.Tests
         {
             var hashedPassword = "123456".GetHash();
             hashedPassword.Should().Be("7C4A8D09CA3762AF61E59520943DC26494F8941B");
-        }     
+        }
     }
 
     public class TestCommand : ActionCommand

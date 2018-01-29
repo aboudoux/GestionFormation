@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
@@ -16,6 +17,7 @@ namespace GestionFormation.App.Views.Places
 {
     public class CreateConventionWindowVm : PopupWindowVm
     {
+        private readonly SessionInfos _sessionInfos;
         private readonly IApplicationService _applicationService;
         private readonly IContactQueries _contactQueries;
         private readonly List<PlaceItem> _selectedPlaces;
@@ -25,8 +27,9 @@ namespace GestionFormation.App.Views.Places
         private ContactItem _selectedContact;
         private TypeConvention _typeConvention;
 
-        public CreateConventionWindowVm(IApplicationService applicationService, IContactQueries contactQueries, List<PlaceItem> selectedPlaces, IComputerService computerService)
-        {            
+        public CreateConventionWindowVm(SessionInfos sessionInfos, IApplicationService applicationService, IContactQueries contactQueries, List<PlaceItem> selectedPlaces, IComputerService computerService)
+        {
+            _sessionInfos = sessionInfos ?? throw new ArgumentNullException(nameof(sessionInfos));
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
             _contactQueries = contactQueries ?? throw new ArgumentNullException(nameof(contactQueries));
             _selectedPlaces = selectedPlaces ?? throw new ArgumentNullException(nameof(selectedPlaces));
@@ -52,7 +55,25 @@ namespace GestionFormation.App.Views.Places
         public RelayCommand UnknowTypeConventionCommand { get; }
         private void ExecuteUnknowTypeConvention()
         {
-            _computerService.OpenTypeConventionMail();
+            if (!Places.Any())
+            {
+                MessageBox.Show("Aucune place n'a été validée pour cette convention", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            HandleMessageBoxError.Execute(()=>{
+
+                var firstPlace = Places.First();
+
+                _computerService.OpenTypeConventionMail(
+                    $"Convention formation {_sessionInfos.FormationName} du {_sessionInfos.Result.DateDebut:d} société {firstPlace.SocieteNom}",
+                    "Bonjour," + Environment.NewLine + Environment.NewLine +
+                    $"La société {firstPlace.SocieteNom} envoie {Places.Count} stagiaire(s) à la formation {_sessionInfos.FormationName} le {_sessionInfos.Result.DateDebut:D}." + Environment.NewLine + Environment.NewLine +
+                    "La convention doit-elle être gratuite ou payante ?" + Environment.NewLine + Environment.NewLine +
+                    "Merci pour votre retour rapide" + Environment.NewLine + Environment.NewLine +
+                    "Cordialement," + Environment.NewLine
+                    );
+            });
         }
 
         public ObservableCollection<PlaceItem> Places

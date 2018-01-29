@@ -40,7 +40,7 @@
                 </dxb:BarSubItem>
                 <dxb:BarButtonItem Content="Calendrier des formations" Glyph="{dx:DXImage Image=Calendar_32x32.png}" LargeGlyph="{dx:DXImage Image=Calendar_32x32.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenScheduler}" IsVisible="{Binding Path=Security[5]}"/>
                 <dxb:BarSubItem Content="Listes" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[5]}" LargeGlyph="{dx:DXImage Image=TableProperties_32x32.png}" Glyph="{dx:DXImage Image=TableProperties_16x16.png}">
-                    <dxb:BarButtonItem Content="Conventions" Glyph="{dx:DXImage Image=Reading_16x16.png}" BarItemDisplayMode="ContentAndGlyph"/>
+                    <dxb:BarButtonItem Content="Places" Glyph="/Images/students.png" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenPlaceList}"/>
                 </dxb:BarSubItem>
                 <dxb:BarSubItem Content="Administration technique" BarItemDisplayMode="ContentAndGlyph" IsVisible="{Binding Path=Security[1]}" LargeGlyph="{dx:DXImage Image=PageSetup_32x32.png}">
                     <dxb:BarButtonItem Content="Hydratation base de données" Glyph="{dx:DXImage Image=Database_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenEventReplayer}" IsVisible="{Binding Path=Security[1]}" LargeGlyph="{dx:DXImage Image=Database_32x32.png}"/>

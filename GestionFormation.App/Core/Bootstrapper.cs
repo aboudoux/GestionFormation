@@ -6,6 +6,7 @@ using GestionFormation.App.Views;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.App.Views.EditableLists.Utilisateurs;
 using GestionFormation.App.Views.Historiques;
+using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Places;
 using GestionFormation.App.Views.Sessions;
@@ -57,6 +58,7 @@ namespace GestionFormation.App.Core
                 .Element<ChangeRoleWindowVm, ChangeRoleWindow>()
                 .Element<DeroulementWindowVm, DeroulementWindow>()
                 .Element<HistoriqueWindowVm, HistoriqueWindow>()
+                .Element<PlacesListerVm, ListerWindow>()
                 .Build();
 
             var dispatcher = new EventDispatcher();

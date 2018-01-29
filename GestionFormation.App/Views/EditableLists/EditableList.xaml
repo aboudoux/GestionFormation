@@ -27,7 +27,7 @@
 
         <dxg:GridControl Grid.Row="1" SelectionMode="Row" ItemsSource="{Binding Path=Items}" AutoGenerateColumns="AddNew" ShowLoadingPanel="{Binding Path=IsLoading}" SelectedItem="{Binding Path=SelectedItem}">
         <dxg:GridControl.View>
-                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="500" ShowGroupPanel="False" EditFormShowMode="Inline" EditFormPostMode="Cached" AutoWidth="True" AllowEditing="True">
+                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False" EditFormShowMode="Inline" EditFormPostMode="Cached" AutoWidth="True" AllowEditing="True">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="RowUpdated" Command="{Binding Path=UpdateCommand}"/>
                     </dxmvvm:Interaction.Behaviors>
