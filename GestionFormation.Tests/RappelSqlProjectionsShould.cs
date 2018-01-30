@@ -55,7 +55,7 @@ namespace GestionFormation.Tests
             // then            
             var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
 
-            result.Should().Contain(a =>a.AggregateId == place.SessionId && a.AggregateType == typeof(Session).Name && a.RappelType == RappelType.PlaceToValidate);
+            result.Should().Contain(a =>a.SessionId == place.SessionId && a.RappelType == RappelType.PlaceToValidate);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace GestionFormation.Tests
             _context.App.Command<RefuserPlace>().Execute(place.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
-            result.Should().NotContain(a => a.AggregateId == place.SessionId && a.AggregateType == typeof(Session).Name);
+            result.Should().NotContain(a => a.SessionId == place.SessionId);
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace GestionFormation.Tests
             _context.App.Command<AnnulerPlace>().Execute(place.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
-            result.Should().NotContain(a => a.AggregateId == place.SessionId && a.AggregateType == typeof(Session).Name);
+            result.Should().NotContain(a => a.SessionId == place.SessionId);
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place.AggregateId);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().Contain(a => a.AggregateId == place.SessionId && a.AggregateType == typeof(Session).Name && a.RappelType == RappelType.ConventionToCreate);
+            result.Should().Contain(a => a.SessionId == place.SessionId && a.RappelType == RappelType.ConventionToCreate);
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place3.AggregateId);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Where(a => a.AggregateId == place1.SessionId).Should().HaveCount(1);
+            result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(1);
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place4.AggregateId);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Where(a => a.AggregateId == place1.SessionId).Should().HaveCount(2);
+            result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(2);
         }
 
         [TestMethod]
@@ -129,8 +129,8 @@ namespace GestionFormation.Tests
             var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, TypeConvention.Gratuite);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Where(a=>a.AggregateId == convention.AggregateId && a.AggregateType == typeof(Convention).Name && a.RappelType == RappelType.ConventionToSign );
-            result.Where(a => a.AggregateId == place1.SessionId).Should().HaveCount(0);
+            result.Where(a=>a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToSign );
+            result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(0);
         }
 
         [TestMethod]
@@ -148,7 +148,7 @@ namespace GestionFormation.Tests
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().Contain(a => a.AggregateId == place2.SessionId && a.AggregateType == typeof(Session).Name && a.RappelType == RappelType.ConventionToCreate);
+            result.Should().Contain(a => a.SessionId == place2.SessionId && a.RappelType == RappelType.ConventionToCreate);
         }
 
         [TestMethod]
@@ -166,7 +166,27 @@ namespace GestionFormation.Tests
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
             _context.App.Command<AnnulerPlace>().Execute(place2.AggregateId, "test");
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().NotContain(a => a.AggregateId == place2.SessionId && a.AggregateType == typeof(Session).Name && a.RappelType == RappelType.ConventionToCreate);
+            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.RappelType == RappelType.ConventionToCreate);
+        }
+
+        [TestMethod]
+        public void remove_rappel_when_convention_created_on_revoked_convention()
+        {
+            var place1 = _context.CreatePlace();
+            var place2 = _context.CreatePlace(place1.SocieteId);
+
+            _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
+            _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
+
+            var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
+
+            _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
+            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, TypeConvention.Gratuite);
+
+            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
+            result.Should().NotContain(a => a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToCreate);
+            result.Should().Contain(a => a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToSign);
         }
     }
 

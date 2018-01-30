@@ -36,7 +36,7 @@ namespace GestionFormation.Tests.Tools
             {
                 var firstInterface = type.GetInterfaces().FirstOrDefault();
                 if (firstInterface == null || firstInterface == typeof(IRuntimeDependency))
-                    throw new Exception("Impossible de trouver l'interface implémentée par le runtimeQueries de type " + type.Name);
+                    throw new Exception("Impossible de trouver l'interface implémentée par le IRuntimeDependency de type " + type.Name);
 
                 _ioc.Register(firstInterface, Activator.CreateInstance(type));
             }

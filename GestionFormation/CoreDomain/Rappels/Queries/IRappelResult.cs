@@ -6,9 +6,12 @@ namespace GestionFormation.CoreDomain.Rappels.Queries
     public interface IRappelResult
     {
         string Label { get; }
-        Guid AggregateId { get; }
-        string AggregateType { get;  }
+        
         RappelType RappelType { get; }
 
+        Guid? PlaceId { get; set; }
+        Guid? SessionId { get; set; }
+        Guid? SocieteId { get; set; }
+        Guid? ConventionId { get; set; }
     }
 }

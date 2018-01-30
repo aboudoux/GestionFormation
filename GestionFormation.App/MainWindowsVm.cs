@@ -107,15 +107,10 @@ namespace GestionFormation.App
         public RelayCommandAsync OpenRappelCommand { get; }
         private async Task ExecuteOpenRappelAsync()
         {
-            switch (SelectedRappel.AggregateType)
-            {
-                case "Session":
-                    await _applicationService.OpenPopup<PlacesWindowVm>(SelectedRappel.AggregateId, 10);
-                    break;
-                case "Convention":
-                    await _applicationService.OpenPopup<GestionConventionWindowVm>(SelectedRappel.AggregateId);
-                    break;
-            }
+            if(SelectedRappel.ConventionId.HasValue)
+                await _applicationService.OpenPopup<GestionConventionWindowVm>(SelectedRappel.ConventionId.Value);
+            else
+                await _applicationService.OpenPopup<PlacesWindowVm>(SelectedRappel.SessionId, 10);
 
             await RefreshRappels.ExecuteAsync();
         }
@@ -135,12 +130,12 @@ namespace GestionFormation.App
         public RappelItem(IRappelResult result)
         {
             _label = result.Label;
-            AggregateId = result.AggregateId;
-            AggregateType = result.AggregateType;
+            SessionId = result.SessionId;
+            ConventionId = result.ConventionId;
         }
 
-        public string AggregateType { get; }
-        public Guid AggregateId { get; }
+        public Guid? SessionId { get; }
+        public Guid? ConventionId { get; }
 
         public override string ToString()
         {

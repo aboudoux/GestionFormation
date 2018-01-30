@@ -8,13 +8,18 @@ namespace GestionFormation.CoreDomain.Rappels.Queries
         public RappelResult(RappelSqlEntity entity)
         {
             Label = entity.Label;
-            AggregateId = entity.AggregateId;
-            AggregateType = entity.AggregateType;
             RappelType = entity.RappelType;
+            PlaceId = entity.PlaceId;
+            SessionId = entity.SessionId;
+            SessionId = entity.SessionId;
+            ConventionId = entity.ConventionId;
         }
+
         public string Label { get; }
-        public Guid AggregateId { get;  }
-        public string AggregateType { get; }
         public RappelType RappelType { get; }
+        public Guid? PlaceId { get; set; }
+        public Guid? SessionId { get; set; }
+        public Guid? SocieteId { get; set; }
+        public Guid? ConventionId { get; set; }
     }
 }

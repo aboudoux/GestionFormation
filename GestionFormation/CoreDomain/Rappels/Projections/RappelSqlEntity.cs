@@ -9,12 +9,19 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
     public class RappelSqlEntity
     {
         [Key]
-        public Guid Id { get; set; }        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        public Guid? PlaceId { get; set; }
+        public Guid? SessionId { get; set; }        
+        public Guid? SocieteId { get; set; }
+        
         public string Label { get; set; }
         public UtilisateurRole AffectedRole { get; set; }
-        public string AggregateType { get; set; }
-        public Guid AggregateId { get; set; }
+        
+        public Guid? ConventionId { get; set; }
+
         public RappelType RappelType { get; set; }
-        public Guid? SocieteId { get; set; }
+        
     }
 }

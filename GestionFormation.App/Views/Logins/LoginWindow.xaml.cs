@@ -18,25 +18,6 @@ namespace GestionFormation.App.Views.Logins
         {
             InitializeComponent();
             PasswordEdit.Focus();
-        }
-
-       /* private void LoginWindow_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            _context = (LoginWindowsVm) e.NewValue;
-            if(_context != null)
-                _context.PropertyChanged += ContextOnPropertyChanged;
-        }
-
-        private void ContextOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == nameof(_context.Connecting))
-            {
-                var sb = FindResource("Storyboard_connecting") as Storyboard;
-                if (_context.Connecting)                    
-                    sb.Begin();
-                else
-                    sb.Stop();
-            }
-        }*/
+        }    
     }    
 }
