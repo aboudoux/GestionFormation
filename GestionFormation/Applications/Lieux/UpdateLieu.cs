@@ -1,28 +1,28 @@
 ﻿using System;
 using GestionFormation.Applications.Lieux.Exceptions;
-using GestionFormation.CoreDomain.Lieux;
-using GestionFormation.CoreDomain.Lieux.Queries;
+using GestionFormation.CoreDomain.Locations;
+using GestionFormation.CoreDomain.Locations.Queries;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Lieux
 {
     public class UpdateLieu : ActionCommand
     {
-        private readonly ILieuQueries _lieuQueries;
+        private readonly ILocationQueries _locationQueries;
 
-        public UpdateLieu(EventBus eventBus, ILieuQueries lieuQueries) : base(eventBus)
+        public UpdateLieu(EventBus eventBus, ILocationQueries locationQueries) : base(eventBus)
         {
-            _lieuQueries = lieuQueries ?? throw new ArgumentNullException(nameof(lieuQueries));
+            _locationQueries = locationQueries ?? throw new ArgumentNullException(nameof(locationQueries));
         }
 
         public void Execute(Guid lieuId, string newNom, string addresse, int places)
         {
-            var foundLieuId = _lieuQueries.GetLieu(newNom);
+            var foundLieuId = _locationQueries.GetLocation(newNom);
 
             if (foundLieuId.HasValue && foundLieuId.Value != lieuId)
                 throw new LieuAlreadyExistsException(newNom);
 
-            var lieu = GetAggregate<Lieu>(lieuId);
+            var lieu = GetAggregate<Location>(lieuId);
             lieu.Update(newNom, addresse, places);
             PublishUncommitedEvents(lieu);
         }

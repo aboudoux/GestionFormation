@@ -4,22 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Lieux;
-using GestionFormation.CoreDomain.Lieux.Queries;
+using GestionFormation.CoreDomain.Locations.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class LieuListVm : EditableListVm<EditableLieu>
     {
-        private readonly ILieuQueries _lieuQueries;
+        private readonly ILocationQueries _locationQueries;
 
-        public LieuListVm(IApplicationService applicationService, ILieuQueries lieuQueries) : base(applicationService)
+        public LieuListVm(IApplicationService applicationService, ILocationQueries locationQueries) : base(applicationService)
         {
-            _lieuQueries = lieuQueries ?? throw new ArgumentNullException(nameof(lieuQueries));
+            _locationQueries = locationQueries ?? throw new ArgumentNullException(nameof(locationQueries));
         }
 
         protected override async Task<IReadOnlyList<EditableLieu>> LoadAsync()
         {
-            return await Task.Run(() => _lieuQueries.GetAll().Select(a=>new EditableLieu(a)).ToList());            
+            return await Task.Run(() => _locationQueries.GetAll().Select(a=>new EditableLieu(a)).ToList());            
         }
 
         protected override async Task CreateAsync(EditableLieu item)
@@ -47,11 +47,11 @@ namespace GestionFormation.App.Views.EditableLists
         {            
         }
 
-        public EditableLieu(ILieuResult result) : base(result.LieuId)
+        public EditableLieu(ILocationResult result) : base(result.LocationId)
         {
-            Nom = result.Nom;
-            Addresse = result.Addresse;
-            Places = result.Places;
+            Nom = result.Name;
+            Addresse = result.Address;
+            Places = result.Seats;
         }
 
 

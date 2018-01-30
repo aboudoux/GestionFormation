@@ -8,7 +8,7 @@
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Utilisateurs;assembly=GestionFormation"
     xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
-    xmlns:conventions="clr-namespace:GestionFormation.CoreDomain.Conventions;assembly=GestionFormation"
+    xmlns:conventions="clr-namespace:GestionFormation.CoreDomain.Agreements;assembly=GestionFormation"
     Title="Création d'une convention" Height="400" Width="483.112">
     <dx:DXWindow.Resources>
         <ResourceDictionary>
@@ -35,8 +35,8 @@
             </dxe:ComboBoxEdit>
         </dxlc:LayoutItem>
         <StackPanel Grid.Row="2" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:TypeConvention.Gratuite}}" >Gratuite</RadioButton>
-            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:TypeConvention.Payante}}" >Payante</RadioButton>
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Free}}" >Gratuite</RadioButton>
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Paid}}" >Payante</RadioButton>
             <Button Margin="5,0,5,0" Command="{Binding Path=UnknowTypeConventionCommand}">Je ne sais pas...</Button>
         </StackPanel>
 

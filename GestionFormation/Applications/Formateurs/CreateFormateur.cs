@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using GestionFormation.CoreDomain.Formateurs;
+using GestionFormation.CoreDomain.Trainers;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Formateurs
@@ -11,9 +11,9 @@ namespace GestionFormation.Applications.Formateurs
         {
         }
 
-        public Formateur Execute(string nom, string prenom, string email)
+        public Trainer Execute(string nom, string prenom, string email)
         {
-            var formateur = Formateur.Create(nom, prenom, email);
+            var formateur = Trainer.Create(nom, prenom, email);
             PublishUncommitedEvents(formateur);
             return formateur;
         }

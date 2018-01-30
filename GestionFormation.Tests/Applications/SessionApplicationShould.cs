@@ -5,12 +5,12 @@ using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Sessions;
-using GestionFormation.CoreDomain.Formateurs.Events;
-using GestionFormation.CoreDomain.Formateurs.Exceptions;
-using GestionFormation.CoreDomain.Formations.Events;
-using GestionFormation.CoreDomain.Lieux.Events;
-using GestionFormation.CoreDomain.Lieux.Exceptions;
+using GestionFormation.CoreDomain.Locations.Events;
+using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions.Events;
+using GestionFormation.CoreDomain.Trainers.Events;
+using GestionFormation.CoreDomain.Trainers.Exceptions;
+using GestionFormation.CoreDomain.Trainings.Events;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,11 +28,11 @@ namespace GestionFormation.Tests.Applications
             var formationId = Guid.NewGuid();
             var formateurId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurAssigned, SessionPlanned>();
+            var mockHandler = new MockHandler<TrainerAssigned, SessionPlanned>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -40,7 +40,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new TrainerAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionPlanned(Guid.Empty, 0, formationId, new DateTime(2018, 1, 1), 5, 10, null, formateurId));
         }
 
@@ -52,11 +52,11 @@ namespace GestionFormation.Tests.Applications
             
             var lieuId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuAssigned, SessionPlanned>();
+            var mockHandler = new MockHandler<LocationAssigned, SessionPlanned>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId, 1, "Paris", "test", 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -64,7 +64,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new LieuAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new LocationAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionPlanned(Guid.Empty, 0, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, null));
         }
 
@@ -94,7 +94,7 @@ namespace GestionFormation.Tests.Applications
             var eventBus = new EventBus(dispatcher, eventStore);            
 
             Action action = () => new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 21), 5, 10, Guid.NewGuid(), formationId);
-            action.ShouldThrow<FormateurNotExistsException>();
+            action.ShouldThrow<TrainerNotExistsException>();
         }
 
         [TestMethod]
@@ -106,15 +106,15 @@ namespace GestionFormation.Tests.Applications
             var dispatcher = new EventDispatcher();
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurAssigned(formateurId, 2, new DateTime(2017, 12, 20), 10));
+            eventStore.Save(new TrainerCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerAssigned(formateurId, 2, new DateTime(2017, 12, 20), 10));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
             Action action = () => new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 21), 5, 1, Guid.NewGuid(), formateurId);
 
             // then
-            action.ShouldThrow<FormateurAlreadyAssignedException>();
+            action.ShouldThrow<TrainerAlreadyAssignedException>();
         }
 
         [TestMethod]
@@ -129,14 +129,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurAssigned, FormateurUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<TrainerAssigned, TrainerUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -144,8 +144,8 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
-                .Contain(new FormateurUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new TrainerAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId2, formationId));
         }
 
@@ -161,14 +161,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurAssigned, FormateurUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<TrainerAssigned, TrainerUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, null));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -176,7 +176,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And                
+                .Contain(new TrainerAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And                
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId2, formationId));
         }
 
@@ -192,14 +192,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurAssigned, FormateurUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<TrainerAssigned, TrainerUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -207,7 +207,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, lieuId, null, formationId));
         }
 
@@ -223,14 +223,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurAssigned, FormateurUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<TrainerAssigned, TrainerUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -256,17 +256,17 @@ namespace GestionFormation.Tests.Applications
             var dispatcher = new EventDispatcher();
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2017, 12, 21), 5, 10, lieuId, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
-            eventStore.Save(new FormateurAssigned(formateurId2, 2, new DateTime(2017, 12, 20), 10));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new TrainerAssigned(formateurId2, 2, new DateTime(2017, 12, 20), 10));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
             Action action = ()=>new UpdateSession(eventBus).Execute(sessionId, formationId, new DateTime(2017, 12, 21), 5, 10, lieuId, formateurId2);
 
-            action.ShouldThrow<FormateurAlreadyAssignedException>();
+            action.ShouldThrow<TrainerAlreadyAssignedException>();
         }
 
         [TestMethod]
@@ -278,13 +278,13 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurUnassigned, SessionDeleted>();
+            var mockHandler = new MockHandler<TrainerUnassigned, SessionDeleted>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));            
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));            
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2017, 12, 21), 5, 10, null, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -292,7 +292,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
+                .Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
                 .Contain(new SessionDeleted(Guid.Empty, 0));
         }    
 
@@ -306,13 +306,13 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurReassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<TrainerReassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, formateurId1));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -320,7 +320,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurReassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, new DateTime(2018, 1, 2), 4)).And                
+                .Contain(new TrainerReassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, new DateTime(2018, 1, 2), 4)).And                
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 2), 4, 10, lieuId, formateurId1, formationId));
         }
 
@@ -343,25 +343,25 @@ namespace GestionFormation.Tests.Applications
             var lieuId = Guid.NewGuid();
             
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurUnassigned, SessionDeleted, FormationDeleted>();
+            var mockHandler = new MockHandler<TrainerUnassigned, SessionDeleted, TrainingDeleted>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));            
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId2, 1, "Creutzfeldt", "Jacob", "test@test.com"));            
             eventStore.Save(new SessionPlanned(sessionId1, 1, formationId, new DateTime(2017, 10, 21), 2, 2, lieuId, formateurId1));
             eventStore.Save(new SessionPlanned(sessionId2, 2, formationId, new DateTime(2017, 11, 21), 2, 2, lieuId, formateurId1));
             eventStore.Save(new SessionPlanned(sessionId3, 3, formationId, new DateTime(2017, 12, 21), 2, 2, lieuId, formateurId1));
             eventStore.Save(new SessionPlanned(sessionId4, 1, formationId, new DateTime(2017, 10, 21), 2, 2, lieuId, formateurId2));
             eventStore.Save(new SessionPlanned(sessionId5, 2, formationId, new DateTime(2017, 11, 21), 2, 2, lieuId, formateurId2));
             eventStore.Save(new SessionPlanned(sessionId6, 3, formationId, new DateTime(2017, 12, 21), 2, 2, lieuId, formateurId2));
-            eventStore.Save(new FormateurAssigned(formateurId1, 1, new DateTime(2017, 10, 21), 2));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2017, 11, 21), 2));
-            eventStore.Save(new FormateurAssigned(formateurId1, 3, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new FormateurAssigned(formateurId2, 4, new DateTime(2017, 10, 21), 2));
-            eventStore.Save(new FormateurAssigned(formateurId2, 5, new DateTime(2017, 11, 21), 2));
-            eventStore.Save(new FormateurAssigned(formateurId2, 6, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new FormationCreated(formationId, 1, "Formation de test",1));
+            eventStore.Save(new TrainerAssigned(formateurId1, 1, new DateTime(2017, 10, 21), 2));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2017, 11, 21), 2));
+            eventStore.Save(new TrainerAssigned(formateurId1, 3, new DateTime(2017, 12, 21), 2));
+            eventStore.Save(new TrainerAssigned(formateurId2, 4, new DateTime(2017, 10, 21), 2));
+            eventStore.Save(new TrainerAssigned(formateurId2, 5, new DateTime(2017, 11, 21), 2));
+            eventStore.Save(new TrainerAssigned(formateurId2, 6, new DateTime(2017, 12, 21), 2));
+            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test",1));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             var sessionQueries = new FakeSessionQueries();
@@ -377,8 +377,8 @@ namespace GestionFormation.Tests.Applications
             
             // then
             mockHandler.AllEvents.OfType<SessionDeleted>().Should().HaveCount(6);
-            mockHandler.AllEvents.OfType<FormateurUnassigned>().Should().HaveCount(6);
-            mockHandler.AllEvents.OfType<FormationDeleted>().Should().HaveCount(1);
+            mockHandler.AllEvents.OfType<TrainerUnassigned>().Should().HaveCount(6);
+            mockHandler.AllEvents.OfType<TrainingDeleted>().Should().HaveCount(1);
         }
 
         //----------
@@ -389,7 +389,7 @@ namespace GestionFormation.Tests.Applications
             var formateurId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             var mockHandler = new MockHandler<SessionPlanned>();
@@ -408,11 +408,11 @@ namespace GestionFormation.Tests.Applications
             var formateurId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             Action action = () => new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 21), 5, 10, Guid.NewGuid(), formateurId);
-            action.ShouldThrow<LieuNotExistsException>();
+            action.ShouldThrow<LocationNotExistsException>();
         }
 
         [TestMethod]
@@ -424,16 +424,16 @@ namespace GestionFormation.Tests.Applications
             var lieuId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new LieuCreated(lieuId, 1, "Paris", "test", 5));
-            eventStore.Save(new LieuAssigned(lieuId, 2, new DateTime(2017, 12, 20), 10));
+            eventStore.Save(new TrainerCreated(formateurId, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new LocationCreated(lieuId, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationAssigned(lieuId, 2, new DateTime(2017, 12, 20), 10));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
             Action action = () => new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 21), 5, 1, lieuId, formateurId);
 
             // then
-            action.ShouldThrow<LieuAlreadyAssignedException>();
+            action.ShouldThrow<LocationAlreadyAssignedException>();
         }
 
         [TestMethod]
@@ -448,14 +448,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuAssigned, LieuUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<LocationAssigned, LocationUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Paris", "test", 5));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId1, formateurId));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -463,8 +463,8 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()                
-                .Contain(new LieuUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
-                .Contain(new LieuAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new LocationUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new LocationAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, lieuId2, formateurId, formationId));
         }
 
@@ -480,14 +480,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuAssigned, LieuUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<LocationAssigned, LocationUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Paris", "test", 5));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, null, formateurId));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -495,7 +495,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new LieuAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new LocationAssigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, lieuId2, formateurId, formationId));
         }
 
@@ -511,14 +511,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuAssigned, LieuUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<LocationAssigned, LocationUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Paris", "test", 5));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId1, formateurId));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -526,7 +526,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new LieuUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
+                .Contain(new LocationUnassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, 10, null, formateurId, formationId));
         }
 
@@ -542,14 +542,14 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuAssigned, LieuUnassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<LocationAssigned, LocationUnassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Paris", "test", 5));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId1, formateurId));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2018, 1, 1), 5));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
@@ -575,17 +575,17 @@ namespace GestionFormation.Tests.Applications
             var dispatcher = new EventDispatcher();
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Paris", "test", 5));
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId1, formateurId));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2017, 12, 21), 5));
-            eventStore.Save(new LieuAssigned(lieuId2, 2, new DateTime(2017, 12, 20), 10));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new LocationAssigned(lieuId2, 2, new DateTime(2017, 12, 20), 10));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             // when
             Action action = () => new UpdateSession(eventBus).Execute(sessionId, formationId, new DateTime(2017, 12, 21), 5, 10, lieuId2, formateurId);
 
-            action.ShouldThrow<LieuAlreadyAssignedException>();
+            action.ShouldThrow<LocationAlreadyAssignedException>();
         }
 
         [TestMethod]
@@ -598,15 +598,15 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<FormateurUnassigned, LieuUnassigned, SessionDeleted>();
+            var mockHandler = new MockHandler<TrainerUnassigned, LocationUnassigned, SessionDeleted>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new FormateurCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            eventStore.Save(new FormateurAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new TrainerCreated(formateurId1, 1, "BOUDOUX", "Aurelien", "test@test.com"));
+            eventStore.Save(new TrainerAssigned(formateurId1, 2, new DateTime(2017, 12, 21), 5));
 
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2017, 12, 21), 5));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2017, 12, 21), 5));
 
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2017, 12, 21), 5, 10, lieuId1, formateurId1));
             
@@ -617,8 +617,8 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new FormateurUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
-                .Contain(new LieuUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
+                .Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
+                .Contain(new LocationUnassigned(Guid.Empty, 0, new DateTime(2017, 12, 21), 5)).And
                 .Contain(new SessionDeleted(Guid.Empty, 0));
         }
 
@@ -631,13 +631,13 @@ namespace GestionFormation.Tests.Applications
 
             var sessionId = Guid.NewGuid();
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuReassigned, SessionUpdated>();
+            var mockHandler = new MockHandler<LocationReassigned, SessionUpdated>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
 
-            eventStore.Save(new LieuCreated(lieuId, 1, "Lyon", "test", 5));
-            eventStore.Save(new LieuAssigned(lieuId, 2, new DateTime(2018, 1, 1), 5));
+            eventStore.Save(new LocationCreated(lieuId, 1, "Lyon", "test", 5));
+            eventStore.Save(new LocationAssigned(lieuId, 2, new DateTime(2018, 1, 1), 5));
 
             eventStore.Save(new SessionPlanned(sessionId, 1, formationId, new DateTime(2018, 1, 1), 5, 10, lieuId, null));
             
@@ -648,7 +648,7 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.Should()
-                .Contain(new LieuReassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, new DateTime(2018, 1, 2), 4)).And
+                .Contain(new LocationReassigned(Guid.Empty, 0, new DateTime(2018, 1, 1), 5, new DateTime(2018, 1, 2), 4)).And
                 .Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 2), 4, 10, lieuId, null, formationId));
         }
 
@@ -671,25 +671,25 @@ namespace GestionFormation.Tests.Applications
             //var formateurId = Guid.NewGuid();
 
             var dispatcher = new EventDispatcher();
-            var mockHandler = new MockHandler<LieuUnassigned, SessionDeleted, FormationDeleted>();
+            var mockHandler = new MockHandler<LocationUnassigned, SessionDeleted, TrainingDeleted>();
             dispatcher.Register(mockHandler);
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new LieuCreated(lieuId1, 1, "Paris", "test", 5));
-            eventStore.Save(new LieuCreated(lieuId2, 1, "Lyon", "test", 3));
+            eventStore.Save(new LocationCreated(lieuId1, 1, "Paris", "test", 5));
+            eventStore.Save(new LocationCreated(lieuId2, 1, "Lyon", "test", 3));
             eventStore.Save(new SessionPlanned(sessionId1, 1, formationId, new DateTime(2017, 10, 21), 2, 2, lieuId1, null));
             eventStore.Save(new SessionPlanned(sessionId2, 2, formationId, new DateTime(2017, 11, 21), 2, 2, lieuId1, null));
             eventStore.Save(new SessionPlanned(sessionId3, 3, formationId, new DateTime(2017, 12, 21), 2, 2, lieuId1, null));
             eventStore.Save(new SessionPlanned(sessionId4, 1, formationId, new DateTime(2017, 10, 21), 2, 2, lieuId2, null));
             eventStore.Save(new SessionPlanned(sessionId5, 2, formationId, new DateTime(2017, 11, 21), 2, 2, lieuId2, null));
             eventStore.Save(new SessionPlanned(sessionId6, 3, formationId, new DateTime(2017, 12, 21), 2, 2, lieuId2, null));
-            eventStore.Save(new LieuAssigned(lieuId1, 1, new DateTime(2017, 10, 21), 2));
-            eventStore.Save(new LieuAssigned(lieuId1, 2, new DateTime(2017, 11, 21), 2));
-            eventStore.Save(new LieuAssigned(lieuId1, 3, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new LieuAssigned(lieuId2, 4, new DateTime(2017, 10, 21), 2));
-            eventStore.Save(new LieuAssigned(lieuId2, 5, new DateTime(2017, 11, 21), 2));
-            eventStore.Save(new LieuAssigned(lieuId2, 6, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new FormationCreated(formationId, 1, "Formation de test", 1));
+            eventStore.Save(new LocationAssigned(lieuId1, 1, new DateTime(2017, 10, 21), 2));
+            eventStore.Save(new LocationAssigned(lieuId1, 2, new DateTime(2017, 11, 21), 2));
+            eventStore.Save(new LocationAssigned(lieuId1, 3, new DateTime(2017, 12, 21), 2));
+            eventStore.Save(new LocationAssigned(lieuId2, 4, new DateTime(2017, 10, 21), 2));
+            eventStore.Save(new LocationAssigned(lieuId2, 5, new DateTime(2017, 11, 21), 2));
+            eventStore.Save(new LocationAssigned(lieuId2, 6, new DateTime(2017, 12, 21), 2));
+            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test", 1));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             var sessionQueries = new FakeSessionQueries();
@@ -705,8 +705,8 @@ namespace GestionFormation.Tests.Applications
 
             // then
             mockHandler.AllEvents.OfType<SessionDeleted>().Should().HaveCount(6);
-            mockHandler.AllEvents.OfType<LieuUnassigned>().Should().HaveCount(6);
-            mockHandler.AllEvents.OfType<FormationDeleted>().Should().HaveCount(1);
+            mockHandler.AllEvents.OfType<LocationUnassigned>().Should().HaveCount(6);
+            mockHandler.AllEvents.OfType<TrainingDeleted>().Should().HaveCount(1);
         }
         //---------
 
@@ -721,10 +721,10 @@ namespace GestionFormation.Tests.Applications
              var formationId = Guid.NewGuid();
 
              var formateur = new CreateFormateur(eventBus).Execute("BOUDOUX", "Aurelien", "test@test.com");
-             var lieu = new CreateLieu(eventBus, new FakeLieuQueries()).Execute("Paris", "test", 5);
+             var lieu = new CreateLieu(eventBus, new FakeLocationQueries()).Execute("Paris", "test", 5);
 
              new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 20), 3, 3, lieu.AggregateId, formateur.AggregateId);
-             projection.Planned.FormationId.Should().Be(formationId);
+             projection.Planned.TrainingId.Should().Be(formationId);
          }
 
         private class SessionTestProjection : IEventHandler<SessionPlanned>

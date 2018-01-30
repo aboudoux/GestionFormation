@@ -11,37 +11,37 @@ namespace GestionFormation.Infrastructure
             return Guid.NewGuid();
         }
 
-        public string CreateCertificatAssiduite(NomComplet stagiaire, string societe, string formation, string lieu, int durée,
-            NomComplet formateur, DateTime dateSession)
+        public string CreateCertificatAssiduite(FullName stagiaire, string societe, string formation, string lieu, int durée,
+            FullName formateur, DateTime dateSession)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateDiplome(NomComplet stagiaire, string societe, DateTime debutSession, DateTime finSession,
-            NomComplet formateur)
+        public string CreateDiplome(FullName stagiaire, string societe, DateTime debutSession, DateTime finSession,
+            FullName formateur)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateFeuillePresence(string formation, DateTime dateDebut, int durée, string lieu, NomComplet formateur,
+        public string CreateFeuillePresence(string formation, DateTime dateDebut, int durée, string lieu, FullName formateur,
             IReadOnlyList<Participant> participants)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateQuestionnaire(NomComplet formateur, string formation)
+        public string CreateQuestionnaire(FullName formateur, string formation)
         {
             throw new NotImplementedException();
         }
 
         public string CreateConventionGratuite(string numero, string societe, string addresse, string codePostal, string ville,
-            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu, IReadOnlyList<Participant> participants)
+            FullName contact, string formation, DateTime dateDebut, int durée, string lieu, IReadOnlyList<Participant> participants)
         {
             throw new NotImplementedException();
         }
 
         public string CreateConventionPayante(string numero, string societe, string addresse, string codePostal, string ville,
-            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu, IReadOnlyList<Participant> participants)
+            FullName contact, string formation, DateTime dateDebut, int durée, string lieu, IReadOnlyList<Participant> participants)
         {
             throw new NotImplementedException();
         }

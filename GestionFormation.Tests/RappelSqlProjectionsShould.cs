@@ -11,10 +11,10 @@ using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Places;
+using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Rappels.Projections;
 using GestionFormation.CoreDomain.Rappels.Queries;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Utilisateurs;
 using GestionFormation.Tests.Tools;
@@ -92,8 +92,8 @@ namespace GestionFormation.Tests
         public void create_just_one_rappel_of_create_convention_if_validate_places_for_same_societe()
         {
             var place1 = _context.CreatePlace();
-            var place2 = _context.CreatePlace(place1.SocieteId);
-            var place3 = _context.CreatePlace(place1.SocieteId);
+            var place2 = _context.CreatePlace(place1.CompanyId);
+            var place3 = _context.CreatePlace(place1.CompanyId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
@@ -107,9 +107,9 @@ namespace GestionFormation.Tests
         public void create_distinct_rappel_convention_if_validate_place_of_different_societe()
         {
             var place1 = _context.CreatePlace();
-            var place2 = _context.CreatePlace(place1.SocieteId);
+            var place2 = _context.CreatePlace(place1.CompanyId);
             var place3 = _context.CreatePlace();
-            var place4 = _context.CreatePlace(place3.SocieteId);
+            var place4 = _context.CreatePlace(place3.CompanyId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
@@ -124,9 +124,9 @@ namespace GestionFormation.Tests
         public void create_rappel_sign_convention_when_convention_created()
         {
             var place1 = _context.CreatePlace();            
-            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
+            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
-            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, TypeConvention.Gratuite);
+            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, AgreementType.Free);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
             result.Where(a=>a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToSign );
@@ -137,13 +137,13 @@ namespace GestionFormation.Tests
         public void create_rappel_convention_if_revoke_convention_with_validated_place()
         {
             var place1 = _context.CreatePlace();
-            var place2 = _context.CreatePlace(place1.SocieteId);
+            var place2 = _context.CreatePlace(place1.CompanyId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, TypeConvention.Gratuite);
+            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
 
@@ -155,13 +155,13 @@ namespace GestionFormation.Tests
         public void remove_rappel_convention_if_all_place_canceled_or_refused()
         {
             var place1 = _context.CreatePlace();
-            var place2 = _context.CreatePlace(place1.SocieteId);
+            var place2 = _context.CreatePlace(place1.CompanyId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);            
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId, "TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
+            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
             _context.App.Command<AnnulerPlace>().Execute(place2.AggregateId, "test");
@@ -173,16 +173,16 @@ namespace GestionFormation.Tests
         public void remove_rappel_when_convention_created_on_revoked_convention()
         {
             var place1 = _context.CreatePlace();
-            var place2 = _context.CreatePlace(place1.SocieteId);
+            var place2 = _context.CreatePlace(place1.CompanyId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
+            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
+            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
-            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, TypeConvention.Gratuite);
+            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
 
             var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
             result.Should().NotContain(a => a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToCreate);
@@ -209,7 +209,7 @@ namespace GestionFormation.Tests
         public IRappelQueries Queries => _queries;
         
 
-        public Place CreatePlace(Guid? societeId = null)
+        public Seat CreatePlace(Guid? societeId = null)
         {
             var stagiaire = _service.Command<CreateStagiaire>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString());
             if (!societeId.HasValue)

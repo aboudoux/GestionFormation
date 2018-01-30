@@ -5,21 +5,21 @@ namespace GestionFormation.CoreDomain.Sessions.Events
 {
     public class SessionUpdated : DomainEvent
     {
-        public DateTime DateDebut { get; }
-        public int DuréeEnJour { get; }
-        public int NbrPlaces { get; }
-        public Guid? LieuId { get; }
-        public Guid? FormateurId { get; }
-        public Guid FormationId { get; }
+        public DateTime SessionStart { get; }
+        public int Duration { get; }
+        public int Seats { get; }
+        public Guid? LocationId { get; }
+        public Guid? TrainerId { get; }
+        public Guid TrainingId { get; }
 
-        public SessionUpdated(Guid aggregateId, int sequence, DateTime dateDebut, int duréeEnJour, int nbrPlaces, Guid? lieuId, Guid? formateurId, Guid formationId) : base(aggregateId, sequence)
+        public SessionUpdated(Guid aggregateId, int sequence, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId, Guid trainingId) : base(aggregateId, sequence)
         {
-            DateDebut = dateDebut;
-            DuréeEnJour = duréeEnJour;
-            NbrPlaces = nbrPlaces;
-            LieuId = lieuId;
-            FormateurId = formateurId;
-            FormationId = formationId;
+            SessionStart = sessionStart;
+            Duration = duration;
+            Seats = seats;
+            LocationId = locationId;
+            TrainerId = trainerId;
+            TrainingId = trainingId;
         }
 
         protected override string Description => "Session modifiée";

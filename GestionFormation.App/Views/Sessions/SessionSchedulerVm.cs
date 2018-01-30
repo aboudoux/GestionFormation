@@ -164,19 +164,19 @@ namespace GestionFormation.App.Views.Sessions
             if (result == null) throw new ArgumentNullException(nameof(result));
 
             Id = result.SessionId;
-            Start = result.DateDebut;
-            End = result.DateDebut.AddDays(result.Durée);
-            Description = $"Formation assurée par {result.Formateur}\r\n" +
-                          $"Durée de la formation : {result.Durée} jour(s)\r\n" +
-                          $"{result.Places} places dont :\r\n" +
-                          $"- {result.PlacesReservées} réservée(s)\r\n" +
-                          $"- {result.Places - result.PlacesReservées} disponible(s)";
-            Sujet = $"Formation {result.Formation} - {result.Lieu}";
+            Start = result.SessionStart;
+            End = result.SessionStart.AddDays(result.Duration);
+            Description = $"Formation assurée par {result.Trainer}\r\n" +
+                          $"Durée de la formation : {result.Duration} jour(s)\r\n" +
+                          $"{result.Seats} places dont :\r\n" +
+                          $"- {result.ReservedSeats} réservée(s)\r\n" +
+                          $"- {result.Seats - result.ReservedSeats} disponible(s)";
+            Sujet = $"Formation {result.Training} - {result.Location}";
 
-            Places = result.Places;
-            FormateurId = result.FormateurId;
-            LieuId = result.LieuId;
-            FormationId = result.FormationId;
+            Places = result.Seats;
+            FormateurId = result.TrainerId;
+            LieuId = result.LocationId;
+            FormationId = result.TrainingId;
         }
 
         public Guid Id { get; }

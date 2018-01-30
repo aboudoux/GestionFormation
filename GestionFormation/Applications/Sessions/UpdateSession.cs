@@ -1,7 +1,7 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Formateurs;
-using GestionFormation.CoreDomain.Lieux;
+using GestionFormation.CoreDomain.Locations;
 using GestionFormation.CoreDomain.Sessions;
+using GestionFormation.CoreDomain.Trainers;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Sessions
@@ -18,8 +18,8 @@ namespace GestionFormation.Applications.Sessions
             if (session == null)
                 throw new SessionNotExistsException(sessionId);           
 
-            var lieux = Update<Lieu>(lieuId, session, session.LieuId, dateDebut, durée);
-            var formateurs = Update<Formateur>(formateurId, session, session.FormateurId, dateDebut, durée);            
+            var lieux = Update<Location>(lieuId, session, session.LocationId, dateDebut, durée);
+            var formateurs = Update<Trainer>(formateurId, session, session.TrainerId, dateDebut, durée);            
 
             session.Update(formationId, dateDebut, durée, nombrePlace, lieuId, formateurId);
 
@@ -41,10 +41,10 @@ namespace GestionFormation.Applications.Sessions
                 source?.UnAssign(dateDebut, durée);
                 dest?.Assign(dateDebut, durée);
             }
-            else if ((session.DateDebut != dateDebut || session.Durée != durée) && aggregateId.HasValue)
+            else if ((session.SessionStart != dateDebut || session.Duration != durée) && aggregateId.HasValue)
             {
                 dest = aggregateId.HasValue ? GetAggregate<TAggregate>(aggregateId.Value) : null;
-                dest?.ChangeAssignation(session.DateDebut, session.Durée, dateDebut, durée);
+                dest?.ChangeAssignation(session.SessionStart, session.Duration, dateDebut, durée);
             }
 
             return Tuple.Create(source, dest);

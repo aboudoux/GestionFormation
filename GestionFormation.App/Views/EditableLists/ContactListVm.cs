@@ -56,11 +56,11 @@ namespace GestionFormation.App.Views.EditableLists
 
         public EditableContact(IContactResult result) : base(result.Id)
         {
-            Nom = result.Nom;
-            Prenom = result.Prenom;
+            Nom = result.Lastname;
+            Prenom = result.Firstname;
             Email = result.Email;
             Telephone = result.Telephone;
-            _societeId = result.SocieteId;
+            _societeId = result.CompanyId;
         }
 
         public string Nom { get; set; }

@@ -21,7 +21,7 @@ namespace GestionFormation.Web.Controllers
        /* [Route("plan"), HttpPost]
         public IHttpActionResult Planifier([FromBody] SessionData data )
         {
-            //return Run(()=>new PlanSession(_eventBus).Execute(data.FormationId, data.DateDebut, data.NbrJour, data.NbrPlaces, data.Lieu, data.FormateurId ));
+            //return Run(()=>new PlanSession(_eventBus).Execute(data.FormationId, data.SessionStart, data.NbrJour, data.NbrPlaces, data.Lieu, data.FormateurId ));
         }*/
     }
 

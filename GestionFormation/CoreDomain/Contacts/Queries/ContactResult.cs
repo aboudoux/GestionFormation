@@ -8,17 +8,17 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
         public ContactResult(ContactSqlEntity entity)
         {
             Id = entity.ContactId;
-            Nom = entity.Nom;
-            Prenom = entity.Prenom;
+            Lastname = entity.Lastname;
+            Firstname = entity.Firstname;
             Email = entity.Email;
             Telephone = entity.Telephone;
-            SocieteId = entity.SocieteId;
+            CompanyId = entity.CompanyId;
         }
         public Guid Id { get; }
-        public string Nom { get; }
-        public string Prenom { get; }
+        public string Lastname { get; }
+        public string Firstname { get; }
         public string Email { get; }
         public string Telephone { get; }
-        public Guid SocieteId { get; }
+        public Guid CompanyId { get; }
     }
 }

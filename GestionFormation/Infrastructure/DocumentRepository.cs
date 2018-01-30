@@ -34,7 +34,7 @@ namespace GestionFormation.Infrastructure
             return Guid.NewGuid();
         }
 
-        public string CreateCertificatAssiduite(NomComplet stagiaire, string societe, string formation, string lieu, int durée, NomComplet formateur, DateTime dateSession)
+        public string CreateCertificatAssiduite(FullName stagiaire, string societe, string formation, string lieu, int durée, FullName formateur, DateTime dateSession)
         {
             return MakeDocument(CertificatAssiduite)
                 .Merge("$stagiaire$", stagiaire.ToString())
@@ -48,7 +48,7 @@ namespace GestionFormation.Infrastructure
                 .Generate();            
         }
 
-        public string CreateDiplome(NomComplet stagiaire, string societe, DateTime debutSession, DateTime finSession, NomComplet formateur)
+        public string CreateDiplome(FullName stagiaire, string societe, DateTime debutSession, DateTime finSession, FullName formateur)
         {
             return MakeDocument(Diplome)
                 .Merge("$stagiaire$", stagiaire.ToString())
@@ -60,7 +60,7 @@ namespace GestionFormation.Infrastructure
                 .Generate();
         }
 
-        public string CreateFeuillePresence(string formation, DateTime dateDebut, int durée, string lieu, NomComplet formateur, IReadOnlyList<Participant> participants)
+        public string CreateFeuillePresence(string formation, DateTime dateDebut, int durée, string lieu, FullName formateur, IReadOnlyList<Participant> participants)
         {
             if(participants == null)
                 throw new ArgumentNullException(nameof(participants));
@@ -87,7 +87,7 @@ namespace GestionFormation.Infrastructure
             return document.Generate();
         }
 
-        public string CreateQuestionnaire(NomComplet formateur, string formation)
+        public string CreateQuestionnaire(FullName formateur, string formation)
         {
             return MakeDocument(Questionnaire)
                 .Merge("$formateur$", formateur.ToString())
@@ -97,7 +97,7 @@ namespace GestionFormation.Infrastructure
         }
 
         public string CreateConventionGratuite(string numero, string societe, string addresse, string codePostal, string ville,
-            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu,
+            FullName contact, string formation, DateTime dateDebut, int durée, string lieu,
             IReadOnlyList<Participant> participants)
         {
             if (participants == null)
@@ -133,7 +133,7 @@ namespace GestionFormation.Infrastructure
         }
 
         public string CreateConventionPayante(string numero, string societe, string addresse, string codePostal, string ville,
-            NomComplet contact, string formation, DateTime dateDebut, int durée, string lieu,
+            FullName contact, string formation, DateTime dateDebut, int durée, string lieu,
             IReadOnlyList<Participant> participants)
         {
             if (participants == null)

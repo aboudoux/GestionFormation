@@ -9,10 +9,10 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Conventions;
 using GestionFormation.CoreDomain;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.CoreDomain.Contacts.Queries;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Conventions.Queries;
-using GestionFormation.CoreDomain.Places.Queries;
+using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
 
 namespace GestionFormation.App.Views.Places
@@ -21,25 +21,25 @@ namespace GestionFormation.App.Views.Places
     {
         private readonly Guid _conventionId;
         private readonly IApplicationService _applicationService;
-        private readonly IPlacesQueries _placesQueries;
+        private readonly ISeatQueries _seatQueries;
         private readonly IContactQueries _contactQueries;
         private readonly IDocumentRepository _documentRepository;
-        private readonly IConventionQueries _conventionQueries;
+        private readonly IAgreementQueries _agreementQueries;
         private string _nom;
         private string _prenom;
         private string _email;
         private string _telephone;
-        private ObservableCollection<IConventionPlaceResult> _places;
+        private ObservableCollection<IAgreementSeatResult> _places;
         private string _documentPath;
 
-        public GestionConventionWindowVm(Guid conventionId, IPlacesQueries placesQueries, IApplicationService applicationService, IContactQueries contactQueries, IDocumentRepository documentRepository, IConventionQueries conventionQueries)
+        public GestionConventionWindowVm(Guid conventionId, ISeatQueries seatQueries, IApplicationService applicationService, IContactQueries contactQueries, IDocumentRepository documentRepository, IAgreementQueries agreementQueries)
         {
             _conventionId = conventionId;
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));            
-            _placesQueries = placesQueries ?? throw new ArgumentNullException(nameof(placesQueries));
+            _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
             _contactQueries = contactQueries ?? throw new ArgumentNullException(nameof(contactQueries));
             _documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));
-            _conventionQueries = conventionQueries ?? throw new ArgumentNullException(nameof(conventionQueries));
+            _agreementQueries = agreementQueries ?? throw new ArgumentNullException(nameof(agreementQueries));
 
             ChooseDocumentCommand = new RelayCommand(ExecuteChooseDocumentAsync);
             PrintCommand = new RelayCommandAsync(ExecutePrintAsync);
@@ -49,27 +49,27 @@ namespace GestionFormation.App.Views.Places
         
         public override async Task Init()
         {
-            var placesTask = Task.Run(()=>_placesQueries.GetConventionPlaces(_conventionId));
+            var placesTask = Task.Run(()=>_seatQueries.GetSeatAgreements(_conventionId));
             var contactTask = LoadContact(_conventionId);
 
             await Task.WhenAll(placesTask, contactTask);
 
-            Places = new ObservableCollection<IConventionPlaceResult>(placesTask.Result);
+            Places = new ObservableCollection<IAgreementSeatResult>(placesTask.Result);
         }
 
         private async Task LoadContact(Guid conventionId)
         {
-            var contact = await Task.Run(() => _contactQueries.GetConventionContact(conventionId));
+            var contact = await Task.Run(() => _contactQueries.GetAgreementContact(conventionId));
             if (contact != null)
             {
-                Nom = contact.Nom;
-                Prenom = contact.Prenom;
+                Nom = contact.Lastname;
+                Prenom = contact.Firstname;
                 Email = contact.Email;
                 Telephone = contact.Telephone;
             }
         }
 
-        public ObservableCollection<IConventionPlaceResult> Places
+        public ObservableCollection<IAgreementSeatResult> Places
         {
             get => _places;
             set { Set(()=>Places, ref _places, value); }
@@ -130,12 +130,12 @@ namespace GestionFormation.App.Views.Places
                 var firstPlace = Places.First();
                 string doc;
 
-                var conv = await Task.Run(()=>_conventionQueries.GetPrintableConvention(_conventionId));
+                var conv = await Task.Run(()=>_agreementQueries.GetPrintableAgreement(_conventionId));
 
-                if (conv.TypeConvention == TypeConvention.Gratuite)
-                    doc = _documentRepository.CreateConventionGratuite(conv.NumeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), conv.Formation, conv.DateDebut, conv.Durée, conv.Lieu, Places.Select(a=>new Participant(a.Stagiaire, a.Societe)).ToList());
+                if (conv.AgreementType == AgreementType.Free)
+                    doc = _documentRepository.CreateConventionGratuite(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a=>new Participant(a.Trainee, a.Company)).ToList());
                 else
-                    doc = _documentRepository.CreateConventionPayante(conv.NumeroConvention, firstPlace.Societe, firstPlace.Adresse, firstPlace.CodePostal, firstPlace.Ville, new NomComplet(Nom, Prenom), conv.Formation, conv.DateDebut, conv.Durée, conv.Lieu, Places.Select(a => new Participant(a.Stagiaire, a.Societe)).ToList());
+                    doc = _documentRepository.CreateConventionPayante(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a => new Participant(a.Trainee, a.Company)).ToList());
 
                 Process.Start(doc);
             });

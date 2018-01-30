@@ -1,22 +1,22 @@
 ﻿using System;
+using GestionFormation.CoreDomain.Companies.Queries;
 using GestionFormation.CoreDomain.Contacts;
-using GestionFormation.CoreDomain.Societes.Queries;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Contacts
 {
     public class CreateContact : ActionCommand
     {
-        private readonly ISocieteQueries _societeQueries;
+        private readonly ICompanyQueries _companyQueries;
 
-        public CreateContact(EventBus eventBus, ISocieteQueries societeQueries) : base(eventBus)
+        public CreateContact(EventBus eventBus, ICompanyQueries companyQueries) : base(eventBus)
         {
-            _societeQueries = societeQueries ?? throw new ArgumentNullException(nameof(societeQueries));
+            _companyQueries = companyQueries ?? throw new ArgumentNullException(nameof(companyQueries));
         }
 
         public Contact Execute(Guid societeId, string nom, string prenom, string email, string telephone)
         {
-            if(!_societeQueries.Exists(societeId))
+            if(!_companyQueries.Exists(societeId))
                 throw new Exception("Impossible de créer le contact car la société à laquele vous voulez le rattacher n'existe pas");
 
             var contact = Contact.Create(societeId, nom, prenom, email, telephone);

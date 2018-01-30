@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Places;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.CoreDomain.Sessions.Exceptions;
 using GestionFormation.Kernel;
@@ -9,13 +9,13 @@ namespace GestionFormation.CoreDomain.Sessions
     public class Session : AggregateRootUpdatableAndDeletable<SessionUpdated, SessionDeleted>
     {
         private bool _isCanceled;
-        private int _placesDisponibles;
-        private int _placesReservées;
+        private int _availableSeats;
+        private int _bookedSeats;
 
-        public Guid? FormateurId { get; private set; }
-        public Guid? LieuId { get; private set; }
-        public DateTime DateDebut { get; private set; }
-        public int Durée { get; private set; }
+        public Guid? TrainerId { get; private set; }
+        public Guid? LocationId { get; private set; }
+        public DateTime SessionStart { get; private set; }
+        public int Duration { get; private set; }
 
         public Session(History history) : base(history)
         {
@@ -27,51 +27,51 @@ namespace GestionFormation.CoreDomain.Sessions
                 .Add<SessionUpdated>(e =>
                 {
                     _lastUpdate = e;
-                    FormateurId = e.FormateurId;
-                    LieuId = e.LieuId;
-                    DateDebut = e.DateDebut;
-                    Durée = e.DuréeEnJour;
-                    _placesDisponibles = e.NbrPlaces;
+                    TrainerId = e.TrainerId;
+                    LocationId = e.LocationId;
+                    SessionStart = e.SessionStart;
+                    Duration = e.Duration;
+                    _availableSeats = e.Seats;
                 })
                 .Add<SessionCanceled>(e => _isCanceled = true)
                 .Add<SessionPlanned>(e =>
                 {
-                    _placesDisponibles = e.NbrPlaces;
-                    FormateurId = e.FormateurId;
-                    LieuId = e.LieuId;
-                    DateDebut = e.DateDebut;
-                    Durée = e.DuréeEnJour;
+                    _availableSeats = e.Seats;
+                    TrainerId = e.TrainerId;
+                    LocationId = e.LocationId;
+                    SessionStart = e.SessionStart;
+                    Duration = e.Duration;
                 })
-                .Add<SessionPlaceReserved>(e => _placesReservées++)
-                .Add<SessionPlaceReleased>(e => _placesReservées--);
+                .Add<SessionSeatBooked>(e => _bookedSeats++)
+                .Add<SessionSeatReleased>(e => _bookedSeats--);
         }
 
-        public static Session Plan(Guid formationId, DateTime dateDebut, int durée, int nbrPlaces, Guid? lieuId, Guid? formateurId)
+        public static Session Plan(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
         {
-            if( formationId == Guid.Empty) throw new ArgumentNullException(nameof(formationId));
+            if( trainingId == Guid.Empty) throw new ArgumentNullException(nameof(trainingId));
 
             var session = new Session(History.Empty);
             session.AggregateId = Guid.NewGuid();
 
-            if(PeriodHaveWeekendDay(dateDebut, durée))
+            if(PeriodHaveWeekendDay(sessionStart, duration))
                 throw new SessionWeekEndException();
                        
-            var ev = new SessionPlanned(session.AggregateId, 1, formationId, dateDebut, durée, nbrPlaces, lieuId, formateurId);
+            var ev = new SessionPlanned(session.AggregateId, 1, trainingId, sessionStart, duration, seats, locationId, trainerId);
             session.Apply(ev);
             session.UncommitedEvents.Add(ev);
             return session;
         }
 
-        public void Update(Guid formationId, DateTime dateDebut, int durée, int nbrPlaces, Guid? lieuId, Guid? formateurId)
+        public void Update(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
         {
-            if (formationId == Guid.Empty) throw new ArgumentNullException(nameof(formationId));
+            if (trainingId == Guid.Empty) throw new ArgumentNullException(nameof(trainingId));
 
-            if (PeriodHaveWeekendDay(dateDebut, durée))
+            if (PeriodHaveWeekendDay(sessionStart, duration))
                 throw new SessionWeekEndException();
-            if (_placesReservées > nbrPlaces )
-                throw new TooManyPlacesAlreadyReservedException(_placesReservées, nbrPlaces);
+            if (_bookedSeats > seats )
+                throw new TooManySeatsAlreadyReservedException(_bookedSeats, seats);
 
-            Update(new SessionUpdated(AggregateId, GetNextSequence(), dateDebut, durée, nbrPlaces, lieuId, formateurId, formationId));            
+            Update(new SessionUpdated(AggregateId, GetNextSequence(), sessionStart, duration, seats, locationId, trainerId, trainingId));            
         }
 
         public void Delete()
@@ -79,34 +79,34 @@ namespace GestionFormation.CoreDomain.Sessions
             Delete(new SessionDeleted(AggregateId, GetNextSequence()));
         }
 
-        public void Cancel(string raison)
+        public void Cancel(string reason)
         {
             if(_isCanceled ||_isDeleted)
                 return;
 
-            if( string.IsNullOrWhiteSpace(raison))
-                throw new ArgumentNullException(nameof(raison));
+            if( string.IsNullOrWhiteSpace(reason))
+                throw new ArgumentNullException(nameof(reason));
 
-            RaiseEvent(new SessionCanceled(AggregateId, GetNextSequence(), raison));
+            RaiseEvent(new SessionCanceled(AggregateId, GetNextSequence(), reason));
         }
 
-        public Place ReserverPlace(Guid stagiaireId, Guid societeId)
+        public Seat BookSeat(Guid traineeId, Guid companyId)
         {
-            if( stagiaireId == Guid.Empty) throw new ArgumentNullException(nameof(stagiaireId));
-            if(societeId == Guid.Empty) throw new ArgumentNullException(nameof(societeId));
+            if( traineeId == Guid.Empty) throw new ArgumentNullException(nameof(traineeId));
+            if(companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
 
-            if(_placesDisponibles - _placesReservées <= 0)
-                throw new NoMorePlacesAvailableException();
+            if(_availableSeats - _bookedSeats <= 0)
+                throw new NoMoreSeatAvailableException();
 
-            RaiseEvent(new SessionPlaceReserved(AggregateId, GetNextSequence()));
+            RaiseEvent(new SessionSeatBooked(AggregateId, GetNextSequence()));
             
-            return Place.Create(AggregateId, stagiaireId, societeId);
+            return Seat.Create(AggregateId, traineeId, companyId);
         }
 
         public void ReleasePlace()
         {
-            if(_placesReservées > 0)
-                RaiseEvent(new SessionPlaceReleased(AggregateId, GetNextSequence()));
+            if(_bookedSeats > 0)
+                RaiseEvent(new SessionSeatReleased(AggregateId, GetNextSequence()));
         }
 
         private static bool PeriodHaveWeekendDay(DateTime debut, int durée)

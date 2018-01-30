@@ -9,9 +9,9 @@ using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Sessions;
-using GestionFormation.CoreDomain.Formateurs.Queries;
-using GestionFormation.CoreDomain.Formations.Queries;
-using GestionFormation.CoreDomain.Lieux.Queries;
+using GestionFormation.CoreDomain.Locations.Queries;
+using GestionFormation.CoreDomain.Trainers.Queries;
+using GestionFormation.CoreDomain.Trainings.Queries;
 
 namespace GestionFormation.App.Views.Sessions
 {
@@ -19,9 +19,9 @@ namespace GestionFormation.App.Views.Sessions
     {
         private readonly AppointmentItem _appointmentItem;
         private readonly IApplicationService _applicationService;
-        private readonly ILieuQueries _lieuQueries;
-        private readonly IFormateurQueries _formateurQueries;
-        private readonly IFormationQueries _formationQueries;
+        private readonly ILocationQueries _locationQueries;
+        private readonly ITrainerQueries _trainerQueries;
+        private readonly ITrainingQueries _trainingQueries;
         private ObservableCollection<FormationItem> _formations;
         private FormationItem _selectedFormation;
         private ObservableCollection<FormateurItem> _formateurs;
@@ -35,13 +35,13 @@ namespace GestionFormation.App.Views.Sessions
 
         public string Title => "Planifier une nouvelle session";
 
-        public CreateSessionWindowVm(IApplicationService applicationService, IFormationQueries formationQueries, IFormateurQueries formateurQueries, ILieuQueries lieuQueries, AppointmentItem appointmentItem)
+        public CreateSessionWindowVm(IApplicationService applicationService, ITrainingQueries trainingQueries, ITrainerQueries trainerQueries, ILocationQueries locationQueries, AppointmentItem appointmentItem)
         {
             _appointmentItem = appointmentItem ?? throw new ArgumentNullException(nameof(appointmentItem));
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
-            _lieuQueries = lieuQueries ?? throw new ArgumentNullException(nameof(lieuQueries));
-            _formateurQueries = formateurQueries ?? throw new ArgumentNullException(nameof(formateurQueries));
-            _formationQueries = formationQueries ?? throw new ArgumentNullException(nameof(formationQueries));
+            _locationQueries = locationQueries ?? throw new ArgumentNullException(nameof(locationQueries));
+            _trainerQueries = trainerQueries ?? throw new ArgumentNullException(nameof(trainerQueries));
+            _trainingQueries = trainingQueries ?? throw new ArgumentNullException(nameof(trainingQueries));
 
             AddFormationCommand = new RelayCommandAsync(ExecuteAddFormationAsync);
             AddLieuCommand = new RelayCommandAsync(ExecuteAddLieuAsync);
@@ -226,21 +226,21 @@ namespace GestionFormation.App.Views.Sessions
 
         private async Task InitFormations(Guid? selectedFormationId)
         {
-            var formationsTask = await Task.Run(() => _formationQueries.GetAll().Select(a => new FormationItem(a)));
+            var formationsTask = await Task.Run(() => _trainingQueries.GetAll().Select(a => new FormationItem(a)));
             Formations = new ObservableCollection<FormationItem>(formationsTask);
             SelectedFormation = Formations.FirstOrDefault(a => a.Id == selectedFormationId);
         }
 
         private async Task InitFormateurs(Guid? selectedFormateurId)
         {
-            var formateursTask = await Task.Run(() => _formateurQueries.GetAll().Select(a => new FormateurItem(a)));
+            var formateursTask = await Task.Run(() => _trainerQueries.GetAll().Select(a => new FormateurItem(a)));
             Formateurs = new ObservableCollection<FormateurItem>(formateursTask);
             SelectedFormateur = Formateurs.FirstOrDefault(a => a.Id == selectedFormateurId);
         }
 
         private async Task InitLieux(Guid? selectedLieuId)
         {
-            var lieuxTask = await Task.Run(() => _lieuQueries.GetAll().Select(a => new LieuItem(a)));
+            var lieuxTask = await Task.Run(() => _locationQueries.GetAll().Select(a => new LieuItem(a)));
             Lieux = new ObservableCollection<LieuItem>(lieuxTask);
             SelectedLieu = Lieux.FirstOrDefault(a => a.Id == selectedLieuId);
         }
@@ -248,9 +248,9 @@ namespace GestionFormation.App.Views.Sessions
 
     public class FormateurItem
     {
-        private readonly IFormateurResult _result;
+        private readonly ITrainerResult _result;
 
-        public FormateurItem(IFormateurResult result)
+        public FormateurItem(ITrainerResult result)
         {
             _result = result;
         }
@@ -259,43 +259,43 @@ namespace GestionFormation.App.Views.Sessions
 
         public override string ToString()
         {
-            return _result.Prenom + " " + _result.Nom;
+            return _result.Firstname + " " + _result.Lastname;
         }
     }
 
     public class FormationItem
     {
-        private readonly IFormationResult _result;
+        private readonly ITrainingResult _result;
 
-        public FormationItem(IFormationResult result)
+        public FormationItem(ITrainingResult result)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
         }
 
         public Guid Id => _result.Id;
-        public int Places => _result.Places;
+        public int Places => _result.Seats;
 
         public override string ToString()
         {
-            return _result.Nom;
+            return _result.Name;
         }
     }
 
     public class LieuItem
     {
-        private readonly ILieuResult _result;
+        private readonly ILocationResult _result;
 
-        public LieuItem(ILieuResult result)
+        public LieuItem(ILocationResult result)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
         }
 
-        public Guid Id => _result.LieuId;
-        public int Places => _result.Places;
+        public Guid Id => _result.LocationId;
+        public int Places => _result.Seats;
 
         public override string ToString()
         {
-            return _result.Nom;
+            return _result.Name;
         }
     }
 

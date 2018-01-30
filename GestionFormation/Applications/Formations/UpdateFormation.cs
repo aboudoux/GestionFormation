@@ -1,27 +1,27 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Formations;
-using GestionFormation.CoreDomain.Formations.Exceptions;
-using GestionFormation.CoreDomain.Formations.Queries;
+using GestionFormation.CoreDomain.Trainings;
+using GestionFormation.CoreDomain.Trainings.Exceptions;
+using GestionFormation.CoreDomain.Trainings.Queries;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Formations
 {
     public class UpdateFormation : ActionCommand
     {
-        private readonly IFormationQueries _queries;
+        private readonly ITrainingQueries _queries;
 
-        public UpdateFormation(EventBus eventBus, IFormationQueries queries) : base(eventBus)
+        public UpdateFormation(EventBus eventBus, ITrainingQueries queries) : base(eventBus)
         {
             _queries = queries ?? throw new ArgumentNullException(nameof(queries));
         }
 
         public void Execute(Guid formationId, string newName, int places)
         {
-            var foundFormation = _queries.GetFormation(newName);
+            var foundFormation = _queries.GetTrainingId(newName);
             if (foundFormation.HasValue && foundFormation.Value != formationId)
-                throw new FormationAlreadyExistsException(newName);
+                throw new TrainingAlreadyExistsException(newName);
 
-            var formation = GetAggregate<Formation>(formationId);
+            var formation = GetAggregate<Training>(formationId);
             formation.Update(newName, places);
             PublishUncommitedEvents(formation);
         }

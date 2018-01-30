@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using GestionFormation.CoreDomain.Societes;
+using GestionFormation.CoreDomain.Companies;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Societes
@@ -11,9 +11,9 @@ namespace GestionFormation.Applications.Societes
         {
         }
 
-        public Societe Execute(string nom, string adresse, string codepostal, string ville)
+        public Company Execute(string nom, string adresse, string codepostal, string ville)
         {
-            var societe = Societe.Create(nom, adresse, codepostal, ville);
+            var societe = Company.Create(nom, adresse, codepostal, ville);
             PublishUncommitedEvents(societe);
             return societe;
         }

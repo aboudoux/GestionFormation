@@ -5,21 +5,21 @@ namespace GestionFormation.CoreDomain.Sessions.Events
 {
     public class SessionPlanned : DomainEvent
     {
-        public Guid FormationId { get; }
-        public DateTime DateDebut { get; }
-        public int DuréeEnJour { get; }
-        public int NbrPlaces { get; }
-        public Guid? LieuId { get; }
-        public Guid? FormateurId { get; }
+        public Guid TrainingId { get; }
+        public DateTime SessionStart { get; }
+        public int Duration { get; }
+        public int Seats { get; }
+        public Guid? LocationId { get; }
+        public Guid? TrainerId { get; }
 
-        public SessionPlanned(Guid aggregateId, int sequence, Guid formationId, DateTime dateDebut, int duréeEnJour, int nbrPlaces, Guid? lieuId, Guid? formateurId) : base(aggregateId, sequence)
+        public SessionPlanned(Guid aggregateId, int sequence, Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId) : base(aggregateId, sequence)
         {
-            FormationId = formationId;
-            DateDebut = dateDebut;
-            DuréeEnJour = duréeEnJour;
-            NbrPlaces = nbrPlaces;
-            LieuId = lieuId;
-            FormateurId = formateurId;
+            TrainingId = trainingId;
+            SessionStart = sessionStart;
+            Duration = duration;
+            Seats = seats;
+            LocationId = locationId;
+            TrainerId = trainerId;
         }
 
         protected override string Description => "Session planifiée";

@@ -9,11 +9,11 @@ using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Places;
-using GestionFormation.CoreDomain.Places.Queries;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Companies.Queries;
+using GestionFormation.CoreDomain.Seats;
+using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
-using GestionFormation.CoreDomain.Societes.Queries;
 using GestionFormation.CoreDomain.Stagiaires.Queries;
 
 namespace GestionFormation.App.Views.Places
@@ -24,19 +24,19 @@ namespace GestionFormation.App.Views.Places
         private readonly int _sessionPlaces;
         private readonly IApplicationService _applicationService;
         private readonly ISessionQueries _sessionQueries;
-        private readonly ISocieteQueries _societeQueries;
+        private readonly ICompanyQueries _companyQueries;
         private readonly IStagiaireQueries _stagiaireQueries;
-        private readonly IPlacesQueries _placesQueries;
+        private readonly ISeatQueries _seatQueries;
 
-        public PlacesWindowVm(Guid sessionId,  int sessionPlaces, IPlacesQueries placesQueries, ISocieteQueries societeQueries, IStagiaireQueries stagiaireQueries, IApplicationService applicationService, ISessionQueries sessionQueries)
+        public PlacesWindowVm(Guid sessionId,  int sessionPlaces, ISeatQueries seatQueries, ICompanyQueries companyQueries, IStagiaireQueries stagiaireQueries, IApplicationService applicationService, ISessionQueries sessionQueries)
         {
             _sessionId = sessionId;
             _sessionPlaces = sessionPlaces;
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
             _sessionQueries = sessionQueries ?? throw new ArgumentNullException(nameof(sessionQueries));
-            _societeQueries = societeQueries ?? throw new ArgumentNullException(nameof(societeQueries));
+            _companyQueries = companyQueries ?? throw new ArgumentNullException(nameof(companyQueries));
             _stagiaireQueries = stagiaireQueries ?? throw new ArgumentNullException(nameof(stagiaireQueries));
-            _placesQueries = placesQueries ?? throw new ArgumentNullException(nameof(placesQueries));
+            _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
 
             AddPlaceCommand = new RelayCommandAsync(ExecuteAddPlaceAsync, () => SelectedSociete != null && SelectedStagiaire != null);
             CreateStagiaireCommand = new RelayCommandAsync(ExecuteCreateStagiaireAsync);
@@ -153,8 +153,8 @@ namespace GestionFormation.App.Views.Places
         private void RefreshCompteurs()
         {
             PlacesTotal = _sessionPlaces;
-            PlacesAttenteValidation = Places.Count(a=>a.Statut == PlaceStatus.AValider);
-            PlacesValide = Places.Count(a => a.Statut == PlaceStatus.Validé);
+            PlacesAttenteValidation = Places.Count(a=>a.Statut == SeatStatus.ToValidate);
+            PlacesValide = Places.Count(a => a.Statut == SeatStatus.Valid);
             PlacesReservees = PlacesValide + PlacesAttenteValidation;
             PlacesDisponibles = PlacesTotal - PlacesReservees;
         }
@@ -162,7 +162,7 @@ namespace GestionFormation.App.Views.Places
         public override async Task Init()
         {
             var stagiaires = Task.Run(() => _stagiaireQueries.GetAll().Select(a => new Item {Id = a.Id, Label = a.Prenom + " " + a.Nom}));
-            var societes = Task.Run(()=>_societeQueries.GetAll().Select(a=>new Item { Id = a.SocieteId, Label = a.Nom}));
+            var societes = Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item { Id = a.CompanyId, Label = a.Name}));
             var session = Task.Run(() => _sessionQueries.GetSession(_sessionId));
 
             await Task.WhenAll(stagiaires, societes, session);
@@ -195,7 +195,7 @@ namespace GestionFormation.App.Views.Places
 
         private async Task RefreshPlaces()
         {
-            var items = await Task.Run(() => _placesQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, Stagiaires.First(b=>b.Id == a.StagiaireId ).Label, Societes.First(b=>b.Id == a.SocieteId).Label)));
+            var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, Stagiaires.First(b=>b.Id == a.TraineeId ).Label, Societes.First(b=>b.Id == a.CompanyId).Label)));
             Places = new ObservableCollection<PlaceItem>(items);
             RefreshCompteurs();
         }
@@ -227,7 +227,7 @@ namespace GestionFormation.App.Views.Places
                     var item = vm.Item as EditableSociete;
                     var newSociete = await Task.Run(() => _applicationService.Command<CreateSociete>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
 
-                    var societes = await Task.Run(() => _societeQueries.GetAll().Select(a => new Item { Id = a.SocieteId, Label = a.Nom}));
+                    var societes = await Task.Run(() => _companyQueries.GetAll().Select(a => new Item { Id = a.CompanyId, Label = a.Name}));
                     Societes = new ObservableCollection<Item>(societes);
                     SelectedSociete = Societes.FirstOrDefault(a => a.Id == newSociete.AggregateId);
 
@@ -312,18 +312,18 @@ namespace GestionFormation.App.Views.Places
 
     public class PlaceItem
     {
-        public PlaceItem(IPlaceResult result, string stagiaireNom, string societeNom)
+        public PlaceItem(ISeatResult result, string stagiaireNom, string societeNom)
         {
             StagiaireNom = stagiaireNom;
             SocieteNom = societeNom;
-            PlaceId = result.PlaceId;
-            StagiaireId = result.StagiaireId;
-            SocieteId = result.SocieteId;
+            PlaceId = result.SeatId;
+            StagiaireId = result.TraineeId;
+            SocieteId = result.CompanyId;
             Statut = result.Status;
-            Raison = result.Raison;
-            ConventionId = result.ConventionId;
-            Convention = result.NumeroConvention;
-            TypeConvention = result.TypeConvention;
+            Raison = result.Reason;
+            ConventionId = result.AgreementId;
+            Convention = result.Agreementnumber;
+            AgreementType = result.AgreementType;
 
             EtatConvention = new EtatConvention(result);
             EtatPlace = new EtatPlace(result.Status);            
@@ -337,7 +337,7 @@ namespace GestionFormation.App.Views.Places
         public string StagiaireNom { get; }
         public string SocieteNom { get; }
 
-        public PlaceStatus Statut { get; set; }
+        public SeatStatus Statut { get; set; }
         public string Raison { get; }
 
         public EtatPlace EtatPlace { get; }
@@ -345,13 +345,13 @@ namespace GestionFormation.App.Views.Places
         public string Convention { get; }
         public EtatConvention EtatConvention { get; }
         public Guid? ConventionId { get; }
-        public TypeConvention TypeConvention { get; }               
+        public AgreementType AgreementType { get; }               
     }
 
     public class EtatPlace
     {
-        private PlaceStatus Statut;
-        public EtatPlace(PlaceStatus status)
+        private SeatStatus Statut;
+        public EtatPlace(SeatStatus status)
         {
             Statut = status;
         }
@@ -362,10 +362,10 @@ namespace GestionFormation.App.Views.Places
             {
                 switch (Statut)
                 {
-                    case PlaceStatus.AValider: return "Attente de validation";
-                    case PlaceStatus.Annulé: return "Annulée";
-                    case PlaceStatus.Refusé: return "Refusée";
-                    case PlaceStatus.Validé: return "Validée";
+                    case SeatStatus.ToValidate: return "Attente de validation";
+                    case SeatStatus.Canceled: return "Annulée";
+                    case SeatStatus.Refused: return "Refusée";
+                    case SeatStatus.Valid: return "Validée";
                     default: throw new Exception($"Le statut {Statut} est introuvable");
                 }
             }
@@ -378,10 +378,10 @@ namespace GestionFormation.App.Views.Places
                 var iconPath = "/Images/Etats/Places/";
                 switch (Statut)
                 {
-                    case PlaceStatus.AValider: return iconPath + "pending_validation.png";
-                    case PlaceStatus.Annulé: return iconPath + "canceled.png";
-                    case PlaceStatus.Refusé: return iconPath + "refused.png";
-                    case PlaceStatus.Validé: return iconPath + "validated.png";
+                    case SeatStatus.ToValidate: return iconPath + "pending_validation.png";
+                    case SeatStatus.Canceled: return iconPath + "canceled.png";
+                    case SeatStatus.Refused: return iconPath + "refused.png";
+                    case SeatStatus.Valid: return iconPath + "validated.png";
                     default: throw new Exception($"Le statut {Statut} est introuvable");
                 }
             }
@@ -390,16 +390,16 @@ namespace GestionFormation.App.Views.Places
 
     public class EtatConvention
     {
-        public EtatConvention(IPlaceResult result)
+        public EtatConvention(ISeatResult result)
         {
             if (result == null) throw new ArgumentNullException(nameof(result));
 
-            if (result.ConventionId.HasValue)
+            if (result.AgreementId.HasValue)
             {
-                if (string.IsNullOrWhiteSpace(result.NumeroConvention))
+                if (string.IsNullOrWhiteSpace(result.Agreementnumber))
                     Label = "Révoquée";
                 else
-                    Label = (result.ConventionSigned ? "Signée" : "Attente de signature");
+                    Label = (result.AgreementSigned ? "Signée" : "Attente de signature");
             }
             else
                 Label = "Non générée";
@@ -439,10 +439,10 @@ namespace GestionFormation.App.Views.Places
         public SessionInfos(ICompleteSessionResult result)
         {
             Result = result;
-            FormationName = result.Formation;
-            FormateurName = result.Formateur.ToString();
-            FormationLieu = result.Lieu;
-            FormationDuree = $"Le {result.DateDebut:d} sur {result.Durée} jour(s)";
+            FormationName = result.Training;
+            FormateurName = result.Trainer.ToString();
+            FormationLieu = result.Location;
+            FormationDuree = $"Le {result.SessionStart:d} sur {result.Duration} jour(s)";
         }
         public string FormationName { get; }
         public string FormationDuree { get; }

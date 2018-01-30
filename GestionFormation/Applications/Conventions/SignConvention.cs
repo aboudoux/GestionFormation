@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Conventions;
+using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Conventions
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Conventions
 
         public void Execute(Guid conventionId, Guid documentId)
         {
-            var convention = GetAggregate<Convention>(conventionId);
+            var convention = GetAggregate<Agreement>(conventionId);
             convention.Sign(documentId);
             PublishUncommitedEvents(convention);
         }

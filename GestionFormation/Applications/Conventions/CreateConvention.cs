@@ -1,43 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Conventions.Queries;
-using GestionFormation.CoreDomain.Places;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Agreements.Queries;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Conventions
 {
     public class CreateConvention : ActionCommand
     {
-        private readonly IConventionQueries _conventionQueries;
+        private readonly IAgreementQueries _agreementQueries;
 
-        public CreateConvention(EventBus eventBus, IConventionQueries conventionQueries) : base(eventBus)
+        public CreateConvention(EventBus eventBus, IAgreementQueries agreementQueries) : base(eventBus)
         {
-            _conventionQueries = conventionQueries ?? throw new ArgumentNullException(nameof(conventionQueries));
+            _agreementQueries = agreementQueries ?? throw new ArgumentNullException(nameof(agreementQueries));
         }
 
-        public Convention Execute(Guid contactId, IEnumerable<Guid> placesIds, TypeConvention typeConvention)
+        public Agreement Execute(Guid contactId, IEnumerable<Guid> placesIds, AgreementType agreementType)
         {
             CheckThereAreNoDuplicate(placesIds);
             var aggregatesToCommit = new List<AggregateRoot>();
             Guid? societeId = null;
 
-            var numeroConvention = _conventionQueries.GetNextConventionNumber();
+            var numeroConvention = _agreementQueries.GetNextAgreementNumber();
             if( numeroConvention <= 0)
                 throw new Exception("Impossible d'obtenir le numéro de convention.");
 
-            var convention = Convention.Create(contactId, numeroConvention, typeConvention);
+            var convention = Agreement.Create(contactId, numeroConvention, agreementType);
             aggregatesToCommit.Add(convention);
 
             foreach (var placeId in placesIds)
             {
-                var place = GetAggregate<Place>(placeId);
-                if (societeId.HasValue && societeId.Value != place.SocieteId)
+                var place = GetAggregate<Seat>(placeId);
+                if (societeId.HasValue && societeId.Value != place.CompanyId)
                     throw new ConventionSocieteException();
-                societeId = place.SocieteId;
+                societeId = place.CompanyId;
 
-                place.AssociateConvention(convention.AggregateId);
+                place.AssociateAgreement(convention.AggregateId);
                 aggregatesToCommit.Add(place);
             }
 

@@ -10,17 +10,17 @@ namespace GestionFormation.CoreDomain.Contacts
         {
         }
 
-        public static Contact Create(Guid societeId, string nom, string prenom, string email, string telephone)
+        public static Contact Create(Guid companyId, string lastname, string firstname, string email, string telephone)
         {
             var contact = new Contact(History.Empty);
             contact.AggregateId = Guid.NewGuid();
-            contact.UncommitedEvents.Add(new ContactCreated(contact.AggregateId, 1, societeId, nom, prenom, email, telephone));
+            contact.UncommitedEvents.Add(new ContactCreated(contact.AggregateId, 1, companyId, lastname, firstname, email, telephone));
             return contact;
         }
 
-        public void Update(Guid societeId, string nom, string prenom, string email, string telephone)
+        public void Update(Guid societeId, string lastname, string firstname, string email, string telephone)
         {
-            Update(new ContactUpdated(AggregateId, GetNextSequence(), societeId, nom, prenom, email, telephone));
+            Update(new ContactUpdated(AggregateId, GetNextSequence(), societeId, lastname, firstname, email, telephone));
         }
 
         public void Delete()

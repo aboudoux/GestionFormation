@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using GestionFormation.CoreDomain.Formateurs;
-using GestionFormation.CoreDomain.Formateurs.Exceptions;
-using GestionFormation.CoreDomain.Formations;
-using GestionFormation.CoreDomain.Lieux;
-using GestionFormation.CoreDomain.Lieux.Exceptions;
+using GestionFormation.CoreDomain.Locations;
+using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Sessions.Queries;
+using GestionFormation.CoreDomain.Trainers;
+using GestionFormation.CoreDomain.Trainers.Exceptions;
+using GestionFormation.CoreDomain.Trainings;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Formations
@@ -24,7 +24,7 @@ namespace GestionFormation.Applications.Formations
         {            
             var aggregatesToPublish = DeleteAllAssociatedSessionAndUnassignFormateursAndLieux(formationId);
 
-            var formation = GetAggregate<Formation>(formationId);
+            var formation = GetAggregate<Training>(formationId);
             formation.Delete();
             
             aggregatesToPublish.Add(formation);
@@ -35,15 +35,15 @@ namespace GestionFormation.Applications.Formations
         private List<AggregateRoot> DeleteAllAssociatedSessionAndUnassignFormateursAndLieux(Guid formationId)
         {
             var aggregatesToPublish = new List<AggregateRoot>();
-            var formateursUnassigner = new Unassigner<Formateur, FormateurNotExistsException>(EventBus);
-            var lieuUnassigner = new Unassigner<Lieu, LieuNotExistsException>(EventBus);
+            var formateursUnassigner = new Unassigner<Trainer, TrainerNotExistsException>(EventBus);
+            var lieuUnassigner = new Unassigner<Location, LocationNotExistsException>(EventBus);
 
             var allSessions = _sessionQueries.GetAll(formationId);
 
             foreach (var sessionResult in allSessions)
             {
-                formateursUnassigner.Unassign(sessionResult.FormateurId, sessionResult.DateDebut, sessionResult.Durée);
-                lieuUnassigner.Unassign(sessionResult.LieuId, sessionResult.DateDebut, sessionResult.Durée);
+                formateursUnassigner.Unassign(sessionResult.TrainerId, sessionResult.SessionStart, sessionResult.Duration);
+                lieuUnassigner.Unassign(sessionResult.LocationId, sessionResult.SessionStart, sessionResult.Duration);
 
                 var session = GetAggregate<Session>(sessionResult.SessionId);
                 session.Delete();

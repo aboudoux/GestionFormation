@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Places;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.Kernel;
 
@@ -16,20 +16,20 @@ namespace GestionFormation.Applications.Places
 
         public void Execute(Guid placeId, string raison)
         {
-            var place = GetAggregate<Place>(placeId);
+            var place = GetAggregate<Seat>(placeId);
             place.Cancel(raison);
 
-            Convention convention = null;
-            if (place.AssociatedConventionId.HasValue)
+            Agreement agreement = null;
+            if (place.AssociatedAgreementId.HasValue)
             {
-                convention = GetAggregate<Convention>(place.AssociatedConventionId.Value);
-                convention.Revoke();
+                agreement = GetAggregate<Agreement>(place.AssociatedAgreementId.Value);
+                agreement.Revoke();
             }
             
             var session = GetAggregate<Session>(place.SessionId);
             session.ReleasePlace();
 
-            PublishUncommitedEvents(place, convention, session);
+            PublishUncommitedEvents(place, agreement, session);
         }
     }
 }

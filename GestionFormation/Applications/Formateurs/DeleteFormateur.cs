@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Formateurs;
+using GestionFormation.CoreDomain.Trainers;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Formateurs
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Formateurs
 
         public void Execute(Guid formateurId)
         {
-            var formateur = GetAggregate<Formateur>(formateurId);
+            var formateur = GetAggregate<Trainer>(formateurId);
             formateur.Delete();
             PublishUncommitedEvents(formateur);
         }

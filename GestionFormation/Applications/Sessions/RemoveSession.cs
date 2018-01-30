@@ -1,9 +1,9 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Formateurs;
-using GestionFormation.CoreDomain.Formateurs.Exceptions;
-using GestionFormation.CoreDomain.Lieux;
-using GestionFormation.CoreDomain.Lieux.Exceptions;
+using GestionFormation.CoreDomain.Locations;
+using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions;
+using GestionFormation.CoreDomain.Trainers;
+using GestionFormation.CoreDomain.Trainers.Exceptions;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Sessions
@@ -16,28 +16,28 @@ namespace GestionFormation.Applications.Sessions
 
         public void Execute(Guid sessionId)
         {
-            Formateur formateur = null;
+            Trainer trainer = null;
             var session = GetAggregate<Session>(sessionId);
 
-            if (session.FormateurId.HasValue)
+            if (session.TrainerId.HasValue)
             {
-                formateur = GetAggregate<Formateur>(session.FormateurId.Value);
-                if( formateur == null )
-                    throw new FormateurNotExistsException();
-                formateur.UnAssign(session.DateDebut, session.Durée);
+                trainer = GetAggregate<Trainer>(session.TrainerId.Value);
+                if( trainer == null )
+                    throw new TrainerNotExistsException();
+                trainer.UnAssign(session.SessionStart, session.Duration);
             }
 
-            Lieu lieu = null;
-            if (session.LieuId.HasValue)
+            Location location = null;
+            if (session.LocationId.HasValue)
             {
-                lieu = GetAggregate<Lieu>(session.LieuId.Value);
-                if( lieu == null )
-                    throw  new LieuNotExistsException();
-                lieu.UnAssign(session.DateDebut, session.Durée);
+                location = GetAggregate<Location>(session.LocationId.Value);
+                if( location == null )
+                    throw  new LocationNotExistsException();
+                location.UnAssign(session.SessionStart, session.Duration);
             }
 
             session.Delete();
-            PublishUncommitedEvents(formateur, lieu, session);
+            PublishUncommitedEvents(trainer, location, session);
         }
     }
 }

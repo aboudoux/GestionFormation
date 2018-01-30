@@ -4,22 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Formateurs;
-using GestionFormation.CoreDomain.Formateurs.Queries;
+using GestionFormation.CoreDomain.Trainers.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class FormateurListVm : EditableListVm<EditableFormateur>
     {
-        private readonly IFormateurQueries _formateurQueries;
+        private readonly ITrainerQueries _trainerQueries;
 
-        public FormateurListVm(IApplicationService applicationService, IFormateurQueries formateurQueries) : base(applicationService)
+        public FormateurListVm(IApplicationService applicationService, ITrainerQueries trainerQueries) : base(applicationService)
         {
-            _formateurQueries = formateurQueries ?? throw new ArgumentNullException(nameof(formateurQueries));
+            _trainerQueries = trainerQueries ?? throw new ArgumentNullException(nameof(trainerQueries));
         }
 
         protected override async Task<IReadOnlyList<EditableFormateur>> LoadAsync()
         {
-            return await Task.Run(() => _formateurQueries.GetAll().Select(a=>new EditableFormateur(a)).ToList());
+            return await Task.Run(() => _trainerQueries.GetAll().Select(a=>new EditableFormateur(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableFormateur item)
@@ -46,10 +46,10 @@ namespace GestionFormation.App.Views.EditableLists
         {
             
         }
-        public EditableFormateur(IFormateurResult result) : base(result.Id)
+        public EditableFormateur(ITrainerResult result) : base(result.Id)
         {
-            Nom = result.Nom;
-            Prenom = result.Prenom;
+            Nom = result.Lastname;
+            Prenom = result.Firstname;
             Email = result.Email;
         }
 

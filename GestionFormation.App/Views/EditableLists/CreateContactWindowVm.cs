@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Views.Places;
-using GestionFormation.CoreDomain.Societes.Queries;
+using GestionFormation.CoreDomain.Companies.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class CreateContactWindowVm : CreateItemVm
     {
-        private readonly ISocieteQueries _societeQueries;
+        private readonly ICompanyQueries _companyQueries;
         private string _nom;
         private string _prenom;
         private string _email;
@@ -17,15 +17,15 @@ namespace GestionFormation.App.Views.EditableLists
         private ObservableCollection<Item> _societes;
         private Item _selectedSociete;
 
-        public CreateContactWindowVm(string title, object item, ISocieteQueries societeQueries) : base(title, item)
+        public CreateContactWindowVm(string title, object item, ICompanyQueries companyQueries) : base(title, item)
         {
-            _societeQueries = societeQueries;
+            _companyQueries = companyQueries;
         }
 
         public override async Task Init()
         {
-            Societes = new ObservableCollection<Item>(await Task.Run(()=>_societeQueries.GetAll().Select(a=>new Item(){ Id = a.SocieteId, Label = a.Nom})));
-            _societeQueries.GetAll();
+            Societes = new ObservableCollection<Item>(await Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item(){ Id = a.CompanyId, Label = a.Name})));
+            _companyQueries.GetAll();
         }
 
         public string Nom

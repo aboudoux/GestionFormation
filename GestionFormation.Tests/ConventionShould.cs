@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using GestionFormation.Applications.Conventions;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Conventions.Events;
-using GestionFormation.CoreDomain.Conventions.Exceptions;
-using GestionFormation.CoreDomain.Places.Events;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Agreements.Events;
+using GestionFormation.CoreDomain.Agreements.Exceptions;
+using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
 using GestionFormation.Tests.Tools;
@@ -21,8 +21,8 @@ namespace GestionFormation.Tests
         public void raise_conventionCreated_when_create_convention()
         {
             var contactId = Guid.NewGuid();
-            var convention = Convention.Create(contactId, 6000, TypeConvention.Gratuite);
-            convention.UncommitedEvents.GetStream().Should().Contain(new ConventionCreated(Guid.Empty, 0, contactId, 6000, TypeConvention.Gratuite));
+            var convention = Agreement.Create(contactId, 6000, AgreementType.Free);
+            convention.UncommitedEvents.GetStream().Should().Contain(new AgreementCreated(Guid.Empty, 0, contactId, 6000, AgreementType.Free));
         }
 
         [TestMethod]
@@ -31,14 +31,14 @@ namespace GestionFormation.Tests
             var context = CreateConvention();
             var convention = context.Builder.Create();
             convention.Revoke();
-            convention.UncommitedEvents.GetStream().Should().Contain(new ConventionRevoked(Guid.Empty, 0));
+            convention.UncommitedEvents.GetStream().Should().Contain(new AgreementRevoked(Guid.Empty, 0));
         }
 
         [TestMethod]
         public void dont_raise_convention_revoked_twice()
         {
             var context = CreateConvention();
-            context.Builder.AddEvent(new ConventionRevoked(Guid.NewGuid(), 2));
+            context.Builder.AddEvent(new AgreementRevoked(Guid.NewGuid(), 2));
             var convention = context.Builder.Create();
 
             convention.Revoke();
@@ -53,7 +53,7 @@ namespace GestionFormation.Tests
 
             var documentId = Guid.NewGuid();
             convention.Sign(documentId);
-            convention.UncommitedEvents.GetStream().Should().Contain(new ConventionSigned(Guid.Empty, 0, documentId));
+            convention.UncommitedEvents.GetStream().Should().Contain(new AgreementSigned(Guid.Empty, 0, documentId));
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace GestionFormation.Tests
 
             convention.Revoke();
             Action action = () => convention.Sign(Guid.NewGuid());
-            action.ShouldThrow<CannotSignRevokedConvention>();
+            action.ShouldThrow<CannotSignRevokedAgreement>();
         }
 
         [TestMethod]
@@ -75,13 +75,13 @@ namespace GestionFormation.Tests
             var place2Id = Guid.NewGuid();
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new PlaceCreated(place1Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
-            eventStore.Save(new PlaceCreated(place2Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
-            eventStore.Save(new PlaceValided(place1Id, 2));
-            eventStore.Save(new PlaceValided(place2Id, 2));
+            eventStore.Save(new SeatCreated(place1Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            eventStore.Save(new SeatCreated(place2Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            eventStore.Save(new SeatValided(place1Id, 2));
+            eventStore.Save(new SeatValided(place2Id, 2));
 
-            var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), eventStore), new FakeConventionQueries());
-            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id}, TypeConvention.Gratuite);
+            var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), eventStore), new FakeAgreementQueries());
+            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id}, AgreementType.Free);
 
             action.ShouldThrow<ConventionSocieteException>();
         }
@@ -90,18 +90,18 @@ namespace GestionFormation.Tests
         public void throw_error_if_create_convention_has_duplicate_()
         {
             var placeId = Guid.NewGuid();
-            var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeConventionQueries());
-            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() { placeId, placeId},TypeConvention.Gratuite);
+            var createConvention = new CreateConvention(new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeAgreementQueries());
+            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() { placeId, placeId},AgreementType.Free);
 
             action.ShouldThrow<ArgumentException>();
         }
 
         private class TestConventionContext
         {
-            public Aggregate.AggregateBuilder<Convention> Builder { get; }
+            public Aggregate.AggregateBuilder<Agreement> Builder { get; }
             private Guid ContactId { get; }
 
-            public TestConventionContext(Aggregate.AggregateBuilder<Convention> builder, Guid contactId)
+            public TestConventionContext(Aggregate.AggregateBuilder<Agreement> builder, Guid contactId)
             {
                 Builder = builder;
                 ContactId = contactId;
@@ -111,7 +111,7 @@ namespace GestionFormation.Tests
         private TestConventionContext CreateConvention()
         {
             var contactId = Guid.NewGuid();
-            var builder = Aggregate.Make<Convention>().AddEvent(new ConventionCreated(Guid.Empty, 1, contactId, 6000, TypeConvention.Gratuite));
+            var builder = Aggregate.Make<Agreement>().AddEvent(new AgreementCreated(Guid.Empty, 1, contactId, 6000, AgreementType.Free));
             return new TestConventionContext(builder, contactId);
         }
     }

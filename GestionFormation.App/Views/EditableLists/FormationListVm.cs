@@ -4,17 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Formations;
-using GestionFormation.CoreDomain.Formations.Queries;
+using GestionFormation.CoreDomain.Trainings.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class FormationListVm : EditableListVm<EditableFormation>
     {
-        private readonly IFormationQueries _queries;
+        private readonly ITrainingQueries _queries;
 
         public override string Title => "Liste des formations";
 
-        public FormationListVm(IFormationQueries queries, IApplicationService applicationService) : base(applicationService)
+        public FormationListVm(ITrainingQueries queries, IApplicationService applicationService) : base(applicationService)
         {
             _queries = queries ?? throw new ArgumentNullException(nameof(queries));
         }
@@ -50,10 +50,10 @@ namespace GestionFormation.App.Views.EditableLists
             
         }
 
-        public EditableFormation(IFormationResult result) : base(result.Id)
+        public EditableFormation(ITrainingResult result) : base(result.Id)
         {
-            Nom = result.Nom;
-            Places = result.Places;
+            Nom = result.Name;
+            Places = result.Seats;
         }
 
         public string Nom { get; set; }

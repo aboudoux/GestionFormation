@@ -11,12 +11,12 @@ namespace GestionFormation.Tests.Fakes
         public void AddSession(Guid formationId, Guid sessionId, DateTime dateDebut, int durée, Guid? lieuId, Guid? FormateurId)
         {
             var sessionResult = new FakeSessionResult();
-            sessionResult.FormationId = formationId;
+            sessionResult.TrainingId = formationId;
             sessionResult.SessionId = sessionId;
-            sessionResult.DateDebut = dateDebut;
-            sessionResult.Durée = durée;
-            sessionResult.FormateurId = FormateurId;
-            sessionResult.LieuId = lieuId;
+            sessionResult.SessionStart = dateDebut;
+            sessionResult.Duration = durée;
+            sessionResult.TrainerId = FormateurId;
+            sessionResult.LocationId = lieuId;
             _session.Add(sessionResult);
         }
 
@@ -25,7 +25,7 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISessionResult> GetAll(Guid formationId)
+        public IEnumerable<ISessionResult> GetAll(Guid TrainingId)
         {
             return _session;
         }
@@ -35,7 +35,7 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetAllLieux()
+        public IEnumerable<string> GetAllLocation()
         {
             throw new NotImplementedException();
         }
@@ -48,15 +48,15 @@ namespace GestionFormation.Tests.Fakes
         private class FakeSessionResult : ISessionResult
         {
             public Guid SessionId { get; set; }
-            public Guid FormationId { get; set; }
-            public DateTime DateDebut { get; set; }
-            public int Durée { get; set; }
-            public int Places { get; set; }
-            public int PlacesReservées { get; set; }
-            public Guid? LieuId { get; set; }
-            public Guid? FormateurId { get; set; }
-            public bool Annulé { get; set; }
-            public string RaisonAnnulation { get; set; }
+            public Guid TrainingId { get; set; }
+            public DateTime SessionStart { get; set; }
+            public int Duration { get; set; }
+            public int Seats { get; set; }
+            public int ReservedSeats { get; set; }
+            public Guid? LocationId { get; set; }
+            public Guid? TrainerId { get; set; }
+            public bool Canceled { get; set; }
+            public string CancelReason { get; set; }
         }
     }
 }

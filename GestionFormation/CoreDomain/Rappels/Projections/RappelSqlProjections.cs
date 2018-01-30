@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Conventions.Events;
-using GestionFormation.CoreDomain.Places;
-using GestionFormation.CoreDomain.Places.Events;
-using GestionFormation.CoreDomain.Places.Projections;
-using GestionFormation.CoreDomain.Societes.Projections;
+using GestionFormation.CoreDomain.Agreements.Events;
+using GestionFormation.CoreDomain.Companies.Projections;
+using GestionFormation.CoreDomain.Seats;
+using GestionFormation.CoreDomain.Seats.Events;
+using GestionFormation.CoreDomain.Seats.Projections;
 using GestionFormation.CoreDomain.Stagiaires.Projections;
 using GestionFormation.CoreDomain.Utilisateurs;
 using GestionFormation.EventStore;
@@ -15,16 +14,16 @@ using GestionFormation.Kernel;
 namespace GestionFormation.CoreDomain.Rappels.Projections
 {
     public class RappelSqlProjections : IProjectionHandler,
-        IEventHandler<PlaceCreated>,
-        IEventHandler<PlaceRefused>,
-        IEventHandler<PlaceValided>,
-        IEventHandler<PlaceCanceled>,
-        IEventHandler<ConventionCreated>,
-        IEventHandler<ConventionRevoked>,
-        IEventHandler<ConventionSigned>,
-        IEventHandler<ConventionAssociated>
+        IEventHandler<SeatCreated>,
+        IEventHandler<SeatRefused>,
+        IEventHandler<SeatValided>,
+        IEventHandler<SeatCanceled>,
+        IEventHandler<AgreementCreated>,
+        IEventHandler<AgreementRevoked>,
+        IEventHandler<AgreementSigned>,
+        IEventHandler<AgreementAssociated>
     {
-        public void Handle(PlaceCreated @event)
+        public void Handle(SeatCreated @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -35,11 +34,11 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                     context.Rappels.Add(entity);
                 }
 
-                var stagiaire = context.GetEntity<StagiaireSqlEntity>(@event.StagiaireId);
+                var stagiaire = context.GetEntity<StagiaireSqlEntity>(@event.TraineeId);
 
                 entity.PlaceId = @event.AggregateId;
                 entity.SessionId = @event.SessionId;
-                entity.SocieteId = @event.SocieteId;
+                entity.SocieteId = @event.CompanyId;
                 entity.Label = $"Place de {stagiaire.Nom} {stagiaire.Prenom} à valider.";
                 entity.AffectedRole = UtilisateurRole.GestionnaireFormation;                
                 entity.RappelType = RappelType.PlaceToValidate;
@@ -48,12 +47,12 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
             }
         }
 
-        public void Handle(PlaceRefused @event)
+        public void Handle(SeatRefused @event)
         {
             RemovePlaceRappel(@event.AggregateId);
         }
 
-        public void Handle(PlaceValided @event)
+        public void Handle(SeatValided @event)
         {
             RemovePlaceRappel(@event.AggregateId);
 
@@ -63,40 +62,40 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
             }
         }
 
-        public void Handle(PlaceCanceled @event)
+        public void Handle(SeatCanceled @event)
         {
             RemovePlaceRappel(@event.AggregateId);
 
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var place = context.GetEntity<PlaceSqlentity>(@event.AggregateId);
-                if (place.AssociatedConventionId.HasValue && context.Places.Where(a => a.AssociatedConventionId == place.AssociatedConventionId && a.PlaceId != @event.AggregateId).All(a => a.Status != PlaceStatus.Validé)) {                     
-                    RemoveRappel(place.SessionId, place.SocieteId);
+                var place = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                if (place.AssociatedAgreementId.HasValue && context.Seats.Where(a => a.AssociatedAgreementId == place.AssociatedAgreementId && a.SeatId != @event.AggregateId).All(a => a.Status != SeatStatus.Valid)) {                     
+                    RemoveRappel(place.SessionId, place.CompanyId);
                 }
             }
         }
 
         private void AddConventionToCreate(ProjectionContext context, Guid placeId)
         {
-            var place = context.GetEntity<PlaceSqlentity>(placeId);
-            var societe = context.GetEntity<SocieteSqlEntity>(place.SocieteId);
-            if (!context.Rappels.Any(a => a.SocieteId == societe.SocieteId && a.SessionId == place.SessionId))
+            var place = context.GetEntity<SeatSqlentity>(placeId);
+            var societe = context.GetEntity<CompanySqlEntity>(place.CompanyId);
+            if (!context.Rappels.Any(a => a.SocieteId == societe.CompanyId && a.SessionId == place.SessionId))
             {
                 var entity = new RappelSqlEntity();
 
                 entity.SessionId = place.SessionId;
-                entity.SocieteId = societe.SocieteId;
+                entity.SocieteId = societe.CompanyId;
 
                 entity.RappelType = RappelType.ConventionToCreate;                
                 entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                entity.Label = $"{societe.Nom} - Convention à créer";
+                entity.Label = $"{societe.Name} - Convention à créer";
 
                 context.Rappels.Add(entity);
                 context.SaveChanges();
             }
         }
 
-        public void Handle(ConventionCreated @event)
+        public void Handle(AgreementCreated @event)
         {                        
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {                
@@ -104,31 +103,31 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
                 entity.ConventionId = @event.AggregateId;                
                 entity.RappelType = RappelType.ConventionToSign;
                 entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                entity.Label = $"{@event.Convention} - Convention à retourner signée";
+                entity.Label = $"{@event.Agreement} - Convention à retourner signée";
                 context.Rappels.Add(entity);
                 context.SaveChanges();
             }
         }
 
-        public void Handle(ConventionRevoked @event)
+        public void Handle(AgreementRevoked @event)
         {
             RemoveConventionRappel(@event.AggregateId);
             
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var placeEntity = context.Places.FirstOrDefault(a => a.AssociatedConventionId == @event.AggregateId && a.Status == PlaceStatus.Validé);
+                var placeEntity = context.Seats.FirstOrDefault(a => a.AssociatedAgreementId == @event.AggregateId && a.Status == SeatStatus.Valid);
                 if (placeEntity != null)
                 {
-                    RemovePlaceRappel(placeEntity.PlaceId);
-                    var societe = context.GetEntity<SocieteSqlEntity>(placeEntity.SocieteId);
+                    RemovePlaceRappel(placeEntity.SeatId);
+                    var societe = context.GetEntity<CompanySqlEntity>(placeEntity.CompanyId);
 
                     var entity = new RappelSqlEntity();
                     
                     entity.SessionId= placeEntity.SessionId;                    
                     entity.RappelType = RappelType.ConventionToCreate;
-                    entity.SocieteId = placeEntity.SocieteId;
+                    entity.SocieteId = placeEntity.CompanyId;
                     entity.AffectedRole = UtilisateurRole.ServiceFormation;
-                    entity.Label = $"{societe.Nom} - Convention à créer";
+                    entity.Label = $"{societe.Name} - Convention à créer";
 
                     context.Rappels.Add(entity);
                     context.SaveChanges();
@@ -136,17 +135,17 @@ namespace GestionFormation.CoreDomain.Rappels.Projections
             }
         }
 
-        public void Handle(ConventionSigned @event)
+        public void Handle(AgreementSigned @event)
         {
             RemoveConventionRappel(@event.AggregateId);
         }
 
-        public void Handle(ConventionAssociated @event)
+        public void Handle(AgreementAssociated @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var place = context.GetEntity<PlaceSqlentity>(@event.AggregateId);
-                RemoveRappel(place.SessionId, place.SocieteId);
+                var place = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                RemoveRappel(place.SessionId, place.CompanyId);
             }
         }
 

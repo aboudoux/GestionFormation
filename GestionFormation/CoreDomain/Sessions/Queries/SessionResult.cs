@@ -9,26 +9,26 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             SessionId = entity.SessionId;
-            FormationId = entity.FormationId;
-            DateDebut = entity.DateDebut;
-            Durée = entity.DuréeEnJour;
-            Places = entity.Places;
-            PlacesReservées = entity.PlacesReservées;
-            LieuId = entity.LieuId;
-            FormateurId = entity.FormateurId;
-            Annulé = entity.Annulé;
-            RaisonAnnulation = entity.RaisonAnnulation;
+            TrainingId = entity.TrainingId;
+            SessionStart = entity.SessionStart;
+            Duration = entity.Duration;
+            Seats = entity.Seats;
+            ReservedSeats = entity.ReservedSeats;
+            LocationId = entity.LocationId;
+            TrainerId = entity.TrainerId;
+            Canceled = entity.Canceled;
+            CancelReason = entity.CancelReason;
         }
 
         public Guid SessionId { get; }
-        public Guid FormationId { get; }
-        public DateTime DateDebut { get; }
-        public int Durée { get; }
-        public int Places { get; set; }
-        public int PlacesReservées { get; }
-        public Guid? LieuId { get; }
-        public Guid? FormateurId { get; }
-        public bool Annulé { get; }
-        public string RaisonAnnulation { get; }
+        public Guid TrainingId { get; }
+        public DateTime SessionStart { get; }
+        public int Duration { get; }
+        public int Seats { get; set; }
+        public int ReservedSeats { get; }
+        public Guid? LocationId { get; }
+        public Guid? TrainerId { get; }
+        public bool Canceled { get; }
+        public string CancelReason { get; }
     }
 }

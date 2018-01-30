@@ -1,5 +1,5 @@
-﻿using GestionFormation.CoreDomain.Formations.Events;
-using GestionFormation.CoreDomain.Sessions.Events;
+﻿using GestionFormation.CoreDomain.Sessions.Events;
+using GestionFormation.CoreDomain.Trainings.Events;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
@@ -11,7 +11,7 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
         IEventHandler<SessionUpdated>, 
         IEventHandler<SessionDeleted>,
         IEventHandler<SessionCanceled>, 
-        IEventHandler<FormationDeleted>
+        IEventHandler<TrainingDeleted>
     {
         public void Handle(SessionPlanned @event)
         {
@@ -24,14 +24,14 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
                     context.Sessions.Add(entity);
                 }
 
-                entity.FormationId = @event.FormationId;
+                entity.TrainingId = @event.TrainingId;
                 entity.SessionId = @event.AggregateId;
-                entity.DateDebut = @event.DateDebut;
-                entity.DuréeEnJour = @event.DuréeEnJour;
-                entity.FormateurId = @event.FormateurId;
-                entity.LieuId = @event.LieuId;
-                entity.Places = @event.NbrPlaces;
-                entity.PlacesReservées = 0;
+                entity.SessionStart = @event.SessionStart;
+                entity.Duration = @event.Duration;
+                entity.TrainerId = @event.TrainerId;
+                entity.LocationId = @event.LocationId;
+                entity.Seats = @event.Seats;
+                entity.ReservedSeats = 0;
                 context.SaveChanges();
             }
         }
@@ -44,13 +44,13 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
                 if( entity == null )
                     throw new EntityNotFoundException(@event.AggregateId, "Session");
 
-                entity.FormationId = @event.FormationId;
+                entity.TrainingId = @event.TrainingId;
                 entity.SessionId = @event.AggregateId;
-                entity.DateDebut = @event.DateDebut;
-                entity.DuréeEnJour = @event.DuréeEnJour;
-                entity.FormateurId = @event.FormateurId;
-                entity.LieuId = @event.LieuId;
-                entity.Places = @event.NbrPlaces;                
+                entity.SessionStart = @event.SessionStart;
+                entity.Duration = @event.Duration;
+                entity.TrainerId = @event.TrainerId;
+                entity.LocationId = @event.LocationId;
+                entity.Seats = @event.Seats;                
                 context.SaveChanges();
             }
         }
@@ -73,13 +73,13 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
                 var entity = context.Sessions.Find(@event.AggregateId);
                 if (entity == null)
                     throw new EntityNotFoundException(@event.AggregateId, "Session");
-                entity.Annulé = true;
-                entity.RaisonAnnulation = @event.Raison;
+                entity.Canceled = true;
+                entity.CancelReason = @event.Raison;
                 context.SaveChanges();
             }
         }
 
-        public void Handle(FormationDeleted @event)
+        public void Handle(TrainingDeleted @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {

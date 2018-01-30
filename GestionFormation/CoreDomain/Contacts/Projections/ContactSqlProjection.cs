@@ -22,11 +22,11 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
                 }
 
                 entity.ContactId = @event.AggregateId;
-                entity.Nom = @event.Nom;
-                entity.Prenom = @event.Prenom;
+                entity.Lastname = @event.Lastname;
+                entity.Firstname = @event.Firstname;
                 entity.Email = @event.Email;
                 entity.Telephone = @event.Telephone;
-                entity.SocieteId = @event.SocieteId;
+                entity.CompanyId = @event.CompanyId;
                 
                 context.SaveChanges();
             }
@@ -39,11 +39,11 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
                 var entity = context.Contacts.Find(@event.AggregateId);
                 if( entity == null )
                     throw new EntityNotFoundException(@event.AggregateId, "Contact");
-                entity.Nom = @event.Nom;
-                entity.Prenom = @event.Prenom;
+                entity.Lastname = @event.Lastname;
+                entity.Firstname = @event.Firstname;
                 entity.Email = @event.Email;
                 entity.Telephone = @event.Telephone;
-                entity.SocieteId = @event.SocieteId;
+                entity.CompanyId = @event.CompanyId;
                 context.SaveChanges();
             }
         }

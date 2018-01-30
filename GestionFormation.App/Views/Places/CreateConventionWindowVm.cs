@@ -10,8 +10,8 @@ using GestionFormation.App.Views.EditableLists;
 using GestionFormation.Applications.Contacts;
 using GestionFormation.Applications.Conventions;
 using GestionFormation.CoreDomain;
+using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Contacts.Queries;
-using GestionFormation.CoreDomain.Conventions;
 
 namespace GestionFormation.App.Views.Places
 {
@@ -25,7 +25,7 @@ namespace GestionFormation.App.Views.Places
         private ObservableCollection<PlaceItem> _places;
         private ObservableCollection<ContactItem> _contacts;
         private ContactItem _selectedContact;
-        private TypeConvention _typeConvention;
+        private AgreementType _agreementType;
 
         public CreateConventionWindowVm(SessionInfos sessionInfos, IApplicationService applicationService, IContactQueries contactQueries, List<PlaceItem> selectedPlaces, IComputerService computerService)
         {
@@ -46,10 +46,10 @@ namespace GestionFormation.App.Views.Places
             await InitContacts(null);
         }
 
-        public TypeConvention TypeConvention
+        public AgreementType AgreementType
         {
-            get => _typeConvention;
-            set { Set(() => TypeConvention, ref _typeConvention, value); }
+            get => _agreementType;
+            set { Set(() => AgreementType, ref _agreementType, value); }
         }
 
         public RelayCommand UnknowTypeConventionCommand { get; }
@@ -66,9 +66,9 @@ namespace GestionFormation.App.Views.Places
                 var firstPlace = Places.First();
 
                 _computerService.OpenTypeConventionMail(
-                    $"Convention formation {_sessionInfos.FormationName} du {_sessionInfos.Result.DateDebut:d} société {firstPlace.SocieteNom}",
+                    $"Convention formation {_sessionInfos.FormationName} du {_sessionInfos.Result.SessionStart:d} société {firstPlace.SocieteNom}",
                     "Bonjour," + Environment.NewLine + Environment.NewLine +
-                    $"La société {firstPlace.SocieteNom} envoie {Places.Count} stagiaire(s) à la formation {_sessionInfos.FormationName} le {_sessionInfos.Result.DateDebut:D}." + Environment.NewLine + Environment.NewLine +
+                    $"La société {firstPlace.SocieteNom} envoie {Places.Count} stagiaire(s) à la formation {_sessionInfos.FormationName} le {_sessionInfos.Result.SessionStart:D}." + Environment.NewLine + Environment.NewLine +
                     "La convention doit-elle être gratuite ou payante ?" + Environment.NewLine + Environment.NewLine +
                     "Merci pour votre retour rapide" + Environment.NewLine + Environment.NewLine +
                     "Cordialement," + Environment.NewLine
@@ -131,7 +131,7 @@ namespace GestionFormation.App.Views.Places
         protected override async Task ExecuteValiderAsync()
         {
             await HandleMessageBoxError.ExecuteAsync(async () => {
-                await Task.Run(() => _applicationService.Command<CreateConvention>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), TypeConvention));
+                await Task.Run(() => _applicationService.Command<CreateConvention>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType));
                 await base.ExecuteValiderAsync();
             });
         }
@@ -142,8 +142,8 @@ namespace GestionFormation.App.Views.Places
         public ContactItem(IContactResult contactResult)
         {
             Id = contactResult.Id;
-            Nom = contactResult.Nom;
-            Prenom = contactResult.Prenom;
+            Nom = contactResult.Lastname;
+            Prenom = contactResult.Firstname;
             Telephone = contactResult.Telephone;
             Email = contactResult.Email;
         }

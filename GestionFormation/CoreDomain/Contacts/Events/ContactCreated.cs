@@ -5,19 +5,19 @@ namespace GestionFormation.CoreDomain.Contacts.Events
 {
     public class ContactCreated : DomainEvent
     {
-        public string Nom { get; }
-        public string Prenom { get; }
+        public string Lastname { get; }
+        public string Firstname { get; }
         public string Email { get; }
         public string Telephone { get; }
-        public Guid SocieteId { get; }
+        public Guid CompanyId { get; }
 
-        public ContactCreated(Guid aggregateId, int sequence, Guid societeId, string nom, string prenom, string email, string telephone) : base(aggregateId, sequence)
+        public ContactCreated(Guid aggregateId, int sequence, Guid companyId, string lastname, string firstname, string email, string telephone) : base(aggregateId, sequence)
         {
-            Nom = nom;
-            Prenom = prenom;
+            Lastname = lastname;
+            Firstname = firstname;
             Email = email;
             Telephone = telephone;
-            SocieteId = societeId;
+            CompanyId = companyId;
         }
 
         protected override string Description => "Contact créé";

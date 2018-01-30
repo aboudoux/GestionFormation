@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using GestionFormation.Applications.Formations;
-using GestionFormation.CoreDomain.Formations.Queries;
+using GestionFormation.CoreDomain.Trainings.Queries;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Web.Controllers
@@ -10,10 +10,10 @@ namespace GestionFormation.Web.Controllers
     [RoutePrefix("api/v1/formation/command")]    
     public class FormationCommandController : ExtendedApiController
     {
-        private readonly IFormationQueries _queries;
+        private readonly ITrainingQueries _queries;
         private readonly EventBus _eventBus;
 
-        public FormationCommandController(EventBus eventBus, IFormationQueries queries)
+        public FormationCommandController(EventBus eventBus, ITrainingQueries queries)
         {
             _queries = queries ?? throw new ArgumentNullException(nameof(queries));
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));

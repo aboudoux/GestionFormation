@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using GestionFormation.Applications.Formations;
-using GestionFormation.CoreDomain.Formations.Exceptions;
+using GestionFormation.CoreDomain.Trainings.Exceptions;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,14 +15,14 @@ namespace GestionFormation.Tests
         [TestMethod]        
         public void throw_error_if_formation_name_already_exists()
         {
-            var fakeQuery = new FakeFormationQueries();
+            var fakeQuery = new FakeTrainingQueries();
             var idTest1 = Guid.NewGuid();
             fakeQuery.AddFormation(idTest1, "TEST1", 1);
             fakeQuery.AddFormation("TEST2", 1);
             
             var update = new UpdateFormation(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery );
             Action action = () => update.Execute(idTest1, "TEST2",1);
-            action.ShouldThrow<FormationAlreadyExistsException>();
+            action.ShouldThrow<TrainingAlreadyExistsException>();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Places;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Places
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Places
 
         public void Execute(Guid placeId)
         {            
-            var place = GetAggregate<Place>(placeId);                        
+            var place = GetAggregate<Seat>(placeId);                        
             place.Validate();
             PublishUncommitedEvents(place);
         }

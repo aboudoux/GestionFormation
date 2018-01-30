@@ -2,8 +2,8 @@
 {
     public interface ICompleteSessionResult : ISessionResult
     {
-        string Formation { get; }
-        NomComplet Formateur { get; }         
-        string Lieu { get; }
+        string Training { get; }
+        FullName Trainer { get; }         
+        string Location { get; }
     }
 }

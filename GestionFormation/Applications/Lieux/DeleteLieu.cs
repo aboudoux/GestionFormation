@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Lieux;
+using GestionFormation.CoreDomain.Locations;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Lieux
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Lieux
 
         public void Execute(Guid lieuId)
         {
-            var lieu = GetAggregate<Lieu>(lieuId);
+            var lieu = GetAggregate<Location>(lieuId);
             lieu.Delete();
             PublishUncommitedEvents(lieu);
         }

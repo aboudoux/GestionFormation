@@ -6,8 +6,8 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
 {
     public interface IContactQueries
     {
-        IEnumerable<IContactResult> GetAll(Guid societeId);
+        IEnumerable<IContactResult> GetAll(Guid companyId);
         IEnumerable<IContactResult> GetAll();
-        IContactResult GetConventionContact(Guid conventionId);
+        IContactResult GetAgreementContact(Guid agreementId);
     }
 }

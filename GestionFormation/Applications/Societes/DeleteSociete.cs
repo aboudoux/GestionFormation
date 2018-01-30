@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Societes;
+using GestionFormation.CoreDomain.Companies;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Societes
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Societes
 
         public void Execute(Guid societeId)
         {
-            var societe = GetAggregate<Societe>(societeId);
+            var societe = GetAggregate<Company>(societeId);
             societe.Delete();
             PublishUncommitedEvents(societe);
         }

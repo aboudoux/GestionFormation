@@ -18,11 +18,11 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             }
         }
 
-        public IEnumerable<ISessionResult> GetAll(Guid formationId)
+        public IEnumerable<ISessionResult> GetAll(Guid TrainingId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Sessions.Where(a => a.FormationId == formationId).ToList().Select(a => new SessionResult(a)).ToList();
+                return context.Sessions.Where(a => a.TrainingId == TrainingId).ToList().Select(a => new SessionResult(a)).ToList();
             }
         }
 
@@ -31,20 +31,20 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var query = from session in context.Sessions
-                    join formation in context.Formations on session.FormationId equals formation.FormationId
-                    join formateur in context.Formateurs on session.FormateurId equals formateur.FormateurId
-                    join lieu in context.Lieux on session.LieuId equals lieu.Id 
-                    select new {session, Formation = formation.Nom, PrenomFormateur = formateur.Prenom, NomFormateur = formateur.Nom, Lieu = lieu.Nom};                                       
+                    join training in context.Trainings on session.TrainingId equals training.TrainingId
+                    join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
+                    join location in context.Locations on session.LocationId equals location.Id 
+                    select new {session, Formation = training.Name, PrenomFormateur = trainer.Firstname, NomFormateur = trainer.Lastname, Lieu = location.Name};                                       
 
                 return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.Formation, a.Lieu, a.NomFormateur, a.PrenomFormateur)).ToList();
             }
         }
 
-        public IEnumerable<string> GetAllLieux()
+        public IEnumerable<string> GetAllLocation()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Lieux.Select(a => a.Nom).ToList();
+                return context.Locations.Select(a => a.Name).ToList();
             }
         }
 
@@ -54,10 +54,10 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             {
                 var query = from session in context.Sessions
                             where session.SessionId == sessionId
-                join formation in context.Formations on session.FormationId equals formation.FormationId
-                join formateur in context.Formateurs on session.FormateurId equals formateur.FormateurId
-                join lieu in context.Lieux on session.LieuId equals lieu.Id
-                select new { session, Formation = formation.Nom, PrenomFormateur = formateur.Prenom, NomFormateur = formateur.Nom, Lieu = lieu.Nom };
+                join training in context.Trainings on session.TrainingId equals training.TrainingId
+                join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
+                join location in context.Locations on session.LocationId equals location.Id
+                select new { session, Formation = training.Name, PrenomFormateur = trainer.Firstname, NomFormateur = trainer.Lastname, Lieu = location.Name };
 
                 var result = query.FirstOrDefault();
                 return result == null ? null : new CompleteSessionResult(result.session, result.Formation, result.Lieu, result.NomFormateur, result.PrenomFormateur);
@@ -67,15 +67,15 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
 
     public class CompleteSessionResult : SessionResult, ICompleteSessionResult
     {       
-        public CompleteSessionResult(SessionSqlEntity session, string formationName, string lieu, string nomFormateur, string prenomFormateur): base(session)
+        public CompleteSessionResult(SessionSqlEntity session, string trainingName, string location, string trainerLastname, string trainerFirstname): base(session)
         {
-            Formation = formationName;
-            Formateur = new NomComplet(nomFormateur, prenomFormateur);
-            Lieu = lieu;
+            Training = trainingName;
+            Trainer = new FullName(trainerLastname, trainerFirstname);
+            Location = location;
         }
        
-        public string Formation { get; }
-        public NomComplet Formateur { get;  }
-        public string Lieu { get;  }
+        public string Training { get; }
+        public FullName Trainer { get;  }
+        public string Location { get;  }
     }
 }

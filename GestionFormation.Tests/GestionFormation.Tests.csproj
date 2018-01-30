@@ -101,12 +101,12 @@
     <Compile Include="EventBusShould.cs" />
     <Compile Include="EventDispatcherShould.cs" />
     <Compile Include="EventPlayerShould.cs" />
-    <Compile Include="Fakes\FakeConventionQueries.cs" />
+    <Compile Include="Fakes\FakeAgreementQueries.cs" />
     <Compile Include="Fakes\FakeDomainEvent.cs" />
     <Compile Include="Fakes\FakeEventStamping.cs" />
     <Compile Include="Fakes\FakeEventStore.cs" />
-    <Compile Include="Fakes\FakeFormationQueries.cs" />
-    <Compile Include="Fakes\FakeLieuQueries.cs" />
+    <Compile Include="Fakes\FakeTrainingQueries.cs" />
+    <Compile Include="Fakes\FakeLocationQueries.cs" />
     <Compile Include="Fakes\FakeMessenger.cs" />
     <Compile Include="Fakes\FakeSessionProjection.cs" />
     <Compile Include="Fakes\FakeSessionQueries.cs" />

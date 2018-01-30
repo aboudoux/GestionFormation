@@ -5,10 +5,10 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
     public interface IContactResult
     {
         Guid Id { get; }
-        string Nom { get; }
-        string Prenom { get; }
+        string Lastname { get; }
+        string Firstname { get; }
         string Email { get; }
         string Telephone { get; }
-        Guid SocieteId { get; }
+        Guid CompanyId { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
-using GestionFormation.CoreDomain.Formations.Queries;
+using GestionFormation.CoreDomain.Trainings.Queries;
 using GestionFormation.EventStore;
 using GestionFormation.Kernel;
 using GestionFormation.Web.Controllers;
@@ -25,7 +25,7 @@ namespace GestionFormation.Web
             dispatcher.AutoRegisterAllEventHandler();
 
             builder.Register(a => new EventBus(dispatcher, new SqlEventStore(new DomainEventJsonEventSerializer(), null))).SingleInstance();
-            builder.Register(a => new FormationSqlQueries()).As<IFormationQueries>().SingleInstance();
+            builder.Register(a => new TrainingSqlQueries()).As<ITrainingQueries>().SingleInstance();
 
             config.DependencyResolver = new AutofacWebApiDependencyResolver(builder.Build());
 

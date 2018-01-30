@@ -1,9 +1,9 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Formateurs;
-using GestionFormation.CoreDomain.Formateurs.Exceptions;
-using GestionFormation.CoreDomain.Lieux;
-using GestionFormation.CoreDomain.Lieux.Exceptions;
+using GestionFormation.CoreDomain.Locations;
+using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions;
+using GestionFormation.CoreDomain.Trainers;
+using GestionFormation.CoreDomain.Trainers.Exceptions;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Sessions
@@ -15,27 +15,27 @@ namespace GestionFormation.Applications.Sessions
         }
         public Session Execute(Guid formationId, DateTime debut, int durée, int nombrePlace, Guid? lieuId, Guid? formateurId)
         {
-            Formateur formateur = null;
+            Trainer trainer = null;
             if (formateurId.HasValue)
             {
-                formateur = GetAggregate<Formateur>(formateurId.Value);
-                if( formateur == null)
-                    throw new FormateurNotExistsException();
-                formateur.Assign(debut, durée);
+                trainer = GetAggregate<Trainer>(formateurId.Value);
+                if( trainer == null)
+                    throw new TrainerNotExistsException();
+                trainer.Assign(debut, durée);
             }
 
-            Lieu lieu = null;
+            Location location = null;
             if (lieuId.HasValue)
             {
-                lieu = GetAggregate<Lieu>(lieuId.Value);
-                if (lieu == null)
-                    throw new LieuNotExistsException();
-                lieu.Assign(debut, durée);
+                location = GetAggregate<Location>(lieuId.Value);
+                if (location == null)
+                    throw new LocationNotExistsException();
+                location.Assign(debut, durée);
             }
 
 
             var session = Session.Plan(formationId, debut, durée, nombrePlace, lieuId, formateurId);
-            PublishUncommitedEvents(formateur, lieu, session);
+            PublishUncommitedEvents(trainer, location, session);
 
             return session;
         }

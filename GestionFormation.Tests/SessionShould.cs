@@ -2,7 +2,7 @@
 using System.Globalization;
 using FluentAssertions;
 using GestionFormation.Applications.Sessions;
-using GestionFormation.CoreDomain.Places.Events;
+using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.CoreDomain.Sessions.Exceptions;
@@ -101,11 +101,11 @@ namespace GestionFormation.Tests
 
             var stagiaireId = Guid.NewGuid();
             var societeId = Guid.NewGuid();
-            var place = session.ReserverPlace(stagiaireId, societeId);
+            var place = session.BookSeat(stagiaireId, societeId);
 
-            session.UncommitedEvents.GetStream().Should().Contain(new SessionPlaceReserved(Guid.Empty, 0));
+            session.UncommitedEvents.GetStream().Should().Contain(new SessionSeatBooked(Guid.Empty, 0));
             place.UncommitedEvents.GetStream().Should()
-                .Contain(new PlaceCreated(Guid.Empty, 1, session.AggregateId, stagiaireId, societeId));
+                .Contain(new SeatCreated(Guid.Empty, 1, session.AggregateId, stagiaireId, societeId));
         }
 
         
@@ -115,14 +115,14 @@ namespace GestionFormation.Tests
             var context = TestSession.Create();
             var session = context.Builder.Create();
             
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
 
-            Action action = () => session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            action.ShouldThrow<NoMorePlacesAvailableException>();
+            Action action = () => session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            action.ShouldThrow<NoMoreSeatAvailableException>();
         }
 
         [TestMethod]
@@ -130,13 +130,13 @@ namespace GestionFormation.Tests
         {
             var context = TestSession.Create();
             var session = context.Builder.Create();
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
-            session.ReserverPlace(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
+            session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
 
             Action action = () => session.Update(context.FormationId, DateTime.Now, 0, 3, context.LieuId, context.FormateurId);
-            action.ShouldThrow<TooManyPlacesAlreadyReservedException>();
+            action.ShouldThrow<TooManySeatsAlreadyReservedException>();
         }
 
         [DataTestMethod]
@@ -166,14 +166,14 @@ namespace GestionFormation.Tests
 
             var fakeStorage = new FakeEventStore();            
             fakeStorage.Save(new SessionPlanned(sessionId, 1, Guid.NewGuid(), new DateTime(2018,1,9), 1, 5, null, null ));
-            fakeStorage.Save(new SessionPlaceReserved(sessionId, 2));
-            fakeStorage.Save(new PlaceCreated(placeId, 1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            fakeStorage.Save(new SessionSeatBooked(sessionId, 2));
+            fakeStorage.Save(new SeatCreated(placeId, 1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
 
             var bus = new EventBus(new EventDispatcher(), fakeStorage );
             new ReleasePlace(bus).Execute(sessionId, placeId, "essai");
 
-            fakeStorage.GetEvents(sessionId).Should().Contain(new SessionPlaceReleased(sessionId, 1));
-            fakeStorage.GetEvents(placeId).Should().Contain(new PlaceCanceled(placeId, 1, "essai"));
+            fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1));
+            fakeStorage.GetEvents(placeId).Should().Contain(new SeatCanceled(placeId, 1, "essai"));
         }
 
         private class TestSession

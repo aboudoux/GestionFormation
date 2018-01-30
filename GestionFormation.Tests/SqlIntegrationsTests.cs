@@ -11,9 +11,9 @@ using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
-using GestionFormation.CoreDomain.Conventions;
-using GestionFormation.CoreDomain.Conventions.Queries;
-using GestionFormation.CoreDomain.Places.Queries;
+using GestionFormation.CoreDomain.Agreements;
+using GestionFormation.CoreDomain.Agreements.Queries;
+using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.Tests.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -63,23 +63,23 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place4.AggregateId);
             service.Command<ValiderPlace>().Execute(place5.AggregateId);
             
-            var contact = service.Command<CreateContact>().Execute(place1.SocieteId,"CONTACT", "CONVENTION TEST","","");
+            var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST","","");
 
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, TypeConvention.Gratuite);
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, TypeConvention.Gratuite);
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, TypeConvention.Gratuite);
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, AgreementType.Free);
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, AgreementType.Free);
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, AgreementType.Free);
 
             // when
-            var conventionQueries = new ConventionQueries();
+            var conventionQueries = new AgreementQueries();
             var allConventions = conventionQueries.GetAll(session.AggregateId);
 
             // then 
             allConventions.Should().HaveCount(3);
-            allConventions.First(a => a.Societe == "SOCIETE1").Places.Count.Should().Be(2);
-            allConventions.First(a => a.Societe == "SOCIETE2").Places.Count.Should().Be(2);
-            allConventions.First(a => a.Societe == "SOCIETE3").Places.Count.Should().Be(1);
+            allConventions.First(a => a.Company == "SOCIETE1").Seats.Count.Should().Be(2);
+            allConventions.First(a => a.Company == "SOCIETE2").Seats.Count.Should().Be(2);
+            allConventions.First(a => a.Company == "SOCIETE3").Seats.Count.Should().Be(1);
 
-            allConventions.All(a => !string.IsNullOrWhiteSpace(a.ConventionNumber)).Should().BeTrue();
+            allConventions.All(a => !string.IsNullOrWhiteSpace(a.AgreementNumber)).Should().BeTrue();
         }
 
         [TestMethod]
@@ -102,30 +102,30 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place2.AggregateId);
             service.Command<ValiderPlace>().Execute(place3.AggregateId);
 
-            var contact = service.Command<CreateContact>().Execute(place1.SocieteId,"CONTACT", "CONVENTION TEST", "", "");
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, TypeConvention.Gratuite);
-            var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, TypeConvention.Gratuite);
+            var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST", "", "");
+            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
+            var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, AgreementType.Free);
             service.Command<SignConvention>().Execute(convention2.AggregateId, Guid.NewGuid());
 
-            var query = new PlacesQueries();
+            var query = new SeatQueries();
             var places = query.GetAll(session.AggregateId);
 
             places.Should().HaveCount(3);
             
-            var place_1 = places.First(a => a.PlaceId == place1.AggregateId);
-            place_1.ConventionId.Should().BeNull();
-            place_1.NumeroConvention.Should().BeNullOrEmpty();
-            place_1.ConventionSigned.Should().BeFalse();
+            var place_1 = places.First(a => a.SeatId == place1.AggregateId);
+            place_1.AgreementId.Should().BeNull();
+            place_1.Agreementnumber.Should().BeNullOrEmpty();
+            place_1.AgreementSigned.Should().BeFalse();
 
-            var place_2 = places.First(a => a.PlaceId == place2.AggregateId);
-            place_2.ConventionId.Should().NotBeNull();
-            place_2.NumeroConvention.Should().NotBeNullOrWhiteSpace();
-            place_2.ConventionSigned.Should().BeFalse();
+            var place_2 = places.First(a => a.SeatId == place2.AggregateId);
+            place_2.AgreementId.Should().NotBeNull();
+            place_2.Agreementnumber.Should().NotBeNullOrWhiteSpace();
+            place_2.AgreementSigned.Should().BeFalse();
 
-            var place_3 = places.First(a => a.PlaceId == place3.AggregateId);
-            place_3.ConventionId.Should().NotBeNull();
-            place_3.NumeroConvention.Should().NotBeNullOrWhiteSpace();
-            place_3.ConventionSigned.Should().BeTrue();
+            var place_3 = places.First(a => a.SeatId == place3.AggregateId);
+            place_3.AgreementId.Should().NotBeNull();
+            place_3.Agreementnumber.Should().NotBeNullOrWhiteSpace();
+            place_3.AgreementSigned.Should().BeTrue();
         }      
     }
 }

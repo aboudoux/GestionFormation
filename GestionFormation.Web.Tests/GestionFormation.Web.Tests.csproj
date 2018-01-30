@@ -109,7 +109,7 @@
   <ItemGroup>
     <Compile Include="Controllers\FormationApiShould.cs" />
     <Compile Include="Fakes\HttpActionResultExtentions.cs" />
-    <Compile Include="Fakes\FakeFormationQueries.cs" />
+    <Compile Include="Fakes\FakeTrainingQueries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

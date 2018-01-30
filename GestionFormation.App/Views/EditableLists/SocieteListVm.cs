@@ -4,24 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Societes;
-using GestionFormation.CoreDomain.Societes.Queries;
+using GestionFormation.CoreDomain.Companies.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class SocieteListVm : EditableListVm<EditableSociete>
     {
-        private readonly ISocieteQueries _societeQueries;
+        private readonly ICompanyQueries _companyQueries;
 
         public override string Title => "Liste des sociétés";
 
-        public SocieteListVm(IApplicationService applicationService, ISocieteQueries societeQueries) : base(applicationService)
+        public SocieteListVm(IApplicationService applicationService, ICompanyQueries companyQueries) : base(applicationService)
         {
-            _societeQueries = societeQueries ?? throw new ArgumentNullException(nameof(societeQueries));
+            _companyQueries = companyQueries ?? throw new ArgumentNullException(nameof(companyQueries));
         }
 
         protected override async Task<IReadOnlyList<EditableSociete>> LoadAsync()
         {
-            return await Task.Run(() => _societeQueries.GetAll().Select(a => new EditableSociete(a)).ToList());
+            return await Task.Run(() => _companyQueries.GetAll().Select(a => new EditableSociete(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableSociete item)
@@ -47,12 +47,12 @@ namespace GestionFormation.App.Views.EditableLists
             
         }
 
-        public EditableSociete(ISocieteResult result) : base(result.SocieteId)
+        public EditableSociete(ICompanyResult result) : base(result.CompanyId)
         {
-            Nom = result.Nom;
-            Adresse = result.Adresse;
-            CodePostal = result.Codepostal;
-            Ville = result.Ville;
+            Nom = result.Name;
+            Adresse = result.Address;
+            CodePostal = result.ZipCode;
+            Ville = result.City;
         }        
         
 
