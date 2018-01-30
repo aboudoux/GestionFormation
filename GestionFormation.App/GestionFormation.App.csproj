@@ -197,6 +197,10 @@
     <Compile Include="Core\ExceptionExtention.cs" />
     <Compile Include="Core\HandleMessageBoxError.cs" />
     <Compile Include="Core\Security.cs" />
+    <Compile Include="Views\EditableLists\CreateContactWindow.xaml.cs">
+      <DependentUpon>CreateContactWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditableLists\CreateContactWindowVm.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\BoolToEnumConverter.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml.cs">
       <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
@@ -283,6 +287,10 @@
     <Compile Include="Views\EditableLists\SocieteListVm.cs" />
     <Compile Include="Views\EditableLists\StagiaireListVm.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurListVm.cs" />
+    <Page Include="Views\EditableLists\CreateContactWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

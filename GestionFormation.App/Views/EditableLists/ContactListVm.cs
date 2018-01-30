@@ -8,7 +8,7 @@ using GestionFormation.CoreDomain.Contacts.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
-    public class ContactListVm : EditableListVm<EditableContact>
+    public class ContactListVm : EditableListVm<EditableContact, EditableContact, CreateContactWindowVm>
     {
         private readonly IContactQueries _contactQueries;
 
@@ -24,12 +24,12 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableContact item)
         {
-            await Task.Run(() => ApplicationService.Command<CreateContact>().Execute(item.Nom, item.Prenom, item.Email, item.Telephone) );
+            await Task.Run(() => ApplicationService.Command<CreateContact>().Execute(item.GetSocieteId(), item.Nom, item.Prenom, item.Email, item.Telephone) );
         }
 
         protected override async Task UpdateAsync(EditableContact item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateContact>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email, item.Telephone));
+            await Task.Run(() => ApplicationService.Command<UpdateContact>().Execute(item.GetId(), item.GetSocieteId(), item.Nom, item.Prenom, item.Email, item.Telephone));
         }
 
         protected override async Task DeleteAsync(EditableContact item)
@@ -42,21 +42,31 @@ namespace GestionFormation.App.Views.EditableLists
 
     public class EditableContact : EditableItem
     {
+        private readonly Guid _societeId;
+
         public EditableContact()
         {
             
         }
+
+        public EditableContact(Guid societeId)
+        {
+            _societeId = societeId;
+        }
+
         public EditableContact(IContactResult result) : base(result.Id)
         {
             Nom = result.Nom;
             Prenom = result.Prenom;
             Email = result.Email;
             Telephone = result.Telephone;
+            _societeId = result.SocieteId;
         }
 
         public string Nom { get; set; }
         public string Prenom { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }
+        public Guid GetSocieteId() => _societeId;
     }
 }

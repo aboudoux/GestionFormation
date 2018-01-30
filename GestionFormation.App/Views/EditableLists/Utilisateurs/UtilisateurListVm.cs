@@ -11,7 +11,7 @@ using GestionFormation.CoreDomain.Utilisateurs.Queries;
 
 namespace GestionFormation.App.Views.EditableLists.Utilisateurs
 {
-    public class UtilisateurListVm : EditableListVm<EditableUtilisateurCreate, EditableUtilisateurUpdate>
+    public class UtilisateurListVm : EditableListVm<EditableUtilisateurCreate, EditableUtilisateurUpdate, CreateItemVm>
     {
         private readonly IUtilisateurQueries _utilisateurQueries;
 

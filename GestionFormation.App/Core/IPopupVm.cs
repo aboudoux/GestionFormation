@@ -8,5 +8,9 @@ namespace GestionFormation.App.Core
         Task Init();
 
         event EventHandler OnClose;
+
+        bool IsValidated { get; }
+        object Item { get; }
+
     }
 }

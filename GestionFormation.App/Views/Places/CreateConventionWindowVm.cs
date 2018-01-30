@@ -91,13 +91,17 @@ namespace GestionFormation.App.Views.Places
         public RelayCommandAsync AddContactCommand { get; }
         private async Task ExecuteAddContactAsync()
         {
-            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un contact", new EditableContact());
+            var firstPlace = Places.FirstOrDefault();
+            if (firstPlace == null)
+                return;
+
+            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un contact", new EditableContact(firstPlace.SocieteId));
             if (vm.IsValidated)
             {
                 await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
                     var item = vm.Item as EditableContact;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateContact>().Execute(item.Nom, item.Prenom, item.Email, item.Telephone));
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateContact>().Execute(item.GetSocieteId(), item.Nom, item.Prenom, item.Email, item.Telephone));
                     await InitContacts(newItem.AggregateId);
                 });
             }
@@ -105,7 +109,11 @@ namespace GestionFormation.App.Views.Places
 
         private async Task InitContacts(Guid? selectedFormationId)
         {
-            var contactsTask = await Task.Run(() => _contactQueries.GetAll().Select(a => new ContactItem(a)));
+            var firstPlace = Places.FirstOrDefault();
+            if(firstPlace == null)
+                return;
+
+            var contactsTask = await Task.Run(() => _contactQueries.GetAll(firstPlace.SocieteId).Select(a => new ContactItem(a)));
             Contacts = new ObservableCollection<ContactItem>(contactsTask);
             SelectedContact = Contacts.FirstOrDefault(a => a.Id == selectedFormationId);
         }

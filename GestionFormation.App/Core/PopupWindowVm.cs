@@ -40,5 +40,6 @@ namespace GestionFormation.App.Core
         }
 
         public bool IsValidated { get; private set; }
+        public object Item { get; protected set; }
     }
 }

@@ -9,13 +9,15 @@ namespace GestionFormation.CoreDomain.Contacts.Events
         public string Prenom { get; }
         public string Email { get; }
         public string Telephone { get; }
+        public Guid SocieteId { get; }
 
-        public ContactCreated(Guid aggregateId, int sequence, string nom, string prenom, string email, string telephone) : base(aggregateId, sequence)
+        public ContactCreated(Guid aggregateId, int sequence, Guid societeId, string nom, string prenom, string email, string telephone) : base(aggregateId, sequence)
         {
             Nom = nom;
             Prenom = prenom;
             Email = email;
             Telephone = telephone;
+            SocieteId = societeId;
         }
 
         protected override string Description => "Contact créé";

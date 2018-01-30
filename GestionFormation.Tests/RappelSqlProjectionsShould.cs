@@ -124,7 +124,7 @@ namespace GestionFormation.Tests
         public void create_rappel_sign_convention_when_convention_created()
         {
             var place1 = _context.CreatePlace();            
-            var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
+            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, TypeConvention.Gratuite);
 
@@ -142,7 +142,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
-            var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
+            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, TypeConvention.Gratuite);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
@@ -158,9 +158,9 @@ namespace GestionFormation.Tests
             var place2 = _context.CreatePlace(place1.SocieteId);
 
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
-            _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
+            _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);            
 
-            var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
+            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId, "TEST RAPPEL", "test", "", "");
             _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
@@ -178,7 +178,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
-            var contact = _context.App.Command<CreateContact>().Execute("TEST RAPPEL", "test", "", "");
+            var contact = _context.App.Command<CreateContact>().Execute(place1.SocieteId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, TypeConvention.Gratuite);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");

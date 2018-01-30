@@ -10,10 +10,10 @@ namespace GestionFormation.Applications.Contacts
         {
         }
 
-        public void Execute(Guid contactId, string nom, string prenom, string email, string telephone)
+        public void Execute(Guid contactId, Guid societeId, string nom, string prenom, string email, string telephone)
         {
             var contact = GetAggregate<Contact>(contactId);
-            contact.Update(nom, prenom, email, telephone);
+            contact.Update(societeId, nom, prenom, email, telephone);
             PublishUncommitedEvents(contact);
         }
     }

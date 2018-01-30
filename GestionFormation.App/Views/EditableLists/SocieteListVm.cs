@@ -37,7 +37,7 @@ namespace GestionFormation.App.Views.EditableLists
         protected override async Task DeleteAsync(EditableSociete item)
         {
             await Task.Run(()=>ApplicationService.Command<DeleteSociete>().Execute(item.GetId()));
-        }        
+        }
     }
 
     public class EditableSociete : EditableItem

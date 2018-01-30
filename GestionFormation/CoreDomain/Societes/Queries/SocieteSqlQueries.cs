@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
@@ -13,6 +14,14 @@ namespace GestionFormation.CoreDomain.Societes.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 return context.Societes.ToList().Select(a => new SocieteResult(a));
+            }
+        }
+
+        public bool Exists(Guid societeId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                return context.Societes.Any(a => a.SocieteId == societeId);
             }
         }
     }

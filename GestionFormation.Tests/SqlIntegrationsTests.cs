@@ -63,7 +63,7 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place4.AggregateId);
             service.Command<ValiderPlace>().Execute(place5.AggregateId);
             
-            var contact = service.Command<CreateContact>().Execute("CONTACT", "CONVENTION TEST","","");
+            var contact = service.Command<CreateContact>().Execute(place1.SocieteId,"CONTACT", "CONVENTION TEST","","");
 
             service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, TypeConvention.Gratuite);
             service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, TypeConvention.Gratuite);
@@ -102,7 +102,7 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place2.AggregateId);
             service.Command<ValiderPlace>().Execute(place3.AggregateId);
 
-            var contact = service.Command<CreateContact>().Execute("CONTACT", "CONVENTION TEST", "", "");
+            var contact = service.Command<CreateContact>().Execute(place1.SocieteId,"CONTACT", "CONVENTION TEST", "", "");
             service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, TypeConvention.Gratuite);
             var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, TypeConvention.Gratuite);
             service.Command<SignConvention>().Execute(convention2.AggregateId, Guid.NewGuid());

@@ -26,6 +26,7 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
                 entity.Prenom = @event.Prenom;
                 entity.Email = @event.Email;
                 entity.Telephone = @event.Telephone;
+                entity.SocieteId = @event.SocieteId;
                 
                 context.SaveChanges();
             }
@@ -42,6 +43,7 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
                 entity.Prenom = @event.Prenom;
                 entity.Email = @event.Email;
                 entity.Telephone = @event.Telephone;
+                entity.SocieteId = @event.SocieteId;
                 context.SaveChanges();
             }
         }

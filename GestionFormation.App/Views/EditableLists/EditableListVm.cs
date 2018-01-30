@@ -8,8 +8,9 @@ using GestionFormation.App.Core;
 
 namespace GestionFormation.App.Views.EditableLists
 {
-    public abstract class EditableListVm<TCreateItem, TUpdateItem> : ViewModelBase, ILoadableVm        
+    public abstract class EditableListVm<TCreateItem, TUpdateItem, TCreateItemVm> : ViewModelBase, ILoadableVm        
      where TCreateItem : new()
+    where TCreateItemVm : ViewModelBase, IPopupVm
     {
         protected readonly IApplicationService ApplicationService;
         private ObservableCollection<TUpdateItem> _items;
@@ -40,7 +41,7 @@ namespace GestionFormation.App.Views.EditableLists
         public RelayCommandAsync CreateCommand { get; }
         private async Task ExecuteCreateCommandAsync()
         {
-            var vm = await ApplicationService.OpenPopup<CreateItemVm>("Ajouter un element", new TCreateItem());
+            var vm = await ApplicationService.OpenPopup<TCreateItemVm>("Ajouter un element", new TCreateItem());
             if (vm.IsValidated)
             {
                 try
@@ -135,10 +136,9 @@ namespace GestionFormation.App.Views.EditableLists
         {
             DeleteCommand.RaiseCanExecuteChanged();
         }
-
     }
 
-    public abstract class EditableListVm<T> : EditableListVm<T, T> where T : new()
+    public abstract class EditableListVm<T> : EditableListVm<T, T, CreateItemVm> where T : new()
     {
         protected EditableListVm(IApplicationService applicationService) : base(applicationService)
         {

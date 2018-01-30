@@ -5,8 +5,6 @@ namespace GestionFormation.App.Views.EditableLists
     public class CreateItemVm : PopupWindowVm
     {
         public string Title { get; }
-        public object Item { get; }
-
      
         public CreateItemVm(string title, object item)
         {

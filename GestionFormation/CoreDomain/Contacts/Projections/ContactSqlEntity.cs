@@ -13,5 +13,6 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
         public string Prenom { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }
+        public Guid SocieteId { get; set; }
     }
 }

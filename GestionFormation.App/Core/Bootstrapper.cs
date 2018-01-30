@@ -59,6 +59,7 @@ namespace GestionFormation.App.Core
                 .Element<DeroulementWindowVm, DeroulementWindow>()
                 .Element<HistoriqueWindowVm, HistoriqueWindow>()
                 .Element<PlacesListerVm, ListerWindow>()
+                .Element<CreateContactWindowVm, CreateContactWindow>()
                 .Build();
 
             var dispatcher = new EventDispatcher();

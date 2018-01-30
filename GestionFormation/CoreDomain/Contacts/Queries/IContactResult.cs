@@ -9,5 +9,6 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
         string Prenom { get; }
         string Email { get; }
         string Telephone { get; }
+        Guid SocieteId { get; }
     }
 }
