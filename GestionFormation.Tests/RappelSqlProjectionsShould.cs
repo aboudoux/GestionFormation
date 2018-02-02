@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using GestionFormation.Applications.Agreements;
 using GestionFormation.Applications.Contacts;
-using GestionFormation.Applications.Conventions;
-using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Agreements;
-using GestionFormation.CoreDomain.Rappels.Projections;
-using GestionFormation.CoreDomain.Rappels.Queries;
+using GestionFormation.CoreDomain.Reminders.Projections;
+using GestionFormation.CoreDomain.Reminders.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 using GestionFormation.Tests.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -40,11 +40,11 @@ namespace GestionFormation.Tests
         {
             
             var formation = _service.Command<CreateFormation>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20);
-            var formateur = _service.Command<CreateFormateur>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
+            var formateur = _service.Command<CreateTrainer>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
             var lieu = _service.Command<CreateLieu>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);
             var session = _service.Command<PlanSession>().Execute(formation.AggregateId, DateTime.Now, 1, 20, lieu.AggregateId, formateur.AggregateId);
 
-            _context = new RappelTestContext(_service, session, new RappelSqlQueries());
+            _context = new RappelTestContext(_service, session, new ReminderSqlQueries());
         }
 
         [TestMethod]
@@ -53,9 +53,9 @@ namespace GestionFormation.Tests
             var place = _context.CreatePlace();
 
             // then            
-            var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
+            var result = _context.Queries.GetAll(UserRole.Manager).ToList();
 
-            result.Should().Contain(a =>a.SessionId == place.SessionId && a.RappelType == RappelType.PlaceToValidate);
+            result.Should().Contain(a =>a.SessionId == place.SessionId && a.ReminderType == RappelType.PlaceToValidate);
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace GestionFormation.Tests
             var place = _context.CreatePlace();
             _context.App.Command<RefuserPlace>().Execute(place.AggregateId, "test");
 
-            var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
+            var result = _context.Queries.GetAll(UserRole.Manager).ToList();
             result.Should().NotContain(a => a.SessionId == place.SessionId);
         }
 
@@ -74,7 +74,7 @@ namespace GestionFormation.Tests
             var place = _context.CreatePlace();
             _context.App.Command<AnnulerPlace>().Execute(place.AggregateId, "test");
 
-            var result = _context.Queries.GetAll(UtilisateurRole.GestionnaireFormation).ToList();
+            var result = _context.Queries.GetAll(UserRole.Manager).ToList();
             result.Should().NotContain(a => a.SessionId == place.SessionId);
         }
 
@@ -84,8 +84,8 @@ namespace GestionFormation.Tests
             var place = _context.CreatePlace();
             _context.App.Command<ValiderPlace>().Execute(place.AggregateId);
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().Contain(a => a.SessionId == place.SessionId && a.RappelType == RappelType.ConventionToCreate);
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
+            result.Should().Contain(a => a.SessionId == place.SessionId && a.ReminderType == RappelType.ConventionToCreate);
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place3.AggregateId);
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(1);
         }
 
@@ -116,7 +116,7 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place3.AggregateId);
             _context.App.Command<ValiderPlace>().Execute(place4.AggregateId);
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(2);
         }
 
@@ -126,10 +126,10 @@ namespace GestionFormation.Tests
             var place1 = _context.CreatePlace();            
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<ValiderPlace>().Execute(place1.AggregateId);
-            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, AgreementType.Free);
+            var convention = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, AgreementType.Free);
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Where(a=>a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToSign );
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
+            result.Where(a=>a.AgreementId == convention.AggregateId && a.ReminderType == RappelType.ConventionToSign );
             result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(0);
         }
 
@@ -143,12 +143,12 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, AgreementType.Free);
+            _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().Contain(a => a.SessionId == place2.SessionId && a.RappelType == RappelType.ConventionToCreate);
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
+            result.Should().Contain(a => a.SessionId == place2.SessionId && a.ReminderType == RappelType.ConventionToCreate);
         }
 
         [TestMethod]
@@ -161,12 +161,12 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);            
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
+            _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
             _context.App.Command<AnnulerPlace>().Execute(place2.AggregateId, "test");
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.RappelType == RappelType.ConventionToCreate);
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
+            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.ReminderType == RappelType.ConventionToCreate);
         }
 
         [TestMethod]
@@ -179,14 +179,14 @@ namespace GestionFormation.Tests
             _context.App.Command<ValiderPlace>().Execute(place2.AggregateId);
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
-            _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
+            _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
 
             _context.App.Command<AnnulerPlace>().Execute(place1.AggregateId, "test");
-            var convention = _context.App.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
+            var convention = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
 
-            var result = _context.Queries.GetAll(UtilisateurRole.ServiceFormation).ToList();
-            result.Should().NotContain(a => a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToCreate);
-            result.Should().Contain(a => a.ConventionId == convention.AggregateId && a.RappelType == RappelType.ConventionToSign);
+            var result = _context.Queries.GetAll(UserRole.Operator).ToList();
+            result.Should().NotContain(a => a.AgreementId == convention.AggregateId && a.ReminderType == RappelType.ConventionToCreate);
+            result.Should().Contain(a => a.AgreementId == convention.AggregateId && a.ReminderType == RappelType.ConventionToSign);
         }
     }
 
@@ -194,9 +194,9 @@ namespace GestionFormation.Tests
     {
         private readonly SqlTestApplicationService _service;
         private readonly Session _session;
-        private readonly IRappelQueries _queries;
+        private readonly IReminderQueries _queries;
 
-        public RappelTestContext(SqlTestApplicationService service, Session session, IRappelQueries queries)
+        public RappelTestContext(SqlTestApplicationService service, Session session, IReminderQueries queries)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _session = session ?? throw new ArgumentNullException(nameof(session));
@@ -206,7 +206,7 @@ namespace GestionFormation.Tests
         public SqlTestApplicationService App => _service;
         public Guid SessionId => _session.AggregateId;
 
-        public IRappelQueries Queries => _queries;
+        public IReminderQueries Queries => _queries;
         
 
         public Seat CreatePlace(Guid? societeId = null)

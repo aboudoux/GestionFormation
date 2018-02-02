@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Stagiaires;
+using GestionFormation.CoreDomain.Students;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Stagiaires
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Stagiaires
 
         public void Execute(Guid stagiaireId)
         {
-            var stagiaire = GetAggregate<Stagiaire>(stagiaireId);
+            var stagiaire = GetAggregate<Student>(stagiaireId);
             stagiaire.Delete();
             PublishUncommitedEvents(stagiaire);
         }

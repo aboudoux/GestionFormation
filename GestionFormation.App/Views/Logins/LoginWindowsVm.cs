@@ -4,8 +4,8 @@ using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Utilisateurs;
 using GestionFormation.CoreDomain;
-using GestionFormation.CoreDomain.Utilisateurs;
-using GestionFormation.CoreDomain.Utilisateurs.Queries;
+using GestionFormation.CoreDomain.Users;
+using GestionFormation.CoreDomain.Users.Queries;
 
 namespace GestionFormation.App.Views.Logins
 {
@@ -13,16 +13,16 @@ namespace GestionFormation.App.Views.Logins
     public class LoginWindowsVm : PopupWindowVm
     {       
         private readonly IApplicationService _applicationService;
-        private readonly IUtilisateurQueries _utilisateurQueries;
+        private readonly IUserQueries _userQueries;
         private readonly IComputerService _computerService;
         private string _username;
         private string _password;
         private bool _connecting;
 
-        public LoginWindowsVm(IApplicationService applicationService, IUtilisateurQueries utilisateurQueries, IComputerService computerService)
+        public LoginWindowsVm(IApplicationService applicationService, IUserQueries userQueries, IComputerService computerService)
         {
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
-            _utilisateurQueries = utilisateurQueries ?? throw new ArgumentNullException(nameof(utilisateurQueries));
+            _userQueries = userQueries ?? throw new ArgumentNullException(nameof(userQueries));
             _computerService = computerService ?? throw new ArgumentNullException(nameof(computerService));
 
             SetValiderCommandCanExecute(()=>!string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !Connecting);
@@ -72,10 +72,10 @@ namespace GestionFormation.App.Views.Logins
                 Connecting = true;                            
                 await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
-                    if (!_utilisateurQueries.Exists("admin"))
-                        await Task.Run(() => _applicationService.Command<CreateUtilisateur>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UtilisateurRole.Admin));
+                    if (!_userQueries.Exists("admin"))
+                        await Task.Run(() => _applicationService.Command<CreateUser>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UserRole.Admin));
 
-                    var command = new Logon(_utilisateurQueries);
+                    var command = new Logon(_userQueries);
 
                     var loggedUser = await Task.Run(() => command.Execute(Username, Password));
                     Bootstrapper.SetLoggedUser(loggedUser);

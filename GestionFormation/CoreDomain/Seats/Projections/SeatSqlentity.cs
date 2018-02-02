@@ -10,7 +10,7 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         [Key]
         public Guid SeatId { get; set; }
         public Guid SessionId { get; set; }
-        public Guid TraineeId { get; set; }
+        public Guid StudentId { get; set; }
         public Guid CompanyId { get; set; }
         public SeatStatus Status { get; set; }
         public string Reason { get; set; }

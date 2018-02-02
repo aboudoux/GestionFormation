@@ -1,5 +1,5 @@
 using System;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 
 namespace GestionFormation.EventStore
 {
@@ -9,6 +9,6 @@ namespace GestionFormation.EventStore
         string Login { get; }
         string Nom { get; }
         string Prenom { get; }
-        UtilisateurRole Role { get; }
+        UserRole Role { get; }
     }
 }

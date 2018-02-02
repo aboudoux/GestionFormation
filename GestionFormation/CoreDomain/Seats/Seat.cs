@@ -35,16 +35,16 @@ namespace GestionFormation.CoreDomain.Seats
                 .Add<AgreementDisassociated>(e => AssociatedAgreementId = null);
         }
 
-        public static Seat Create(Guid sessionId, Guid traineeId, Guid companyId)
+        public static Seat Create(Guid sessionId, Guid studentId, Guid companyId)
         {
             if(sessionId == Guid.Empty) throw new ArgumentNullException(nameof(sessionId));
-            if(traineeId == Guid.Empty) throw new ArgumentNullException(nameof(traineeId));
+            if(studentId == Guid.Empty) throw new ArgumentNullException(nameof(studentId));
             if(companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
 
             var seat = new Seat(History.Empty);
             seat.AggregateId = Guid.NewGuid();
 
-            var @event = new SeatCreated(seat.AggregateId, 1, sessionId, traineeId, companyId);
+            var @event = new SeatCreated(seat.AggregateId, 1, sessionId, studentId, companyId);
             seat.Apply(@event);
             seat.UncommitedEvents.Add(@event);
             

@@ -1,4 +1,4 @@
-﻿using GestionFormation.CoreDomain.Utilisateurs.Queries;
+﻿using GestionFormation.CoreDomain.Users.Queries;
 using GestionFormation.EventStore;
 using GestionFormation.Kernel;
 
@@ -6,19 +6,19 @@ namespace GestionFormation.Applications.Utilisateurs
 {
     public class Logon
     {
-        private readonly IUtilisateurQueries _utilisateurQueries;
+        private readonly IUserQueries _userQueries;
 
-        public Logon(IUtilisateurQueries utilisateurQueries)
+        public Logon(IUserQueries userQueries)
         {
-            _utilisateurQueries = utilisateurQueries;
+            _userQueries = userQueries;
         }
 
         public LoggedUser Execute(string login, string password)
         {            
-            var loggedUser = _utilisateurQueries.GetLogin(login, password);
+            var loggedUser = _userQueries.GetLogin(login, password);
             if (loggedUser == null)
                 throw new BadLoginException();
-            return  new LoggedUser(loggedUser.Id, loggedUser.Login, loggedUser.Nom, loggedUser.Prenom, loggedUser.Role);
+            return  new LoggedUser(loggedUser.Id, loggedUser.Login, loggedUser.Lastname, loggedUser.Firsname, loggedUser.Role);
         }
     }
 

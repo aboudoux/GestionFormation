@@ -6,40 +6,40 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Utilisateurs;
-using GestionFormation.CoreDomain.Utilisateurs;
-using GestionFormation.CoreDomain.Utilisateurs.Queries;
+using GestionFormation.CoreDomain.Users;
+using GestionFormation.CoreDomain.Users.Queries;
 
 namespace GestionFormation.App.Views.EditableLists.Utilisateurs
 {
     public class UtilisateurListVm : EditableListVm<EditableUtilisateurCreate, EditableUtilisateurUpdate, CreateItemVm>
     {
-        private readonly IUtilisateurQueries _utilisateurQueries;
+        private readonly IUserQueries _userQueries;
 
-        public UtilisateurListVm(IApplicationService applicationService, IUtilisateurQueries utilisateurQueries) : base(applicationService)
+        public UtilisateurListVm(IApplicationService applicationService, IUserQueries userQueries) : base(applicationService)
         {
-            _utilisateurQueries = utilisateurQueries ?? throw new ArgumentNullException(nameof(utilisateurQueries));
+            _userQueries = userQueries ?? throw new ArgumentNullException(nameof(userQueries));
             ChangePasswordCommand = new RelayCommandAsync(ExecuteChangePasswordAsync, () => SelectedItem != null);
             ChangeRoleCommand = new RelayCommandAsync(ExecuteChangeRoleAsync, () => SelectedItem != null);
         }
         
         protected override async Task<IReadOnlyList<EditableUtilisateurUpdate>> LoadAsync()
         {
-            return await Task.Run(()=> _utilisateurQueries.GetAll().Select(a=>new EditableUtilisateurUpdate(a)).ToList());
+            return await Task.Run(()=> _userQueries.GetAll().Select(a=>new EditableUtilisateurUpdate(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableUtilisateurCreate item)
         {
-            await Task.Run(()=>ApplicationService.Command<CreateUtilisateur>().Execute(item.Login, item.Password, item.Nom, item.Prenom, item.Email, UtilisateurRole.Invité));
+            await Task.Run(()=>ApplicationService.Command<CreateUser>().Execute(item.Login, item.Password, item.Nom, item.Prenom, item.Email, UserRole.Guest));
         }
 
         protected override async Task UpdateAsync(EditableUtilisateurUpdate item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateUtilisateur>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email, item.IsEnabled));
+            await Task.Run(() => ApplicationService.Command<UpdateUser>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email, item.IsEnabled));
         }
 
         protected override async Task DeleteAsync(EditableUtilisateurUpdate item)
         {
-            await Task.Run(()=>ApplicationService.Command<DeleteUtilisateur>().Execute(item.GetId()));
+            await Task.Run(()=>ApplicationService.Command<DeleteUser>().Execute(item.GetId()));
         }
 
         protected override void RaiseCanExecuteChanged()
@@ -91,34 +91,34 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
 
     public class EditableUtilisateurUpdate : EditableItem
     {
-        private UtilisateurRole _role;
+        private UserRole _role;
 
         public EditableUtilisateurUpdate()
         {
             
         }
 
-        public EditableUtilisateurUpdate(IUtilisateurResult result) : base(result.Id)
+        public EditableUtilisateurUpdate(IUserResult result) : base(result.Id)
         {
             Login = result.Login;
-            Nom = result.Nom;
-            Prenom = result.Prenom;
+            Nom = result.Lastname;
+            Prenom = result.Firsname;
             Email = result.Email;
             IsEnabled = result.IsEnabled;
             _role = result.Role;
 
             switch (result.Role)
             {
-                case UtilisateurRole.Admin:
+                case UserRole.Admin:
                     Role = "Administrateur";
                     break;
-                case UtilisateurRole.GestionnaireFormation:
+                case UserRole.Manager:
                     Role = "Gestionnaire formation";
                     break;
-                case UtilisateurRole.ServiceFormation:
+                case UserRole.Operator:
                     Role = "Service formation";
                     break;
-                case UtilisateurRole.Invité:
+                case UserRole.Guest:
                     Role = "Invité";
                     break;
                 default:
@@ -134,7 +134,7 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
         public string Email { get; set; }
         public string Role { get; }
 
-        public UtilisateurRole GetRole()
+        public UserRole GetRole()
         {
             return _role;
         }

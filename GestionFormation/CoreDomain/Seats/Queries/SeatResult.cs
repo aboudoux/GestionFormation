@@ -10,7 +10,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
         public SeatResult(SeatSqlentity a, AgreementSqlEntity agreement)
         {
             SeatId = a.SeatId;
-            TraineeId = a.TraineeId;
+            StudentId = a.StudentId;
             CompanyId = a.CompanyId;
             Status = a.Status;
             Reason = a.Reason;
@@ -25,7 +25,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
         }
 
         public Guid SeatId { get; }
-        public Guid TraineeId { get; }
+        public Guid StudentId { get; }
         public Guid CompanyId { get; }
         public SeatStatus Status { get; }
         public string Reason { get; }

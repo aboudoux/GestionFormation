@@ -2,7 +2,7 @@
 {
     public interface IAgreementSeatResult
     {
-        FullName Trainee { get; }
+        FullName Student { get; }
         string Company { get; }
         string Address { get; }
         string ZipCode { get; }

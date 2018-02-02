@@ -9,7 +9,7 @@ using GestionFormation.App.Core;
 using GestionFormation.App.Views.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.CoreDomain.Sessions.Queries;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 
 namespace GestionFormation.App.Views.Sessions
 {
@@ -51,7 +51,7 @@ namespace GestionFormation.App.Views.Sessions
         public RelayCommandAsync<AppointmentItemEventArgs> CreateSession { get; }
         private async Task ExecuteCreateSessionAsync(AppointmentItemEventArgs arg)
         {
-            if (!Security[UtilisateurRole.GestionnaireFormation])
+            if (!Security[UserRole.Manager])
             {
                 MessageBox.Show("Vous n'avez pas le droit d'ajouter une session.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

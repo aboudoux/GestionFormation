@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Formateurs;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Trainers.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -24,17 +24,17 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableFormateur item)
         {            
-            await Task.Run(()=> ApplicationService.Command<CreateFormateur>().Execute(item.Nom, item.Prenom, item.Email));
+            await Task.Run(()=> ApplicationService.Command<CreateTrainer>().Execute(item.Nom, item.Prenom, item.Email));
         }
 
         protected override async Task UpdateAsync(EditableFormateur item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateFormateur>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email) );            
+            await Task.Run(() => ApplicationService.Command<UpdateTrainer>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email) );            
         }
 
         protected override async Task DeleteAsync(EditableFormateur item)
         {
-            await Task.Run(() => ApplicationService.Command<DeleteFormateur>().Execute(item.GetId()));            
+            await Task.Run(() => ApplicationService.Command<DeleteTrainer>().Execute(item.GetId()));            
         }
 
         public override string Title => "Liste des formateurs";

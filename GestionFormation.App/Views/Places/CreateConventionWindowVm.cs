@@ -7,8 +7,8 @@ using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
+using GestionFormation.Applications.Agreements;
 using GestionFormation.Applications.Contacts;
-using GestionFormation.Applications.Conventions;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Contacts.Queries;
@@ -131,7 +131,7 @@ namespace GestionFormation.App.Views.Places
         protected override async Task ExecuteValiderAsync()
         {
             await HandleMessageBoxError.ExecuteAsync(async () => {
-                await Task.Run(() => _applicationService.Command<CreateConvention>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType));
+                await Task.Run(() => _applicationService.Command<CreateAgreement>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType));
                 await base.ExecuteValiderAsync();
             });
         }

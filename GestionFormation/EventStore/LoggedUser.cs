@@ -1,11 +1,11 @@
 using System;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 
 namespace GestionFormation.EventStore
 {
     public class LoggedUser: ILoggedUser
     {
-        public LoggedUser(Guid userId, string login, string nom, string prenom, UtilisateurRole role)
+        public LoggedUser(Guid userId, string login, string nom, string prenom, UserRole role)
         {
             if(userId == Guid.Empty)
                 throw new ArgumentNullException(nameof(userId));
@@ -20,7 +20,7 @@ namespace GestionFormation.EventStore
         public string Login { get; }
         public string Nom { get; }
         public string Prenom { get; }
-        public UtilisateurRole Role { get; }
+        public UserRole Role { get; }
 
         public override string ToString()
         {

@@ -1,18 +1,18 @@
 using GestionFormation.App.Core;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 
 namespace GestionFormation.App.Views.EditableLists.Utilisateurs
 {
     public class ChangeRoleWindowVm : PopupWindowVm
     {
-        private UtilisateurRole _role;
+        private UserRole _role;
 
-        public ChangeRoleWindowVm(UtilisateurRole role)
+        public ChangeRoleWindowVm(UserRole role)
         {
             Role = role;
         }
 
-        public UtilisateurRole Role
+        public UserRole Role
         {
             get => _role;
             set { Set(()=>Role, ref _role, value); }

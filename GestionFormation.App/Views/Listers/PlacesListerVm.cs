@@ -29,7 +29,7 @@ namespace GestionFormation.App.Views.Listers
         public PlaceListerItem(IListSeat place)
         {
             Societe = place.Company;
-            Stagiaire = new FullName(place.TraineeLastname, place.TraineeFirstname);
+            Stagiaire = new FullName(place.StudentLastname, place.StudentFirstname);
             Formateur = new FullName(place.TrainerLastname, place.TrainerFirstname);
             Formation = place.Training;
             DateDebut = place.SessionStart;

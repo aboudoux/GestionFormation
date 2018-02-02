@@ -27,7 +27,7 @@ namespace GestionFormation.CoreDomain.Seats.Projections
                 entity.SeatId = @event.AggregateId;
                 entity.SessionId = @event.SessionId;
                 entity.CompanyId = @event.CompanyId;
-                entity.TraineeId = @event.TraineeId;
+                entity.StudentId = @event.StudentId;
                 entity.Reason = "";
                 entity.Status = SeatStatus.ToValidate;
                 context.SaveChanges();

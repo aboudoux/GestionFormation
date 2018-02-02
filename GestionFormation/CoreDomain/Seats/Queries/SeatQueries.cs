@@ -29,19 +29,19 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             {
                 var querie = from p in context.Seats
                     where p.AssociatedAgreementId == conventionId
-                    join trainee in context.Stagiaires on p.TraineeId equals trainee.StagiaireId
+                    join student in context.Students on p.StudentId equals student.StudentId
                     join company in context.Companies on p.CompanyId equals company.CompanyId
                     select new
                     {
-                        TraineeLastname = trainee.Nom,
-                        TraineeFirstname = trainee.Prenom,
+                        StudentLastname = student.Lastname,
+                        StudentFirstname = student.Firstname,
                         CompanyName = company.Name,
                         Addresse = company.Address,
                         CodePostal = company.ZipCode,
                         Ville = company.City,                        
                     };
 
-                return querie.ToList().Select(a=>new AgreementSeatResult(){ Company = a.CompanyName, Trainee = new FullName(a.TraineeLastname , a.TraineeFirstname), Address = a.Addresse, ZipCode = a.CodePostal, City = a.Ville});
+                return querie.ToList().Select(a=>new AgreementSeatResult(){ Company = a.CompanyName, Student = new FullName(a.StudentLastname , a.StudentFirstname), Address = a.Addresse, ZipCode = a.CodePostal, City = a.Ville});
             }
         }
 
@@ -52,13 +52,13 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                 var querie = from p in context.Seats
                     join agreement in context.Agreements on p.AssociatedAgreementId equals agreement.AgreementId
                     join contact in context.Contacts on agreement.ContactId equals contact.ContactId             
-                    join trainee in context.Stagiaires on p.TraineeId equals trainee.StagiaireId
+                    join student in context.Students on p.StudentId equals student.StudentId
                     join company in context.Companies on p.CompanyId equals company.CompanyId
                     where p.SessionId == sessionId && p.Status == SeatStatus.Valid && agreement.DocumentId.HasValue
                     select new
                     {
-                        StagiaireNom = trainee.Nom,
-                        StagiairePrenom = trainee.Prenom,
+                        StagiaireNom = student.Lastname,
+                        StagiairePrenom = student.Firstname,
                         SocieteNom = company.Name,
                         ContactNom = contact.Lastname,
                         ContactPrenom = contact.Firstname,
@@ -75,7 +75,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var querie = from p in context.Seats
-                        join stagiaire in context.Stagiaires on p.TraineeId equals stagiaire.StagiaireId
+                        join stagiaire in context.Students on p.StudentId equals stagiaire.StudentId
                         join societe in context.Companies on p.CompanyId equals societe.CompanyId
                         join session in context.Sessions on p.SessionId equals session.SessionId
                         join formateur in context.Trainers on session.TrainerId equals formateur.TrainerId
@@ -89,8 +89,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                         {
                             SeatStatus = p.Status,
                             Company = societe.Name,
-                            TraineeLastname = stagiaire.Nom,
-                            TraineeFirstname = stagiaire.Prenom,
+                            StudentLastname = stagiaire.Lastname,
+                            StudentFirstname = stagiaire.Firstname,
                             TrainerLastname = formateur.Lastname,
                             TrainerFirstname = formateur.Firstname,
                             Training = formation.Name,
@@ -112,8 +112,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
     {
         public SeatStatus SeatStatus { get; set; }
         public string Company { get; set; }
-        public string TraineeLastname { get; set; }
-        public string TraineeFirstname { get; set; }
+        public string StudentLastname { get; set; }
+        public string StudentFirstname { get; set; }
         public string TrainerLastname { get; set; }
         public string TrainerFirstname { get; set; }
         public string Training { get; set; }

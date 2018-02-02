@@ -6,7 +6,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
     public interface ISeatResult
     {
         Guid SeatId { get; }
-        Guid TraineeId { get; }
+        Guid StudentId { get; }
         Guid CompanyId { get; }
         SeatStatus Status { get; }
         string Reason { get; }

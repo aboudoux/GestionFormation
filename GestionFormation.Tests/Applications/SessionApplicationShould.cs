@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
-using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Sessions;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Locations.Events;
 using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions.Events;
@@ -720,7 +720,7 @@ namespace GestionFormation.Tests.Applications
 
              var formationId = Guid.NewGuid();
 
-             var formateur = new CreateFormateur(eventBus).Execute("BOUDOUX", "Aurelien", "test@test.com");
+             var formateur = new CreateTrainer(eventBus).Execute("BOUDOUX", "Aurelien", "test@test.com");
              var lieu = new CreateLieu(eventBus, new FakeLocationQueries()).Execute("Paris", "test", 5);
 
              new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 20), 3, 3, lieu.AggregateId, formateur.AggregateId);

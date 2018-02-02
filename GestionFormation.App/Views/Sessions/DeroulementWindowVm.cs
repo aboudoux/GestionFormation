@@ -78,7 +78,7 @@ namespace GestionFormation.App.Views.Sessions
         private void ExecutePrintFeuillePresence()
         {
             HandleMessageBoxError.Execute(()=>{ 
-                var document = _documentRepository.CreateFeuillePresence(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Places.Select(a=>new Participant(a.Trainee, a.Company)).ToList());
+                var document = _documentRepository.CreateFeuillePresence(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Places.Select(a=>new Participant(a.Student, a.Company)).ToList());
                 Process.Start(document);
             });
         }
@@ -90,7 +90,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 HandleMessageBoxError.Execute(() =>
                 {
-                    var document = _documentRepository.CreateCertificatAssiduite(place.Trainee, place.Company, _sessionInfos.Training, _sessionInfos.Location, _sessionInfos.Duration, _sessionInfos.Trainer, _sessionInfos.SessionStart);
+                    var document = _documentRepository.CreateCertificatAssiduite(place.Student, place.Company, _sessionInfos.Training, _sessionInfos.Location, _sessionInfos.Duration, _sessionInfos.Trainer, _sessionInfos.SessionStart);
                     Process.Start(document);
                 });
             }
@@ -116,7 +116,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 HandleMessageBoxError.Execute(() =>
                 {
-                    var document = _documentRepository.CreateDiplome(place.Trainee, place.Company, _sessionInfos.SessionStart, _sessionInfos.SessionStart.AddDays(_sessionInfos.Duration - 1), _sessionInfos.Trainer);
+                    var document = _documentRepository.CreateDiplome(place.Student, place.Company, _sessionInfos.SessionStart, _sessionInfos.SessionStart.AddDays(_sessionInfos.Duration - 1), _sessionInfos.Trainer);
                     Process.Start(document);
                 });
             }

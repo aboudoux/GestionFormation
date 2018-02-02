@@ -4,13 +4,13 @@ using GestionFormation.CoreDomain.Agreements.Projections;
 using GestionFormation.CoreDomain.Companies.Projections;
 using GestionFormation.CoreDomain.Contacts.Projections;
 using GestionFormation.CoreDomain.Locations.Projections;
-using GestionFormation.CoreDomain.Rappels.Projections;
+using GestionFormation.CoreDomain.Reminders.Projections;
 using GestionFormation.CoreDomain.Seats.Projections;
 using GestionFormation.CoreDomain.Sessions.Projections;
-using GestionFormation.CoreDomain.Stagiaires.Projections;
+using GestionFormation.CoreDomain.Students.Projections;
 using GestionFormation.CoreDomain.Trainers.Projections;
 using GestionFormation.CoreDomain.Trainings.Projections;
-using GestionFormation.CoreDomain.Utilisateurs.Projections;
+using GestionFormation.CoreDomain.Users.Projections;
 
 namespace GestionFormation.Infrastructure
 {
@@ -20,7 +20,7 @@ namespace GestionFormation.Infrastructure
         {
         }
 
-        public DbSet<StagiaireSqlEntity> Stagiaires { get; set; }
+        public DbSet<StudentSqlEntity> Students { get; set; }
         public DbSet<TrainingSqlEntity> Trainings { get; set; }
         public DbSet<SessionSqlEntity> Sessions { get; set; }
         public DbSet<TrainerSqlEntity> Trainers { get; set; }
@@ -29,8 +29,8 @@ namespace GestionFormation.Infrastructure
         public DbSet<CompanySqlEntity> Companies { get; set; }
         public DbSet<ContactSqlEntity> Contacts { get; set; }  
         public DbSet<AgreementSqlEntity> Agreements { get; set; }
-        public DbSet<UtilisateurSqlEntity> Utilisateurs { get; set; }
-        public DbSet<RappelSqlEntity> Rappels { get; set; }
+        public DbSet<UserSqlEntity> Users { get; set; }
+        public DbSet<ReminderSqlEntity> Reminders { get; set; }
 
 
         public T GetEntity<T>(Guid id) where T : class

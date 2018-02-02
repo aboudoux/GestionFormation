@@ -14,7 +14,7 @@ using GestionFormation.CoreDomain.Companies.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
-using GestionFormation.CoreDomain.Stagiaires.Queries;
+using GestionFormation.CoreDomain.Students.Queries;
 
 namespace GestionFormation.App.Views.Places
 {
@@ -25,17 +25,17 @@ namespace GestionFormation.App.Views.Places
         private readonly IApplicationService _applicationService;
         private readonly ISessionQueries _sessionQueries;
         private readonly ICompanyQueries _companyQueries;
-        private readonly IStagiaireQueries _stagiaireQueries;
+        private readonly IStudentQueries _studentQueries;
         private readonly ISeatQueries _seatQueries;
 
-        public PlacesWindowVm(Guid sessionId,  int sessionPlaces, ISeatQueries seatQueries, ICompanyQueries companyQueries, IStagiaireQueries stagiaireQueries, IApplicationService applicationService, ISessionQueries sessionQueries)
+        public PlacesWindowVm(Guid sessionId,  int sessionPlaces, ISeatQueries seatQueries, ICompanyQueries companyQueries, IStudentQueries studentQueries, IApplicationService applicationService, ISessionQueries sessionQueries)
         {
             _sessionId = sessionId;
             _sessionPlaces = sessionPlaces;
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
             _sessionQueries = sessionQueries ?? throw new ArgumentNullException(nameof(sessionQueries));
             _companyQueries = companyQueries ?? throw new ArgumentNullException(nameof(companyQueries));
-            _stagiaireQueries = stagiaireQueries ?? throw new ArgumentNullException(nameof(stagiaireQueries));
+            _studentQueries = studentQueries ?? throw new ArgumentNullException(nameof(studentQueries));
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
 
             AddPlaceCommand = new RelayCommandAsync(ExecuteAddPlaceAsync, () => SelectedSociete != null && SelectedStagiaire != null);
@@ -161,7 +161,7 @@ namespace GestionFormation.App.Views.Places
 
         public override async Task Init()
         {
-            var stagiaires = Task.Run(() => _stagiaireQueries.GetAll().Select(a => new Item {Id = a.Id, Label = a.Prenom + " " + a.Nom}));
+            var stagiaires = Task.Run(() => _studentQueries.GetAll().Select(a => new Item {Id = a.Id, Label = a.Firstname + " " + a.Lastname}));
             var societes = Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item { Id = a.CompanyId, Label = a.Name}));
             var session = Task.Run(() => _sessionQueries.GetSession(_sessionId));
 
@@ -195,7 +195,7 @@ namespace GestionFormation.App.Views.Places
 
         private async Task RefreshPlaces()
         {
-            var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, Stagiaires.First(b=>b.Id == a.TraineeId ).Label, Societes.First(b=>b.Id == a.CompanyId).Label)));
+            var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, Stagiaires.First(b=>b.Id == a.StudentId ).Label, Societes.First(b=>b.Id == a.CompanyId).Label)));
             Places = new ObservableCollection<PlaceItem>(items);
             RefreshCompteurs();
         }
@@ -210,7 +210,7 @@ namespace GestionFormation.App.Views.Places
                     var item = vm.Item as EditableStagiaire;
                     var newStagiaire = await Task.Run(() => _applicationService.Command<CreateStagiaire>().Execute(item.Nom, item.Prenom));
 
-                    var stagiaires = await Task.Run(() => _stagiaireQueries.GetAll().Select(a => new Item { Id = a.Id, Label = a.Prenom + " " + a.Nom }));
+                    var stagiaires = await Task.Run(() => _studentQueries.GetAll().Select(a => new Item { Id = a.Id, Label = a.Firstname + " " + a.Lastname }));
                     Stagiaires = new ObservableCollection<Item>(stagiaires);
                     SelectedStagiaire = Stagiaires.FirstOrDefault(a => a.Id == newStagiaire.AggregateId);                
                 });
@@ -317,7 +317,7 @@ namespace GestionFormation.App.Views.Places
             StagiaireNom = stagiaireNom;
             SocieteNom = societeNom;
             PlaceId = result.SeatId;
-            StagiaireId = result.TraineeId;
+            StagiaireId = result.StudentId;
             SocieteId = result.CompanyId;
             Statut = result.Status;
             Raison = result.Reason;

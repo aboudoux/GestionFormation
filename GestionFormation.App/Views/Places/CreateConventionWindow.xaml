@@ -6,7 +6,6 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-    xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Utilisateurs;assembly=GestionFormation"
     xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
     xmlns:conventions="clr-namespace:GestionFormation.CoreDomain.Agreements;assembly=GestionFormation"
     Title="Création d'une convention" Height="400" Width="483.112">

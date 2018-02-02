@@ -13,7 +13,7 @@ using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Places;
 using GestionFormation.App.Views.Sessions;
-using GestionFormation.CoreDomain.Rappels.Queries;
+using GestionFormation.CoreDomain.Reminders.Queries;
 using GestionFormation.CoreDomain.Sessions;
 
 namespace GestionFormation.App
@@ -21,15 +21,15 @@ namespace GestionFormation.App
     public class MainWindowsVm : ViewModelBase
     {
         private readonly IApplicationService _applicationService;
-        private readonly IRappelQueries _rappelQueries;
+        private readonly IReminderQueries _reminderQueries;
         private string _title;
         private ObservableCollection<RappelItem> _rappels;
         private RappelItem _selectedRappel;
 
-        public MainWindowsVm(IApplicationService applicationService, IRappelQueries rappelQueries)
+        public MainWindowsVm(IApplicationService applicationService, IReminderQueries reminderQueries)
         {
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
-            _rappelQueries = rappelQueries;
+            _reminderQueries = reminderQueries;
 
             OpenFormationList = new RelayCommandAsync(async ()=> await OpenDocument<FormationListVm>());
             OpenScheduler = new RelayCommandAsync(async () => await OpenDocument<SessionSchedulerVm>());
@@ -88,7 +88,7 @@ namespace GestionFormation.App
         public RelayCommandAsync RefreshRappels { get; }
         private async Task ExecuteRefreshRappelAsync()
         {
-            var items = await Task.Run(()=>_rappelQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new RappelItem(a)));
+            var items = await Task.Run(()=>_reminderQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new RappelItem(a)));
             Rappels = new ObservableCollection<RappelItem>(items);
         }
 
@@ -127,11 +127,11 @@ namespace GestionFormation.App
     {
         private readonly string _label;
 
-        public RappelItem(IRappelResult result)
+        public RappelItem(IReminderResult result)
         {
             _label = result.Label;
             SessionId = result.SessionId;
-            ConventionId = result.ConventionId;
+            ConventionId = result.AgreementId;
         }
 
         public Guid? SessionId { get; }

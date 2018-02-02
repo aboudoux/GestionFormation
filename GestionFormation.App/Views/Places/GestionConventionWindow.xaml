@@ -23,7 +23,7 @@
                 <dxlc:LayoutItem Label="NOM : ">
                     <TextBlock Text="{Binding Path=Nom}"></TextBlock>
                 </dxlc:LayoutItem>
-                <dxlc:LayoutItem Label="Prenom :">
+                <dxlc:LayoutItem Label="Prelastname :">
                     <TextBlock Text="{Binding Path=Prenom}"></TextBlock>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>

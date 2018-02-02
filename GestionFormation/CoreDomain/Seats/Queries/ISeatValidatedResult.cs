@@ -2,7 +2,7 @@
 {
     public interface ISeatValidatedResult
     {
-        FullName Trainee { get; }
+        FullName Student { get; }
         string Company { get; }
         FullName Contact { get; }
         string Telephone { get; }

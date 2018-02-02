@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GalaSoft.MvvmLight.CommandWpf;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Conventions;
+using GestionFormation.Applications.Agreements;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
@@ -133,9 +133,9 @@ namespace GestionFormation.App.Views.Places
                 var conv = await Task.Run(()=>_agreementQueries.GetPrintableAgreement(_conventionId));
 
                 if (conv.AgreementType == AgreementType.Free)
-                    doc = _documentRepository.CreateConventionGratuite(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a=>new Participant(a.Trainee, a.Company)).ToList());
+                    doc = _documentRepository.CreateConventionGratuite(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a=>new Participant(a.Student, a.Company)).ToList());
                 else
-                    doc = _documentRepository.CreateConventionPayante(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a => new Participant(a.Trainee, a.Company)).ToList());
+                    doc = _documentRepository.CreateConventionPayante(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a => new Participant(a.Student, a.Company)).ToList());
 
                 Process.Start(doc);
             });
@@ -151,7 +151,7 @@ namespace GestionFormation.App.Views.Places
 
             await HandleMessageBoxError.ExecuteAsync(async () => { 
                 var documentId = await Task.Run(()=>_documentRepository.SaveConvention(DocumentPath));
-                await Task.Run(()=>_applicationService.Command<SignConvention>().Execute(_conventionId, documentId));
+                await Task.Run(()=>_applicationService.Command<SignAgreement>().Execute(_conventionId, documentId));
                 await base.ExecuteValiderAsync();
             });
 

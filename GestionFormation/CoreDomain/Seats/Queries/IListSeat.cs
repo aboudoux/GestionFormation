@@ -6,8 +6,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
     {       
         SeatStatus SeatStatus { get;  }
         string Company { get;  }
-        string TraineeLastname { get; }
-        string TraineeFirstname { get;  }
+        string StudentLastname { get; }
+        string StudentFirstname { get;  }
 
         string TrainerLastname { get;  }
         string TrainerFirstname { get;  }

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using GestionFormation.Applications.Agreements;
 using GestionFormation.Applications.Contacts;
-using GestionFormation.Applications.Conventions;
-using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Societes;
 using GestionFormation.Applications.Stagiaires;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.CoreDomain.Seats.Queries;
@@ -28,7 +28,7 @@ namespace GestionFormation.Tests
         {
             var service = new SqlTestApplicationService();
 
-            var formateur = service.Command<CreateFormateur>().Execute("TEST", DateTime.Now.ToString("G"), "test@test.com");
+            var formateur = service.Command<CreateTrainer>().Execute("TEST", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLieu>().Execute(DateTime.Now.ToString("G"), "test", 5);
 
             var createdFormation = service.Command<CreateFormation>().Execute("Essai " + DateTime.Now.ToString("G"), 2);
@@ -41,7 +41,7 @@ namespace GestionFormation.Tests
             // given
             var service = new SqlTestApplicationService();
             
-            var formateur = service.Command<CreateFormateur>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
+            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLieu>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
             var stagiaire = service.Command<CreateStagiaire>().Execute("STAGIAIRE", "CONVENTION TEST");
             var societe1 = service.Command<CreateSociete>().Execute("SOCIETE1", "CONVENTION TEST", "", "");
@@ -65,9 +65,9 @@ namespace GestionFormation.Tests
             
             var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST","","");
 
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, AgreementType.Free);
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, AgreementType.Free);
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, AgreementType.Free);
 
             // when
             var conventionQueries = new AgreementQueries();
@@ -87,7 +87,7 @@ namespace GestionFormation.Tests
         {
             var service = new SqlTestApplicationService();
 
-            var formateur = service.Command<CreateFormateur>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
+            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLieu>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
             var stagiaire = service.Command<CreateStagiaire>().Execute("STAGIAIRE", "CONVENTION TEST");
             var societe1 = service.Command<CreateSociete>().Execute("SOCIETE1", "CONVENTION TEST", "", "");
@@ -103,9 +103,9 @@ namespace GestionFormation.Tests
             service.Command<ValiderPlace>().Execute(place3.AggregateId);
 
             var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST", "", "");
-            service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
-            var convention2 = service.Command<CreateConvention>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, AgreementType.Free);
-            service.Command<SignConvention>().Execute(convention2.AggregateId, Guid.NewGuid());
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
+            var convention2 = service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, AgreementType.Free);
+            service.Command<SignAgreement>().Execute(convention2.AggregateId, Guid.NewGuid());
 
             var query = new SeatQueries();
             var places = query.GetAll(session.AggregateId);

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.Applications.Formateurs;
 using GestionFormation.Applications.Formations;
 using GestionFormation.Applications.Lieux;
 using GestionFormation.Applications.Sessions;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Locations.Queries;
 using GestionFormation.CoreDomain.Trainers.Queries;
 using GestionFormation.CoreDomain.Trainings.Queries;
@@ -203,7 +203,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 await HandleMessageBoxError.ExecuteAsync(async () => {
                     var item = vm.Item as EditableFormateur;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateFormateur>().Execute(item.Nom, item.Prenom, item.Email));
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateTrainer>().Execute(item.Nom, item.Prenom, item.Email));
                     await InitFormateurs(newItem.AggregateId);
                 });
             }

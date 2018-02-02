@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Utilisateurs
@@ -12,7 +12,7 @@ namespace GestionFormation.Applications.Utilisateurs
 
         public void Execute(Guid utilisateurId, string newPassword)
         {
-            var utilisateur = GetAggregate<Utilisateur>(utilisateurId);
+            var utilisateur = GetAggregate<User>(utilisateurId);
             utilisateur.ChangePassword(newPassword);
             PublishUncommitedEvents(utilisateur);
         }

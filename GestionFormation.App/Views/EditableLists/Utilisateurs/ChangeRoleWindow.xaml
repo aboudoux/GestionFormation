@@ -5,7 +5,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
-    xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Utilisateurs;assembly=GestionFormation"
+    xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Users;assembly=GestionFormation"
     Title="Définition du role de l'utilisateur" Height="250" Width="400">
     <dx:DXWindow.Resources>
         <ResourceDictionary>
@@ -20,11 +20,11 @@
         </Grid.RowDefinitions>
         <TextBlock Margin="5" VerticalAlignment="Center">Veuillez indiquer le role pour cet utilisateur :</TextBlock>
         <StackPanel Grid.Row="1" Margin="10">
-            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Admin}}" >Administrateur</RadioButton>
-            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.GestionnaireFormation}}" >Gestionnaire formation</RadioButton>
-            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.ServiceFormation}}" >Service formation</RadioButton>
-            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Formateur}}" >Formateur</RadioButton>
-            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UtilisateurRole.Invité}}" >Invité</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UserRole.Admin}}" >Administrateur</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UserRole.Manager}}" >Gestionnaire formation</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UserRole.Operator}}" >Service formation</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UserRole.Trainer}}" >Formateur</RadioButton>
+            <RadioButton IsChecked="{Binding Path=Role, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static utilisateurs1:UserRole.Guest}}" >Invité</RadioButton>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Center">

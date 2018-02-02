@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionFormation.App"
         xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
-        xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Utilisateurs;assembly=GestionFormation"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
         xmlns:dxsch="http://schemas.devexpress.com/winfx/2008/xaml/scheduling"

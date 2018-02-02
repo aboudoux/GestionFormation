@@ -4,24 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Stagiaires;
-using GestionFormation.CoreDomain.Stagiaires.Queries;
+using GestionFormation.CoreDomain.Students.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     public class StagiaireListVm : EditableListVm<EditableStagiaire>
     {
-        private readonly IStagiaireQueries _stagiaireQueries;
+        private readonly IStudentQueries _studentQueries;
 
         public override string Title => "Liste des stagiaires";
 
-        public StagiaireListVm(IApplicationService applicationService, IStagiaireQueries stagiaireQueries) : base(applicationService)
+        public StagiaireListVm(IApplicationService applicationService, IStudentQueries studentQueries) : base(applicationService)
         {
-            _stagiaireQueries = stagiaireQueries ?? throw new ArgumentNullException(nameof(stagiaireQueries));
+            _studentQueries = studentQueries ?? throw new ArgumentNullException(nameof(studentQueries));
         }
 
         protected override async Task<IReadOnlyList<EditableStagiaire>> LoadAsync()
         {
-            return await Task.Run(()=>_stagiaireQueries.GetAll().Select(a=>new EditableStagiaire(a)).ToList());
+            return await Task.Run(()=>_studentQueries.GetAll().Select(a=>new EditableStagiaire(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableStagiaire item)
@@ -46,10 +46,10 @@ namespace GestionFormation.App.Views.EditableLists
         {
             
         }
-        public EditableStagiaire(IStagiaireResult result) : base(result.Id)
+        public EditableStagiaire(IStudentResult result) : base(result.Id)
         {
-            Nom = result.Nom;
-            Prenom = result.Prenom;
+            Nom = result.Lastname;
+            Prenom = result.Firstname;
         }
 
         public string Nom { get; set; }

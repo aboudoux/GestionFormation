@@ -1,6 +1,6 @@
 ﻿using System;
 using DevExpress.Mvvm;
-using GestionFormation.CoreDomain.Utilisateurs;
+using GestionFormation.CoreDomain.Users;
 
 namespace GestionFormation.App.Core
 {
@@ -13,6 +13,6 @@ namespace GestionFormation.App.Core
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
         }
 
-        public bool this [UtilisateurRole autorisedRole] => autorisedRole >= _applicationService.LoggedUser.Role;
+        public bool this [UserRole autorisedRole] => autorisedRole >= _applicationService.LoggedUser.Role;
     }
 }

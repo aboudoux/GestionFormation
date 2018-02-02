@@ -90,9 +90,9 @@ namespace GestionFormation.CoreDomain.Sessions
             RaiseEvent(new SessionCanceled(AggregateId, GetNextSequence(), reason));
         }
 
-        public Seat BookSeat(Guid traineeId, Guid companyId)
+        public Seat BookSeat(Guid studentId, Guid companyId)
         {
-            if( traineeId == Guid.Empty) throw new ArgumentNullException(nameof(traineeId));
+            if( studentId == Guid.Empty) throw new ArgumentNullException(nameof(studentId));
             if(companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
 
             if(_availableSeats - _bookedSeats <= 0)
@@ -100,7 +100,7 @@ namespace GestionFormation.CoreDomain.Sessions
 
             RaiseEvent(new SessionSeatBooked(AggregateId, GetNextSequence()));
             
-            return Seat.Create(AggregateId, traineeId, companyId);
+            return Seat.Create(AggregateId, studentId, companyId);
         }
 
         public void ReleasePlace()

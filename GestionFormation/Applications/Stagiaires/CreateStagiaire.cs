@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using GestionFormation.CoreDomain.Stagiaires;
+using GestionFormation.CoreDomain.Students;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Stagiaires
@@ -11,9 +11,9 @@ namespace GestionFormation.Applications.Stagiaires
         {
         }
 
-        public Stagiaire Execute(string nom, string prenom)
+        public Student Execute(string nom, string prenom)
         {
-            var stagiaire = Stagiaire.Create(nom, prenom);
+            var stagiaire = Student.Create(nom, prenom);
             PublishUncommitedEvents(stagiaire);
             return stagiaire;
         }
