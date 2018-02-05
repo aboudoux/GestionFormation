@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.Applications.Formations;
-using GestionFormation.Applications.Lieux;
+using GestionFormation.Applications.Locations;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Trainers;
+using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Locations.Queries;
 using GestionFormation.CoreDomain.Trainers.Queries;
 using GestionFormation.CoreDomain.Trainings.Queries;
@@ -175,7 +175,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 await HandleMessageBoxError.ExecuteAsync( async ()=>{
                     var item = vm.Item as EditableFormation;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateFormation>().Execute(item.Nom, item.Places));
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateTraining>().Execute(item.Nom, item.Places));
                     await InitFormations(newItem.AggregateId);
                 });
             }
@@ -189,7 +189,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 await HandleMessageBoxError.ExecuteAsync(async () => {                   
                     var item = vm.Item as EditableLieu;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateLieu>().Execute(item.Nom, item.Addresse, item.Places));
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateLocation>().Execute(item.Nom, item.Addresse, item.Places));
                     await InitLieux(newItem.AggregateId);
                 });
             }

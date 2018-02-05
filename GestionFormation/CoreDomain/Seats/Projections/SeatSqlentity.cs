@@ -15,5 +15,6 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         public SeatStatus Status { get; set; }
         public string Reason { get; set; }
         public Guid? AssociatedAgreementId { get; set; }        
+        public bool AgreementRevoked { get; set; }
     }
 }

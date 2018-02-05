@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Stagiaires;
+using GestionFormation.Applications.Students;
 using GestionFormation.CoreDomain.Students.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -26,17 +26,17 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableStagiaire item)
         {
-            await Task.Run(()=> ApplicationService.Command<CreateStagiaire>().Execute(item.Nom, item.Prenom));
+            await Task.Run(()=> ApplicationService.Command<CreateStudent>().Execute(item.Nom, item.Prenom));
         }
 
         protected override async Task UpdateAsync(EditableStagiaire item)
         {
-            await Task.Run(()=>ApplicationService.Command<UpdateStagiaire>().Execute(item.GetId(), item.Nom, item.Prenom));
+            await Task.Run(()=>ApplicationService.Command<UpdateStudent>().Execute(item.GetId(), item.Nom, item.Prenom));
         }
 
         protected override async Task DeleteAsync(EditableStagiaire item)
         {
-            await Task.Run(() => ApplicationService.Command<DeleteStagiaire>().Execute(item.GetId()));
+            await Task.Run(() => ApplicationService.Command<DeleteStudent>().Execute(item.GetId()));
         }        
     }
 

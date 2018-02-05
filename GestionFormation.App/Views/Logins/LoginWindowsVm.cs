@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Utilisateurs;
+using GestionFormation.Applications.Users;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Users;
 using GestionFormation.CoreDomain.Users.Queries;

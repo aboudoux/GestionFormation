@@ -7,13 +7,14 @@ namespace GestionFormation.App.Core
     public class RelayCommandAsync : RelayCommand
     {
         private readonly Func<Task> _executeAsync;
+        private bool _executing;
 
         public RelayCommandAsync(Func<Task> executeAsync) : this(executeAsync, () => true)
         {
         }
 
         public RelayCommandAsync(Func<Task> executeAsync, Func<bool> canExecute) : base(() => { }, canExecute)
-        {
+        {            
             _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
         }
 
@@ -24,14 +25,27 @@ namespace GestionFormation.App.Core
 
         public async Task ExecuteAsync()
         {
-            if (CanExecute(null))
-                await _executeAsync();
-        }
+            if (CanExecute(null) && !_executing)
+            {
+                try
+                {
+                    _executing = true;
+                    var command = _executeAsync();
+                    if (command != null)
+                        await command;
+                }
+                finally
+                {
+                    _executing = false;
+                }
+            }
+        }        
     }
 
     public class RelayCommandAsync<T> : RelayCommand<T>
     {
         private readonly Func<T, Task> _executeAsync;
+        private bool _executing;
 
         public RelayCommandAsync(Func<T, Task> executeAsync) : this(executeAsync, (T source) => true)
         {
@@ -49,8 +63,18 @@ namespace GestionFormation.App.Core
 
         public async Task ExecuteAsync(T parameter)
         {
-            if (CanExecute(parameter))
-                await _executeAsync(parameter);
+            if (CanExecute(parameter) && !_executing)
+            {
+                try
+                {
+                    _executing = true;
+                    await _executeAsync(parameter);
+                }
+                finally
+                {
+                    _executing = false;
+                }
+            }
         }
     }
 }

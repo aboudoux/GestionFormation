@@ -2,7 +2,8 @@
 {
     public enum AgreementType
     {
-        Free = 0,
-        Paid = 1
+        Unknow = 0,
+        Free = 1,
+        Paid = 2
     }
 }

@@ -15,6 +15,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             Status = a.Status;
             Reason = a.Reason;
             AgreementId = a.AssociatedAgreementId;
+            AgreementRevoked = a.AgreementRevoked;
+            SessionId = a.SessionId;            
 
             if (agreement != null)
             {
@@ -33,5 +35,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
         public string Agreementnumber { get; }
         public bool AgreementSigned { get; }
         public AgreementType AgreementType { get; }
+        public Guid SessionId { get; }
+        public bool AgreementRevoked { get; }
     }
 }

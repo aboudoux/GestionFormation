@@ -14,5 +14,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
         string Agreementnumber { get; }
         bool AgreementSigned { get; }
         AgreementType AgreementType { get; }
+        Guid SessionId { get; }
+        bool AgreementRevoked { get; }
     }
 }

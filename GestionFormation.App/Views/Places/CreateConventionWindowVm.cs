@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.Applications.Agreements;
+using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.Applications.Contacts;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
@@ -37,7 +38,7 @@ namespace GestionFormation.App.Views.Places
             AddContactCommand = new RelayCommandAsync(ExecuteAddContactAsync);
             UnknowTypeConventionCommand = new RelayCommand(ExecuteUnknowTypeConvention);
 
-            SetValiderCommandCanExecute(() => SelectedContact != null);
+            SetValiderCommandCanExecute(() => SelectedContact != null && AgreementType != AgreementType.Unknow);
         }
 
         public override async Task Init()
@@ -49,7 +50,11 @@ namespace GestionFormation.App.Views.Places
         public AgreementType AgreementType
         {
             get => _agreementType;
-            set { Set(() => AgreementType, ref _agreementType, value); }
+            set
+            {
+                Set(() => AgreementType, ref _agreementType, value);
+                ValiderCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public RelayCommand UnknowTypeConventionCommand { get; }
@@ -131,7 +136,15 @@ namespace GestionFormation.App.Views.Places
         protected override async Task ExecuteValiderAsync()
         {
             await HandleMessageBoxError.ExecuteAsync(async () => {
-                await Task.Run(() => _applicationService.Command<CreateAgreement>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType));
+                await Task.Run(() =>
+                {
+                    var firstPlace = Places.First();
+
+                    var result = _applicationService.Command<CreateAgreement>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType);
+                    _applicationService.Command<SendAgreementToSignNotification>().Execute(_sessionInfos.Result.SessionId, firstPlace.SocieteId, result.AggregateId);
+                    return result;
+
+                });
                 await base.ExecuteValiderAsync();
             });
         }

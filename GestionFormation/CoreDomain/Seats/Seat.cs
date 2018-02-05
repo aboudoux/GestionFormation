@@ -37,9 +37,9 @@ namespace GestionFormation.CoreDomain.Seats
 
         public static Seat Create(Guid sessionId, Guid studentId, Guid companyId)
         {
-            if(sessionId == Guid.Empty) throw new ArgumentNullException(nameof(sessionId));
-            if(studentId == Guid.Empty) throw new ArgumentNullException(nameof(studentId));
-            if(companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
+            sessionId.EnsureNotEmpty(nameof(sessionId));
+            studentId.EnsureNotEmpty(nameof(studentId));
+            companyId.EnsureNotEmpty(nameof(companyId));
 
             var seat = new Seat(History.Empty);
             seat.AggregateId = Guid.NewGuid();
@@ -80,7 +80,8 @@ namespace GestionFormation.CoreDomain.Seats
 
         public void AssociateAgreement(Guid agreementId)
         {
-            if(agreementId == Guid.Empty) throw new ArgumentNullException(nameof(agreementId));
+            agreementId.EnsureNotEmpty(nameof(agreementId));
+
             if (_currentSeatStatus != SeatStatus.Valid)
                 throw new AssignAgreementException();
             RaiseEvent(new AgreementAssociated(AggregateId, GetNextSequence(), agreementId));

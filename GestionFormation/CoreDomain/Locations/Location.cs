@@ -1,5 +1,5 @@
 ﻿using System;
-using GestionFormation.Applications.Lieux.Exceptions;
+using GestionFormation.Applications.Locations.Exceptions;
 using GestionFormation.CoreDomain.Locations.Events;
 using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Trainers;

@@ -19,8 +19,7 @@ namespace GestionFormation.CoreDomain.Agreements
 
         public static Agreement Create(Guid contactId, long numeroConvention, AgreementType agreementType)
         {
-            if(contactId == Guid.Empty)
-                throw new ArgumentNullException(nameof(contactId));
+            contactId.EnsureNotEmpty(nameof(contactId));
 
             var convention = new Agreement(History.Empty);
             convention.AggregateId = Guid.NewGuid();
@@ -36,8 +35,7 @@ namespace GestionFormation.CoreDomain.Agreements
 
         public void Sign(Guid documentId)
         {
-            if(documentId == Guid.Empty)
-                throw new ArgumentNullException(nameof(documentId));
+            documentId.EnsureNotEmpty(nameof(documentId));
 
             if (_isRevoked)
                 throw new CannotSignRevokedAgreement();

@@ -48,7 +48,7 @@ namespace GestionFormation.CoreDomain.Sessions
 
         public static Session Plan(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
         {
-            if( trainingId == Guid.Empty) throw new ArgumentNullException(nameof(trainingId));
+            trainingId.EnsureNotEmpty(nameof(trainingId));
 
             var session = new Session(History.Empty);
             session.AggregateId = Guid.NewGuid();
@@ -64,7 +64,7 @@ namespace GestionFormation.CoreDomain.Sessions
 
         public void Update(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
         {
-            if (trainingId == Guid.Empty) throw new ArgumentNullException(nameof(trainingId));
+            trainingId.EnsureNotEmpty(nameof(trainingId));
 
             if (PeriodHaveWeekendDay(sessionStart, duration))
                 throw new SessionWeekEndException();
@@ -92,8 +92,8 @@ namespace GestionFormation.CoreDomain.Sessions
 
         public Seat BookSeat(Guid studentId, Guid companyId)
         {
-            if( studentId == Guid.Empty) throw new ArgumentNullException(nameof(studentId));
-            if(companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
+            studentId.EnsureNotEmpty(nameof(studentId));
+            companyId.EnsureNotEmpty(nameof(companyId));
 
             if(_availableSeats - _bookedSeats <= 0)
                 throw new NoMoreSeatAvailableException();

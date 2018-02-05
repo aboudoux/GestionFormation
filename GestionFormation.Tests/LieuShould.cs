@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using FluentAssertions;
-using GestionFormation.Applications.Lieux;
-using GestionFormation.Applications.Lieux.Exceptions;
+using GestionFormation.Applications.Locations;
+using GestionFormation.Applications.Locations.Exceptions;
 using GestionFormation.CoreDomain.Locations;
 using GestionFormation.CoreDomain.Locations.Events;
 using GestionFormation.CoreDomain.Locations.Exceptions;
@@ -102,7 +102,7 @@ namespace GestionFormation.Tests
             queries.Add("lulu", "test",1);
             queries.Add("lala", "test",1);
 
-            Action action = () => new CreateLieu(new EventBus(new EventDispatcher(), new FakeEventStore()), queries).Execute("lala", "ok", 1);
+            Action action = () => new CreateLocation(new EventBus(new EventDispatcher(), new FakeEventStore()), queries).Execute("lala", "ok", 1);
             action.ShouldThrow<LieuAlreadyExistsException>();
         }
         
@@ -118,7 +118,7 @@ namespace GestionFormation.Tests
             var lieuId = Guid.NewGuid();
             eventStore.Save(new LocationCreated(lieuId,1, "COUCOU", "osef",1));
             
-            Action action = () => new UpdateLieu(new EventBus(new EventDispatcher(), eventStore), queries).Execute(lieuId,"lala", "ok", 1);
+            Action action = () => new UpdateLocation(new EventBus(new EventDispatcher(), eventStore), queries).Execute(lieuId,"lala", "ok", 1);
             action.ShouldThrow<LieuAlreadyExistsException>();
         }
 
@@ -134,7 +134,7 @@ namespace GestionFormation.Tests
             var lieuId = Guid.NewGuid();
             eventStore.Save(new LocationCreated(lieuId, 1, "COUCOU", "osef", 1));
 
-            new UpdateLieu(new EventBus(new EventDispatcher(), eventStore), queries).Execute(lieuId, "COUCOU", "ok", 2);
+            new UpdateLocation(new EventBus(new EventDispatcher(), eventStore), queries).Execute(lieuId, "COUCOU", "ok", 2);
 
             eventStore.GetEvents(lieuId).Should().Contain(new LocationUpdated(lieuId, 0, "COUCOU", "ok", 2));            
         }

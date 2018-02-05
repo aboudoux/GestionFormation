@@ -6,7 +6,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
     public interface ISeatQueries
     {
         IEnumerable<ISeatResult> GetAll(Guid sessionId);
-        IEnumerable<IAgreementSeatResult> GetSeatAgreements(Guid conventionId);
+        ISeatResult GetSeat(Guid seatId);
+        IEnumerable<IAgreementSeatResult> GetSeatAgreements(Guid agreementId);
         IEnumerable<ISeatValidatedResult> GetValidatedSeats(Guid sessionId);
         IEnumerable<IListSeat> GetSeatsList();
     }

@@ -1,7 +1,7 @@
 ﻿using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Scheduling;
 using GestionFormation.App.Core;
-using GestionFormation.CoreDomain.Reminders.Queries;
+using GestionFormation.CoreDomain.BookingNotifications.Queries;
 
 namespace GestionFormation.App
 {
@@ -12,7 +12,7 @@ namespace GestionFormation.App
             InitializeComponent();
             DataControlBase.AllowInfiniteGridSize = true;
             SchedulerControl.AllowInfiniteSize = true;
-            DataContext = new MainWindowsVm(Bootstrapper.Start(DocumentGroup), new ReminderSqlQueries());
+            DataContext = new MainWindowsVm(Bootstrapper.Start(DocumentGroup), new BookingNotificationQueries());
         }
     }
 }

@@ -83,7 +83,7 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                context.Database.ExecuteSqlCommand($"DELETE FROM dbo.SESSION WHERE FormationId = '{@event.AggregateId}'");
+                context.Database.ExecuteSqlCommand($"DELETE FROM dbo.SESSION WHERE TrainerId = '{@event.AggregateId}'");
             }
         }
     }

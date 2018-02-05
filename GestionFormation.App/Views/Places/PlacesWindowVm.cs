@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.Applications.Places;
+using GestionFormation.Applications.BookingNotifications;
+using GestionFormation.Applications.Companies;
+using GestionFormation.Applications.Seats;
 using GestionFormation.Applications.Sessions;
-using GestionFormation.Applications.Societes;
-using GestionFormation.Applications.Stagiaires;
+using GestionFormation.Applications.Students;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Companies.Queries;
 using GestionFormation.CoreDomain.Seats;
@@ -38,7 +39,8 @@ namespace GestionFormation.App.Views.Places
             _studentQueries = studentQueries ?? throw new ArgumentNullException(nameof(studentQueries));
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
 
-            AddPlaceCommand = new RelayCommandAsync(ExecuteAddPlaceAsync, () => SelectedSociete != null && SelectedStagiaire != null);
+            AddPlaceCommand = new RelayCommandAsync(()=>ExecuteAddPlaceAsync(false), () => SelectedSociete != null && SelectedStagiaire != null);
+            AddValidatedPlaceCommand = new RelayCommandAsync(()=>ExecuteAddPlaceAsync(true), () => SelectedSociete != null && SelectedStagiaire != null);
             CreateStagiaireCommand = new RelayCommandAsync(ExecuteCreateStagiaireAsync);
             CreateSocieteCommand = new RelayCommandAsync(ExecuteCreateSocieteAsync);
 
@@ -107,6 +109,7 @@ namespace GestionFormation.App.Views.Places
             {
                 Set(()=> SelectedStagiaire, ref _selectedStagiaireId, value);
                 AddPlaceCommand.RaiseCanExecuteChanged();
+                AddValidatedPlaceCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -117,6 +120,7 @@ namespace GestionFormation.App.Views.Places
             {
                 Set(()=> SelectedSociete, ref _selectedSocieteId, value);
                 AddPlaceCommand.RaiseCanExecuteChanged();
+                AddValidatedPlaceCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -176,7 +180,8 @@ namespace GestionFormation.App.Views.Places
         }
 
         public RelayCommandAsync AddPlaceCommand { get; set; }
-        private async Task ExecuteAddPlaceAsync()
+        public RelayCommandAsync AddValidatedPlaceCommand { get; set; }
+        private async Task ExecuteAddPlaceAsync(bool validate)
         {
             if (SelectedStagiaire == null || SelectedSociete == null)
             {
@@ -186,7 +191,16 @@ namespace GestionFormation.App.Views.Places
 
             await HandleMessageBoxError.ExecuteAsync(async () =>
             {
-                await Task.Run(() => _applicationService.Command<ReservePlace>().Execute(_sessionId, SelectedStagiaire.Id, SelectedSociete.Id));
+                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStagiaire.Id, SelectedSociete.Id));
+                if(validate)
+                    await Task.Run(()=>
+                    {
+                        _applicationService.Command<ValidateSeat>().Execute(seat.AggregateId);
+                        _applicationService.Command<SendAgreementToCreateNotification>().Execute(seat.SessionId, seat.CompanyId);
+                    });
+                else
+                    await Task.Run(() => _applicationService.Command<SendSeatToValidateNotification>().Execute(seat.SessionId, seat.CompanyId, seat.AggregateId));
+
                 await RefreshPlaces();
                 SelectedStagiaire = null;
                 SelectedSociete = null;
@@ -208,7 +222,7 @@ namespace GestionFormation.App.Views.Places
             {
                 await HandleMessageBoxError.ExecuteAsync(async ()=>{                
                     var item = vm.Item as EditableStagiaire;
-                    var newStagiaire = await Task.Run(() => _applicationService.Command<CreateStagiaire>().Execute(item.Nom, item.Prenom));
+                    var newStagiaire = await Task.Run(() => _applicationService.Command<CreateStudent>().Execute(item.Nom, item.Prenom));
 
                     var stagiaires = await Task.Run(() => _studentQueries.GetAll().Select(a => new Item { Id = a.Id, Label = a.Firstname + " " + a.Lastname }));
                     Stagiaires = new ObservableCollection<Item>(stagiaires);
@@ -225,7 +239,7 @@ namespace GestionFormation.App.Views.Places
             {
                 await HandleMessageBoxError.ExecuteAsync(async () => { 
                     var item = vm.Item as EditableSociete;
-                    var newSociete = await Task.Run(() => _applicationService.Command<CreateSociete>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
+                    var newSociete = await Task.Run(() => _applicationService.Command<CreateCompany>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
 
                     var societes = await Task.Run(() => _companyQueries.GetAll().Select(a => new Item { Id = a.CompanyId, Label = a.Name}));
                     Societes = new ObservableCollection<Item>(societes);
@@ -250,7 +264,12 @@ namespace GestionFormation.App.Views.Places
                 if (vm.IsValidated)
                 {
                     await HandleMessageBoxError.ExecuteAsync(async () => {
-                        await Task.Run(() => _applicationService.Command<AnnulerPlace>().Execute(selectedPlace.PlaceId, vm.Raison));                        
+                        await Task.Run(() =>
+                        {
+                            _applicationService.Command<CancelSeat>().Execute(selectedPlace.PlaceId, vm.Raison);
+                            _applicationService.Command<AdjustBookingNotification>().Execute(selectedPlace.PlaceId);
+                            
+                        });                        
                     });
                 }
             }
@@ -263,7 +282,11 @@ namespace GestionFormation.App.Views.Places
             {
                 await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
-                    await Task.Run(() => _applicationService.Command<ValiderPlace>().Execute(selectedPlace.PlaceId));                    
+                    await Task.Run(() =>
+                    {
+                        _applicationService.Command<ValidateSeat>().Execute(selectedPlace.PlaceId);
+                        _applicationService.Command<SendAgreementToCreateNotification>().Execute(_sessionId, selectedPlace.SocieteId);
+                    });                    
                 });
             }
             await RefreshPlaces();
@@ -278,7 +301,11 @@ namespace GestionFormation.App.Views.Places
                 {
                     await HandleMessageBoxError.ExecuteAsync(async () =>
                     {
-                        await Task.Run(() => _applicationService.Command<RefuserPlace>().Execute(selectedPlace.PlaceId, vm.Raison));                        
+                        await Task.Run(() =>
+                        {
+                            _applicationService.Command<RefuseSeat>().Execute(selectedPlace.PlaceId, vm.Raison);
+                            _applicationService.Command<AdjustBookingNotification>().Execute(selectedPlace.PlaceId);
+                        });                        
                     });
                 }
             }
@@ -395,14 +422,10 @@ namespace GestionFormation.App.Views.Places
             if (result == null) throw new ArgumentNullException(nameof(result));
 
             if (result.AgreementId.HasValue)
-            {
-                if (string.IsNullOrWhiteSpace(result.Agreementnumber))
-                    Label = "Révoquée";
-                else
-                    Label = (result.AgreementSigned ? "Signée" : "Attente de signature");
-            }
+            
+                Label = (result.AgreementSigned ? "Signée" : "Attente de signature");
             else
-                Label = "Non générée";
+                Label = result.AgreementRevoked ? "Révoquée" : "Non générée";
         }
 
         public string Label { get; }

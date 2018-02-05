@@ -16,7 +16,7 @@
             <dxlc:LayoutItem Label="Nom : " >
                 <TextBox Text="{Binding Path=Nom}"></TextBox>
             </dxlc:LayoutItem>
-            <dxlc:LayoutItem Label="Prelastname : " >
+            <dxlc:LayoutItem Label="Prénom : " >
                     <TextBox Text="{Binding Path=Prenom}"></TextBox>
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Email : " >

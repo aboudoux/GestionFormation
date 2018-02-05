@@ -66,6 +66,12 @@
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="PreviewMouseDoubleClick" Command="{Binding OpenRappelCommand}" />
                             </dxmvvm:Interaction.Behaviors>
+                            <dxe:ListBoxEdit.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Supprimer" Command="{Binding Path=DeleteSelectedNotification}"></MenuItem>
+                                </ContextMenu>
+                            </dxe:ListBoxEdit.ContextMenu>
+
                         </dxe:ListBoxEdit>
                     </Grid>
                     

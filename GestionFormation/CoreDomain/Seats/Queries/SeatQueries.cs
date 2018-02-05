@@ -23,12 +23,27 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             }
         }
 
-        public IEnumerable<IAgreementSeatResult> GetSeatAgreements(Guid conventionId)
+        public ISeatResult GetSeat(Guid seatId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var querie = from seat in context.Seats
+                    where seat.SeatId == seatId
+                    join agreement in context.Agreements on seat.AssociatedAgreementId equals agreement.AgreementId into pc
+                    from agreement in pc.DefaultIfEmpty()
+                    select new { Seat = seat, Agreement = agreement };
+
+                var result = querie.FirstOrDefault();
+                return result == null ? null : new SeatResult(result.Seat, result.Agreement);
+            }
+        }
+
+        public IEnumerable<IAgreementSeatResult> GetSeatAgreements(Guid agreementId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var querie = from p in context.Seats
-                    where p.AssociatedAgreementId == conventionId
+                    where p.AssociatedAgreementId == agreementId
                     join student in context.Students on p.StudentId equals student.StudentId
                     join company in context.Companies on p.CompanyId equals company.CompanyId
                     select new

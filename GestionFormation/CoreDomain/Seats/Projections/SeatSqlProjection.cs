@@ -1,4 +1,5 @@
 ﻿using System;
+using GestionFormation.CoreDomain.Agreements.Events;
 using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
@@ -11,7 +12,8 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         IEventHandler<SeatCanceled>, 
         IEventHandler<SeatRefused>, 
         IEventHandler<SeatValided>,
-        IEventHandler<AgreementAssociated>        
+        IEventHandler<AgreementAssociated>   ,
+        IEventHandler<AgreementRevoked>
     {
         public void Handle(SeatCreated @event)
         {
@@ -70,8 +72,17 @@ namespace GestionFormation.CoreDomain.Seats.Projections
                 if (place == null)
                     throw new EntityNotFoundException(@event.AggregateId, "Place");
                 place.AssociatedAgreementId = @event.AgreementId;
+                place.AgreementRevoked = false;
                 context.SaveChanges();
             }
-        }       
+        }
+
+        public void Handle(AgreementRevoked @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                context.Database.ExecuteSqlCommand($"UPDATE Seat SET AssociatedAgreementId = NULL, AgreementRevoked = 1 WHERE AssociatedAgreementId = '{@event.AggregateId}'");
+            }
+        }
     }
 }

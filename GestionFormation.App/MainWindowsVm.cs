@@ -3,6 +3,8 @@ using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using DevExpress.Mvvm.POCO;
 using GalaSoft.MvvmLight;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views;
@@ -13,7 +15,8 @@ using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Places;
 using GestionFormation.App.Views.Sessions;
-using GestionFormation.CoreDomain.Reminders.Queries;
+using GestionFormation.Applications.BookingNotifications;
+using GestionFormation.CoreDomain.BookingNotifications.Queries;
 using GestionFormation.CoreDomain.Sessions;
 
 namespace GestionFormation.App
@@ -21,15 +24,15 @@ namespace GestionFormation.App
     public class MainWindowsVm : ViewModelBase
     {
         private readonly IApplicationService _applicationService;
-        private readonly IReminderQueries _reminderQueries;
+        private readonly INotificationQueries _notificationQueries;
         private string _title;
         private ObservableCollection<RappelItem> _rappels;
         private RappelItem _selectedRappel;
 
-        public MainWindowsVm(IApplicationService applicationService, IReminderQueries reminderQueries)
+        public MainWindowsVm(IApplicationService applicationService, INotificationQueries notificationQueries)
         {
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
-            _reminderQueries = reminderQueries;
+            _notificationQueries = notificationQueries;
 
             OpenFormationList = new RelayCommandAsync(async ()=> await OpenDocument<FormationListVm>());
             OpenScheduler = new RelayCommandAsync(async () => await OpenDocument<SessionSchedulerVm>());
@@ -45,7 +48,8 @@ namespace GestionFormation.App
             OpenRappelCommand = new RelayCommandAsync(ExecuteOpenRappelAsync);
             OpenHistorique = new RelayCommandAsync(async()=>await OpenDocument<HistoriqueWindowVm>());
             OpenPlaceList = new RelayCommandAsync(async ()=> await OpenDocument<PlacesListerVm>());
-
+            DeleteSelectedNotification = new RelayCommandAsync(ExecuteDeleteSelectedNotificationAsync, ()=> SelectedRappel != null);
+            
             Title = "Gestion formation - non connecté";
             Security = new Security(applicationService);
         }        
@@ -88,7 +92,7 @@ namespace GestionFormation.App
         public RelayCommandAsync RefreshRappels { get; }
         private async Task ExecuteRefreshRappelAsync()
         {
-            var items = await Task.Run(()=>_reminderQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new RappelItem(a)));
+            var items = await Task.Run(()=>_notificationQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new RappelItem(a)));
             Rappels = new ObservableCollection<RappelItem>(items);
         }
 
@@ -101,7 +105,11 @@ namespace GestionFormation.App
         public RappelItem SelectedRappel
         {
             get => _selectedRappel;
-            set { Set(()=>SelectedRappel, ref _selectedRappel, value); }
+            set
+            {
+                Set(()=>SelectedRappel, ref _selectedRappel, value);
+                DeleteSelectedNotification.RaiseCanExecuteChanged();
+            }
         }
 
         public RelayCommandAsync OpenRappelCommand { get; }
@@ -112,6 +120,16 @@ namespace GestionFormation.App
             else
                 await _applicationService.OpenPopup<PlacesWindowVm>(SelectedRappel.SessionId, 10);
 
+            await RefreshRappels.ExecuteAsync();
+        }
+
+        public RelayCommandAsync DeleteSelectedNotification { get; }
+        private async Task ExecuteDeleteSelectedNotificationAsync()
+        {
+            if( MessageBoxResult.No == MessageBox.Show("Vous êtes sur le point de retirer cette notification.\r\nEtes vous sûr de vouloir continuer ?", "Suppression", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No) )
+                return;
+
+            await Task.Run(()=>_applicationService.Command<RemoveBookingNotification>().Execute(SelectedRappel.NotificationId));
             await RefreshRappels.ExecuteAsync();
         }
 
@@ -127,15 +145,17 @@ namespace GestionFormation.App
     {
         private readonly string _label;
 
-        public RappelItem(IReminderResult result)
+        public RappelItem(INotificationResult result)
         {
             _label = result.Label;
             SessionId = result.SessionId;
             ConventionId = result.AgreementId;
+            NotificationId = result.AggregateId;
         }
 
         public Guid? SessionId { get; }
         public Guid? ConventionId { get; }
+        public Guid NotificationId { get; }
 
         public override string ToString()
         {

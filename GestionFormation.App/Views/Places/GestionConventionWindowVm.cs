@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using GalaSoft.MvvmLight.CommandWpf;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Agreements;
+using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
@@ -151,7 +152,11 @@ namespace GestionFormation.App.Views.Places
 
             await HandleMessageBoxError.ExecuteAsync(async () => { 
                 var documentId = await Task.Run(()=>_documentRepository.SaveConvention(DocumentPath));
-                await Task.Run(()=>_applicationService.Command<SignAgreement>().Execute(_conventionId, documentId));
+                await Task.Run(()=>
+                {
+                    _applicationService.Command<SignAgreement>().Execute(_conventionId, documentId);
+                    _applicationService.Command<RemoveBookingNotification>().FromAgreement(_conventionId);
+                });
                 await base.ExecuteValiderAsync();
             });
 

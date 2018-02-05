@@ -67,7 +67,13 @@
                         <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=CreateSocieteCommand}"/>
                     </dxe:ComboBoxEdit.Buttons>
                 </dxe:ComboBoxEdit>
-                <dx:SimpleButton Grid.Row="3" Grid.Column="1" Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddPlaceCommand}">Reserver</dx:SimpleButton>
+
+                <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <dx:SimpleButton Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddPlaceCommand}" Margin="0,0,15,0">Reserver AVEC demande de validation</dx:SimpleButton>
+                    <dx:SimpleButton Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddValidatedPlaceCommand}">Reserver SANS demande de validation</dx:SimpleButton>
+                </StackPanel>
+
+                
             </Grid>
             <dxb:BarContainerControl ContainerType="Top" Margin="0,20,0,0">
                 <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">

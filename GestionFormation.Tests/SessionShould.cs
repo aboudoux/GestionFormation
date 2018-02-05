@@ -76,7 +76,7 @@ namespace GestionFormation.Tests
         public void raise_sessionCanceled_when_cancel()
         {
             var context = TestSession.Create();
-            var session = context.Builder.Create();
+            var session = context.Builder.Create();            
 
             session.Cancel("because !");
             session.UncommitedEvents.GetStream().Should().Contain(new SessionCanceled(Guid.Empty, 0, "because !"));
@@ -170,7 +170,7 @@ namespace GestionFormation.Tests
             fakeStorage.Save(new SeatCreated(placeId, 1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
 
             var bus = new EventBus(new EventDispatcher(), fakeStorage );
-            new ReleasePlace(bus).Execute(sessionId, placeId, "essai");
+            new ReleaseSeat(bus).Execute(sessionId, placeId, "essai");
 
             fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1));
             fakeStorage.GetEvents(placeId).Should().Contain(new SeatCanceled(placeId, 1, "essai"));

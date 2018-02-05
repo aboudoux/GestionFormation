@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
-using GestionFormation.Applications.Formations;
-using GestionFormation.Applications.Lieux;
+using GestionFormation.Applications.Locations;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Trainers;
+using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Locations.Events;
 using GestionFormation.CoreDomain.Locations.Exceptions;
 using GestionFormation.CoreDomain.Sessions.Events;
@@ -373,7 +373,7 @@ namespace GestionFormation.Tests.Applications
             sessionQueries.AddSession(formationId, sessionId6, new DateTime(2017, 12, 21), 2,null, formateurId2);
 
             // when
-            new DeleteFormation(eventBus, sessionQueries).Execute(formationId);
+            new DeleteTraining(eventBus, sessionQueries).Execute(formationId);
             
             // then
             mockHandler.AllEvents.OfType<SessionDeleted>().Should().HaveCount(6);
@@ -701,7 +701,7 @@ namespace GestionFormation.Tests.Applications
             sessionQueries.AddSession(formationId, sessionId6, new DateTime(2017, 12, 21), 2, lieuId2, null);
 
             // when
-            new DeleteFormation(eventBus, sessionQueries).Execute(formationId);
+            new DeleteTraining(eventBus, sessionQueries).Execute(formationId);
 
             // then
             mockHandler.AllEvents.OfType<SessionDeleted>().Should().HaveCount(6);
@@ -721,7 +721,7 @@ namespace GestionFormation.Tests.Applications
              var formationId = Guid.NewGuid();
 
              var formateur = new CreateTrainer(eventBus).Execute("BOUDOUX", "Aurelien", "test@test.com");
-             var lieu = new CreateLieu(eventBus, new FakeLocationQueries()).Execute("Paris", "test", 5);
+             var lieu = new CreateLocation(eventBus, new FakeLocationQueries()).Execute("Paris", "test", 5);
 
              new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 20), 3, 3, lieu.AggregateId, formateur.AggregateId);
              projection.Planned.TrainingId.Should().Be(formationId);

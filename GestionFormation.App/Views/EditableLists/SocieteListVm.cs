@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Societes;
+using GestionFormation.Applications.Companies;
 using GestionFormation.CoreDomain.Companies.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -26,17 +26,17 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableSociete item)
         {
-            await Task.Run(()=> ApplicationService.Command<CreateSociete>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
+            await Task.Run(()=> ApplicationService.Command<CreateCompany>().Execute(item.Nom, item.Adresse, item.CodePostal, item.Ville));
         }
 
         protected override async Task UpdateAsync(EditableSociete item)
         {
-            await Task.Run(()=> ApplicationService.Command<UpdateSociete>().Execute(item.GetId(), item.Nom, item.Adresse, item.CodePostal, item.Ville));
+            await Task.Run(()=> ApplicationService.Command<UpdateCompany>().Execute(item.GetId(), item.Nom, item.Adresse, item.CodePostal, item.Ville));
         }
 
         protected override async Task DeleteAsync(EditableSociete item)
         {
-            await Task.Run(()=>ApplicationService.Command<DeleteSociete>().Execute(item.GetId()));
+            await Task.Run(()=>ApplicationService.Command<DeleteCompany>().Execute(item.GetId()));
         }
     }
 

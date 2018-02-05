@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Formations;
+using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Trainings.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -27,19 +27,19 @@ namespace GestionFormation.App.Views.EditableLists
         protected override async Task CreateAsync(EditableFormation item)
         {
             if (item == null) return;
-            await Task.Run(() => ApplicationService.Command<CreateFormation>().Execute(item.Nom, item.Places));
+            await Task.Run(() => ApplicationService.Command<CreateTraining>().Execute(item.Nom, item.Places));
         }
 
         protected override async Task UpdateAsync(EditableFormation item)
         {
             if( item == null ) return;
-            await Task.Run(()=> ApplicationService.Command<UpdateFormation>().Execute(item.GetId(), item.Nom, item.Places));
+            await Task.Run(()=> ApplicationService.Command<UpdateTraining>().Execute(item.GetId(), item.Nom, item.Places));
         }
 
         protected override async Task DeleteAsync(EditableFormation item)
         {
             if (item == null) return;
-            await Task.Run(()=> ApplicationService.Command<DeleteFormation>().Execute(item.GetId()));
+            await Task.Run(()=> ApplicationService.Command<DeleteTraining>().Execute(item.GetId()));
         }        
     }
 

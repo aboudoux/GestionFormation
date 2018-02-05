@@ -15,15 +15,15 @@
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
         <dxg:GridControl Grid.Row="0" ItemsSource="{Binding Path=Places}" SelectionMode="None">
-            <dxg:GridColumn Header="Société" FieldName="Societe"></dxg:GridColumn>
-            <dxg:GridColumn Header="Stagiaire" FieldName="Stagiaire"></dxg:GridColumn>
+            <dxg:GridColumn Header="Société" FieldName="Company"></dxg:GridColumn>
+            <dxg:GridColumn Header="Stagiaire" FieldName="Student"></dxg:GridColumn>
         </dxg:GridControl>
         <dxlc:LayoutControl Grid.Row="1" Orientation="Vertical">
             <dxlc:LayoutGroup Header="CONTACT">
                 <dxlc:LayoutItem Label="NOM : ">
                     <TextBlock Text="{Binding Path=Nom}"></TextBlock>
                 </dxlc:LayoutItem>
-                <dxlc:LayoutItem Label="Prelastname :">
+                <dxlc:LayoutItem Label="Prénom :">
                     <TextBlock Text="{Binding Path=Prenom}"></TextBlock>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>

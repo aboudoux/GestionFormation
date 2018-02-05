@@ -34,8 +34,8 @@
             </dxe:ComboBoxEdit>
         </dxlc:LayoutItem>
         <StackPanel Grid.Row="2" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Free}}" >Gratuite</RadioButton>
-            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=TypeConvention, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Paid}}" >Payante</RadioButton>
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=AgreementType, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Free}}" >Gratuite</RadioButton>
+            <RadioButton Margin="5,0,5,0" IsChecked="{Binding Path=AgreementType, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static conventions:AgreementType.Paid}}" >Payante</RadioButton>
             <Button Margin="5,0,5,0" Command="{Binding Path=UnknowTypeConventionCommand}">Je ne sais pas...</Button>
         </StackPanel>
 

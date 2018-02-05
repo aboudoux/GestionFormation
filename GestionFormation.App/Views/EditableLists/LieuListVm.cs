@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
-using GestionFormation.Applications.Lieux;
+using GestionFormation.Applications.Locations;
 using GestionFormation.CoreDomain.Locations.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -24,17 +24,17 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableLieu item)
         {
-            await Task.Run(() => ApplicationService.Command<CreateLieu>().Execute(item.Nom, item.Addresse, item.Places));
+            await Task.Run(() => ApplicationService.Command<CreateLocation>().Execute(item.Nom, item.Addresse, item.Places));
         }
 
         protected override async Task UpdateAsync(EditableLieu item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateLieu>().Execute(item.GetId(), item.Nom, item.Addresse, item.Places));
+            await Task.Run(() => ApplicationService.Command<UpdateLocation>().Execute(item.GetId(), item.Nom, item.Addresse, item.Places));
         }
 
         protected override async Task DeleteAsync(EditableLieu item)
         {
-            await Task.Run(() => ApplicationService.Command<DeleteLieu>().Execute(item.GetId()));
+            await Task.Run(() => ApplicationService.Command<DeleteLocation>().Execute(item.GetId()));
         }
 
         public override string Title => "liste des lieux";

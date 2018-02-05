@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Http;
-using GestionFormation.Applications.Formations;
+using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Trainings.Queries;
 using GestionFormation.Kernel;
 
@@ -22,13 +22,13 @@ namespace GestionFormation.Web.Controllers
         [Route("create"), HttpPost]
         public IHttpActionResult Create([FromBody]string nom)
         {
-            return Run(()=> new CreateFormation(_eventBus, _queries).Execute(nom,1));
+            return Run(()=> new CreateTraining(_eventBus, _queries).Execute(nom,1));
         }
 
         [Route("update"), HttpPost]
         public IHttpActionResult Update([FromBody] FormationToUpdate formationToUpdate)
         {
-            return Run(() => new UpdateFormation(_eventBus, _queries).Execute(formationToUpdate.FormationId, formationToUpdate.NewName,1));
+            return Run(() => new UpdateTraining(_eventBus, _queries).Execute(formationToUpdate.FormationId, formationToUpdate.NewName,1));
         }
 
         [Route("delete"), HttpPost]
