@@ -70,7 +70,7 @@ namespace GestionFormation.App.Views.Places
 
                 var firstPlace = Places.First();
 
-                _computerService.OpenTypeConventionMail(
+                _computerService.OpenMailInOutlook(
                     $"Convention formation {_sessionInfos.FormationName} du {_sessionInfos.Result.SessionStart:d} société {firstPlace.SocieteNom}",
                     "Bonjour," + Environment.NewLine + Environment.NewLine +
                     $"La société {firstPlace.SocieteNom} envoie {Places.Count} stagiaire(s) à la formation {_sessionInfos.FormationName} le {_sessionInfos.Result.SessionStart:D}." + Environment.NewLine + Environment.NewLine +

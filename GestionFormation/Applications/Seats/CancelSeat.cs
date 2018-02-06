@@ -25,7 +25,7 @@ namespace GestionFormation.Applications.Seats
             }
             
             var session = GetAggregate<Session>(seat.SessionId);
-            session.ReleasePlace();
+            session.ReleaseSeat();
 
             PublishUncommitedEvents(seat, agreement, session);
         }

@@ -112,6 +112,7 @@
     <Compile Include="Fakes\FakeSessionQueries.cs" />
     <Compile Include="Fakes\TestDomainEvent.cs" />
     <Compile Include="BookingNotificationShould.cs" />
+    <Compile Include="SessionNotificationShould.cs" />
     <Compile Include="TrainerShould.cs" />
     <Compile Include="FormationShould.cs" />
     <Compile Include="LearningTests.cs" />

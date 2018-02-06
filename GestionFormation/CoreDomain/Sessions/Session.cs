@@ -103,17 +103,17 @@ namespace GestionFormation.CoreDomain.Sessions
             return Seat.Create(AggregateId, studentId, companyId);
         }
 
-        public void ReleasePlace()
+        public void ReleaseSeat()
         {
             if(_bookedSeats > 0)
                 RaiseEvent(new SessionSeatReleased(AggregateId, GetNextSequence()));
         }
 
-        private static bool PeriodHaveWeekendDay(DateTime debut, int durée)
+        private static bool PeriodHaveWeekendDay(DateTime start, int duration)
         {
-            for (var i = 0; i < durée; i++)
+            for (var i = 0; i < duration; i++)
             {
-                var day = debut.AddDays(i).DayOfWeek;
+                var day = start.AddDays(i).DayOfWeek;
                 if (day == DayOfWeek.Saturday || day == DayOfWeek.Sunday)
                     return true;
             }

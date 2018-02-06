@@ -15,17 +15,17 @@ namespace GestionFormation.App.Views.Sessions
     {
         private readonly ISeatQueries _seatQueries;
         private readonly Guid _sessionId;
-        private readonly IDocumentRepository _documentRepository;
+        private readonly IDocumentCreator _documentCreator;
         private readonly ISessionQueries _sessionQueries;
         private ObservableCollection<ISeatValidatedResult> _places;
         private ObservableCollection<ISeatValidatedResult> _selectedPlaces;
         private ICompleteSessionResult _sessionInfos;
 
-        public DeroulementWindowVm(ISeatQueries seatQueries, Guid sessionId, IDocumentRepository documentRepository, ISessionQueries sessionQueries)
+        public DeroulementWindowVm(ISeatQueries seatQueries, Guid sessionId, IDocumentCreator documentCreator, ISessionQueries sessionQueries)
         {
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
             _sessionId = sessionId;
-            _documentRepository = documentRepository ?? throw new ArgumentNullException(nameof(documentRepository));
+            _documentCreator = documentCreator ?? throw new ArgumentNullException(nameof(documentCreator));
             _sessionQueries = sessionQueries ?? throw new ArgumentNullException(nameof(sessionQueries));
             RefreshCommand = new RelayCommandAsync(ExecuteRefreshAsync);
 
@@ -78,7 +78,7 @@ namespace GestionFormation.App.Views.Sessions
         private void ExecutePrintFeuillePresence()
         {
             HandleMessageBoxError.Execute(()=>{ 
-                var document = _documentRepository.CreateFeuillePresence(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Places.Select(a=>new Participant(a.Student, a.Company)).ToList());
+                var document = _documentCreator.CreateTimesheet(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Places.Select(a=>new Participant(a.Student, a.Company)).ToList());
                 Process.Start(document);
             });
         }
@@ -90,7 +90,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 HandleMessageBoxError.Execute(() =>
                 {
-                    var document = _documentRepository.CreateCertificatAssiduite(place.Student, place.Company, _sessionInfos.Training, _sessionInfos.Location, _sessionInfos.Duration, _sessionInfos.Trainer, _sessionInfos.SessionStart);
+                    var document = _documentCreator.CreateCertificateOfAttendance(place.Student, place.Company, _sessionInfos.Training, _sessionInfos.Location, _sessionInfos.Duration, _sessionInfos.Trainer, _sessionInfos.SessionStart);
                     Process.Start(document);
                 });
             }
@@ -103,7 +103,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 HandleMessageBoxError.Execute(() =>
                 {
-                    var document = _documentRepository.CreateQuestionnaire(_sessionInfos.Trainer, _sessionInfos.Training);
+                    var document = _documentCreator.CreateSurvey(_sessionInfos.Trainer, _sessionInfos.Training);
                     Process.Start(document);
                 });
             }
@@ -116,7 +116,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 HandleMessageBoxError.Execute(() =>
                 {
-                    var document = _documentRepository.CreateDiplome(place.Student, place.Company, _sessionInfos.SessionStart, _sessionInfos.SessionStart.AddDays(_sessionInfos.Duration - 1), _sessionInfos.Trainer);
+                    var document = _documentCreator.CreateDegree(place.Student, place.Company, _sessionInfos.SessionStart, _sessionInfos.SessionStart.AddDays(_sessionInfos.Duration - 1), _sessionInfos.Trainer);
                     Process.Start(document);
                 });
             }

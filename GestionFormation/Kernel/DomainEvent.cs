@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace GestionFormation.Kernel
 {
@@ -19,7 +20,7 @@ namespace GestionFormation.Kernel
                 return false;
 
             return GetType().GetProperties()
-                .Where(a=>a.Name != nameof(AggregateId) && a.Name != nameof(Sequence))
+                .Where(a=>a.Name != nameof(AggregateId) && a.Name != nameof(Sequence) && a.GetCustomAttribute(typeof(IgnoreEqualityAttribute)) == null)
                 .All(a =>
                 {
                     var left = a.GetValue(this);
@@ -34,7 +35,7 @@ namespace GestionFormation.Kernel
         {
             return base.GetHashCode();
         }
-
+        
         public Guid AggregateId { get; }
         public int Sequence { get; }
 
@@ -45,4 +46,14 @@ namespace GestionFormation.Kernel
             return Description;
         }
     }
+
+    /// <summary>
+    /// Appliquez cet attribut aux propriétés qui ne doivents pas être prise en compte lors du calcul d'égalité
+    /// des evenements
+    /// </summary>
+    public class IgnoreEqualityAttribute : Attribute
+    {
+
+    }
+    
 }

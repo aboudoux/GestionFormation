@@ -1,10 +1,11 @@
+using System.Collections.Generic;
+
 namespace GestionFormation.CoreDomain
 {
     public interface IComputerService
     {
-        void OpenTypeConventionMail(string subject, string body);
+        void OpenMailInOutlook(string subject, string body, List<MailAttachement> attachements = null, string recipient = null);
 
         string GetLocalUserName();
-
     }
 }

@@ -18,19 +18,19 @@ namespace GestionFormation.CoreDomain.BookingNotifications
 
         protected override void AddPlayers(EventPlayer player)
         {
-            player.Add<SeatToValidateSent>(a =>
+            player.Add<SeatToValidateNotificationSent>(a =>
                 {
                     _companyId = a.CompanyId;
                     _sessiond = a.SessionId;
                     _currentType = BookingNotificationType.PlaceToValidate;
                 })
-                .Add<AgreementToCreateSent>(a =>
+                .Add<AgreementToCreateNotificationSent>(a =>
                 {
                     _currentType = BookingNotificationType.AgreementToCreate;
                     _sessiond = a.SessionId;
                     _companyId = a.CompanyId;
                 })
-                .Add<AgreementToSignSent>(a => _currentType = BookingNotificationType.AgreementToSign);
+                .Add<AgreementToSignNotificationSent>(a => _currentType = BookingNotificationType.AgreementToSign);
         }
 
         public static BookingNotification SendSeatToValidate(Guid sessionId, Guid companyId, Guid seatId)
@@ -41,7 +41,7 @@ namespace GestionFormation.CoreDomain.BookingNotifications
 
             var notification = new BookingNotification(History.Empty);
             notification.AggregateId = Guid.NewGuid();
-            notification.UncommitedEvents.Add(new SeatToValidateSent(notification.AggregateId, 1, sessionId, companyId, seatId));
+            notification.UncommitedEvents.Add(new SeatToValidateNotificationSent(notification.AggregateId, 1, sessionId, companyId, seatId));
             return notification;
         }
 
@@ -52,14 +52,10 @@ namespace GestionFormation.CoreDomain.BookingNotifications
 
             var notification = new BookingNotification(History.Empty);
             notification.AggregateId = Guid.NewGuid();
-            notification.UncommitedEvents.Add(new AgreementToCreateSent(notification.AggregateId, 1, sessionId, companyId));
+            notification.UncommitedEvents.Add(new AgreementToCreateNotificationSent(notification.AggregateId, 1, sessionId, companyId));
             return notification;
         }
 
-        public void ChangeToAgreementToCreate()
-        {
-            RaiseEvent(new AgreementToCreateSent(AggregateId, GetNextSequence(), _sessiond, _companyId));
-        }
 
         public void ChangeToAgreementToSign(Guid aggrementId)
         {
@@ -68,12 +64,12 @@ namespace GestionFormation.CoreDomain.BookingNotifications
             if(_currentType != BookingNotificationType.AgreementToCreate)
                 throw new ChangeNotificationException();
 
-            RaiseEvent(new AgreementToSignSent(AggregateId, GetNextSequence(), _sessiond, _companyId, aggrementId));
+            RaiseEvent(new AgreementToSignNotificationSent(AggregateId, GetNextSequence(), _sessiond, _companyId, aggrementId));
         }
 
         public void Remove()
         {
-            RaiseEvent(new BookingNotificationRemoved(AggregateId, GetNextSequence()));
+            RaiseEvent(new BookingNotificationRemoved(AggregateId, GetNextSequence(), Guid.Empty));
         }
     }
 }

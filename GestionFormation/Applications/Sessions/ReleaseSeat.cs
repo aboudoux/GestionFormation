@@ -16,7 +16,7 @@ namespace GestionFormation.Applications.Sessions
             var session = GetAggregate<Session>(sessionId);
             var place = GetAggregate<Seat>(placeId);
 
-            session.ReleasePlace();
+            session.ReleaseSeat();
             place.Cancel(reason);
 
             PublishUncommitedEvents(session, place);

@@ -43,7 +43,7 @@ namespace GestionFormation.CoreDomain.Agreements.Queries
                 var conv = query.First();
 
                 return new PrintableAgreementResult()
-                {
+                {                    
                     AgreementNumber = conv.ConventionNumber,
                     AgreementType = conv.TypeConvention,
                     Training = conv.Formation,

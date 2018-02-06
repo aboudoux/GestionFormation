@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DevExpress.Xpf.Docking;
 using FluentAssertions;
 using GestionFormation.App.Core;
 using GestionFormation.Applications;
+using GestionFormation.CoreDomain;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
@@ -52,6 +54,14 @@ namespace GestionFormation.Tests
         {
             var hashedPassword = "123456".GetHash();
             hashedPassword.Should().Be("7C4A8D09CA3762AF61E59520943DC26494F8941B");
+        }
+
+        [TestMethod]
+        [Ignore]
+        public void test_open_outlook_email()
+        {
+            ComputerService service = new ComputerService();
+            service.OpenMailInOutlook("test", "cect est un test", new List<MailAttachement>(){ new MailAttachement(@"C:\Users\H264376\AppData\Local\Temp\2c147147-1058-410c-81ec-f7f512196820.rtf", "convention") });
         }
     }
 

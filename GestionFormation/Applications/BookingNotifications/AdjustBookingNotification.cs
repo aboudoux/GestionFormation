@@ -29,8 +29,13 @@ namespace GestionFormation.Applications.BookingNotifications
                 throw new Exception("Impossible de trouver la place avec l'identifiant " + seatId);
             
             var notifications = _notificationQueries.GetAll(seat.SessionId, seat.CompanyId);
+            var allSeatForSession = _seatQueries.GetAll(seat.SessionId).ToList();
+
             foreach (var notification in notifications)
             {
+                if (notification.BookingNotificationType == BookingNotificationType.AgreementToSign && allSeatForSession.Any(a => a.CompanyId == seat.CompanyId && a.Status == SeatStatus.Valid && a.AgreementId.HasValue))
+                    continue;
+
                 var notif = GetAggregate<BookingNotification>(notification.AggregateId);
                 notif.Remove();
                 aggregatesToValidate.Add(notif);
@@ -38,9 +43,7 @@ namespace GestionFormation.Applications.BookingNotifications
             PublishUncommitedEvents(aggregatesToValidate.ToArray());
 
             var sendSeatToValidateCommand = new SendSeatToValidateNotification(EventBus);
-            var sendAgreementToCreateCommand = new SendAgreementToCreateNotification(EventBus, _notificationQueries);
-
-            var allSeatForSession = _seatQueries.GetAll(seat.SessionId).ToList();
+            var sendAgreementToCreateCommand = new SendAgreementToCreateNotification(EventBus, _notificationQueries, _seatQueries);
 
             foreach (var seatResult in allSeatForSession.Where(a=> a.CompanyId == seat.CompanyId && a.Status == SeatStatus.ToValidate))
                 sendSeatToValidateCommand.Execute(seatResult.SessionId, seatResult.CompanyId, seatResult.SeatId);

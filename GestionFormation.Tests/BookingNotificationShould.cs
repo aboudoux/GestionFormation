@@ -19,28 +19,19 @@ namespace GestionFormation.Tests
             var companyId = Guid.NewGuid();
             var seatId = Guid.NewGuid();
             var notification = BookingNotification.SendSeatToValidate(sessionId, companyId, seatId);
-            notification.UncommitedEvents.GetStream().Should().Contain(new SeatToValidateSent(Guid.Empty, 0, sessionId, companyId, seatId));
-        }
-
-        [TestMethod]
-        public void change_seatToValidate_notification_to_agreementToCreate_notification()
-        {
-            var context = TestNotification.Create();
-            var notif = context.Builder.Create();
-            notif.ChangeToAgreementToCreate();
-            notif.UncommitedEvents.GetStream().Should() .Contain(new AgreementToCreateSent(Guid.Empty, 0, context.SessionId, context.CompanyId));
+            notification.UncommitedEvents.GetStream().Should().Contain(new SeatToValidateNotificationSent(Guid.Empty, 0, sessionId, companyId, seatId));
         }
 
         [TestMethod]
         public void change_agreementToCreate_to_agreementToSign()
         {
             var context = TestNotification.Create();
-            context.Builder.AddEvent(new AgreementToCreateSent(Guid.Empty, 2, context.SessionId, context.CompanyId));
+            context.Builder.AddEvent(new AgreementToCreateNotificationSent(Guid.Empty, 2, context.SessionId, context.CompanyId));
             var notif = context.Builder.Create();
 
             var conventionId = Guid.NewGuid();
             notif.ChangeToAgreementToSign(conventionId);
-            notif.UncommitedEvents.GetStream().Should().Contain(new AgreementToSignSent(Guid.Empty, 0, context.SessionId, context.CompanyId, conventionId));
+            notif.UncommitedEvents.GetStream().Should().Contain(new AgreementToSignNotificationSent(Guid.Empty, 0, context.SessionId, context.CompanyId, conventionId));
         }
 
         [TestMethod]
@@ -57,7 +48,7 @@ namespace GestionFormation.Tests
         public void not_pass_from_agreementToSign_to_agreementToCreate()
         {
             var context = TestNotification.Create();
-            context.Builder.AddEvent(new AgreementToSignSent(Guid.Empty, 1, context.SessionId, context.CompanyId, Guid.NewGuid()));
+            context.Builder.AddEvent(new AgreementToSignNotificationSent(Guid.Empty, 1, context.SessionId, context.CompanyId, Guid.NewGuid()));
 
             var notif = context.Builder.Create();
             Action action = () => notif.ChangeToAgreementToSign(Guid.NewGuid());
@@ -78,7 +69,7 @@ namespace GestionFormation.Tests
                 CompanyId = Guid.NewGuid();
                 SessionId = Guid.NewGuid();
 
-                Builder = Aggregate.Make<BookingNotification>().AddEvent(new SeatToValidateSent(Guid.NewGuid(), 1, SessionId, CompanyId, SeatId));
+                Builder = Aggregate.Make<BookingNotification>().AddEvent(new SeatToValidateNotificationSent(Guid.NewGuid(), 1, SessionId, CompanyId, SeatId));
             }
 
             public static TestNotification Create()

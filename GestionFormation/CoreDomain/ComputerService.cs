@@ -1,16 +1,24 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using GestionFormation.Kernel;
+using Microsoft.Office.Interop.Outlook;
 
 namespace GestionFormation.CoreDomain
 {
     public class ComputerService : IComputerService, IRuntimeDependency
     {
-        public void OpenTypeConventionMail(string subject, string body)
+        public void OpenMailInOutlook(string subject, string body, List<MailAttachement> attachements = null, string recipient = null)
         {
-            var app = new Microsoft.Office.Interop.Outlook.Application();
-            var mailItem = (Microsoft.Office.Interop.Outlook._MailItem)app.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
+            var app = new Application();
+            var mailItem = (_MailItem)app.CreateItem(OlItemType.olMailItem);
             mailItem.Subject = subject;
             mailItem.Body = body;
+            mailItem.To = recipient;
+
+            if (attachements != null)
+                foreach (var attachement in attachements)
+                    mailItem.Attachments.Add(attachement.FilePath, OlAttachmentType.olByValue,1, DisplayName: attachement.DisplayName);
 
             mailItem.Display(false);
         }
@@ -18,6 +26,24 @@ namespace GestionFormation.CoreDomain
         public string GetLocalUserName()
         {
             return Environment.UserName;
+        }
+    }
+
+    public class MailAttachement
+    {
+        public string FilePath { get; }
+        public string DisplayName { get; }
+
+        public MailAttachement(string filePath, string displayName)
+        {
+            if(!File.Exists(filePath))
+                throw new FileNotFoundException(filePath);
+
+            var tempDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+            FilePath = Path.Combine(tempDir.FullName, displayName) + Path.GetExtension(filePath);
+            DisplayName = displayName;
+
+            File.Copy(filePath, FilePath );            
         }
     }
 }

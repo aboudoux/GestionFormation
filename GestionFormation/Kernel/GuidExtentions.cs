@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace GestionFormation.Kernel
 {
@@ -8,6 +10,15 @@ namespace GestionFormation.Kernel
         {
             if(id == Guid.Empty)
                 throw new ArgumentException(memberName);
+        }
+    }
+
+    public static class GuidAssert
+    {
+        public static void AreNotEmpty(params Guid[] ids)
+        {
+            if (ids.Any(id => id == Guid.Empty))
+                throw new ArgumentException();
         }
     }
 }

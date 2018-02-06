@@ -11,13 +11,13 @@ using GestionFormation.Kernel;
 namespace GestionFormation.CoreDomain.BookingNotifications.Projections
 {
     public class BookingNotificationSqlProjections : IProjectionHandler,
-        IEventHandler<SeatToValidateSent>,
-        IEventHandler<AgreementToCreateSent>,    
-        IEventHandler<AgreementToSignSent>,
+        IEventHandler<SeatToValidateNotificationSent>,
+        IEventHandler<AgreementToCreateNotificationSent>,    
+        IEventHandler<AgreementToSignNotificationSent>,
         IEventHandler<BookingNotificationRemoved>
 
     {
-        public void Handle(SeatToValidateSent @event)
+        public void Handle(SeatToValidateNotificationSent @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -46,7 +46,7 @@ namespace GestionFormation.CoreDomain.BookingNotifications.Projections
             }
         }
 
-        public void Handle(AgreementToCreateSent @event)
+        public void Handle(AgreementToCreateNotificationSent @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
@@ -70,7 +70,7 @@ namespace GestionFormation.CoreDomain.BookingNotifications.Projections
             }
         }
 
-        public void Handle(AgreementToSignSent @event)
+        public void Handle(AgreementToSignNotificationSent @event)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
