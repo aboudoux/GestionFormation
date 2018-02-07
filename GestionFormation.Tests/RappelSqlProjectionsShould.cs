@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using GestionFormation.Applications.Agreements;
-using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.Applications.Companies;
 using GestionFormation.Applications.Contacts;
 using GestionFormation.Applications.Locations;
@@ -13,9 +12,8 @@ using GestionFormation.Applications.Students;
 using GestionFormation.Applications.Trainers;
 using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Agreements;
-using GestionFormation.CoreDomain.BookingNotifications;
-using GestionFormation.CoreDomain.BookingNotifications.Projections;
-using GestionFormation.CoreDomain.BookingNotifications.Queries;
+using GestionFormation.CoreDomain.Notifications;
+using GestionFormation.CoreDomain.Notifications.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Users;
@@ -57,7 +55,7 @@ namespace GestionFormation.Tests
             // then            
             var result = _context.Queries.GetAll(UserRole.Manager).ToList();
 
-            result.Should().Contain(a =>a.SessionId == place.SessionId && a.BookingNotificationType == BookingNotificationType.PlaceToValidate);
+            result.Should().Contain(a =>a.SessionId == place.SessionId && a.NotificationType == NotificationType.SeatToValidate);
         }
 
         [TestMethod]
@@ -65,7 +63,6 @@ namespace GestionFormation.Tests
         {
             var place = _context.CreateSeat();
             _context.App.Command<RefuseSeat>().Execute(place.AggregateId, "test");
-            _context.App.Command<RemoveBookingNotification>().FromSeat(place.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Manager).ToList();
             result.Should().NotContain(a => a.SessionId == place.SessionId);
@@ -76,7 +73,6 @@ namespace GestionFormation.Tests
         {
             var seat = _context.CreateSeat();
             _context.App.Command<CancelSeat>().Execute(seat.AggregateId, "test");
-            _context.App.Command<RemoveBookingNotification>().FromSeat(seat.AggregateId);
             
             var result = _context.Queries.GetAll(UserRole.Manager).ToList();
             result.Should().NotContain(a => a.SessionId == seat.SessionId);
@@ -87,10 +83,9 @@ namespace GestionFormation.Tests
         {
             var seat = _context.CreateSeat();
             _context.App.Command<ValidateSeat>().Execute(seat.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(seat.SessionId, seat.CompanyId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().Contain(a => a.SessionId == seat.SessionId && a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
+            result.Should().Contain(a => a.SessionId == seat.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
@@ -103,7 +98,6 @@ namespace GestionFormation.Tests
             _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(seat3.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(seat1.SessionId, seat1.CompanyId);
 
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
@@ -123,9 +117,6 @@ namespace GestionFormation.Tests
             _context.App.Command<ValidateSeat>().Execute(place3.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(place4.AggregateId);
 
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place3.SessionId, place3.CompanyId);
-
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(2);
         }
@@ -136,13 +127,11 @@ namespace GestionFormation.Tests
             var place1 = _context.CreateSeat();            
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
             var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, agreement.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Where(a=>a.AgreementId == agreement.AggregateId && a.BookingNotificationType == BookingNotificationType.AgreementToSign ).Should().HaveCount(1);
+            result.Where(a=>a.AgreementId == agreement.AggregateId && a.NotificationType == NotificationType.AgreementToSign ).Should().HaveCount(1);
         }
 
         [TestMethod]
@@ -153,18 +142,15 @@ namespace GestionFormation.Tests
 
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
             var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, CoreDomain.Agreements.AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, agreement.AggregateId);
 
             _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place1.AggregateId);
             
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().Contain(a => a.SessionId == place2.SessionId && a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
+            result.Should().Contain(a => a.SessionId == place2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
@@ -175,20 +161,16 @@ namespace GestionFormation.Tests
 
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);    
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
             
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
             var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, CoreDomain.Agreements.AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, agreement.AggregateId);
 
             _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place1.AggregateId);
 
             _context.App.Command<CancelSeat>().Execute(place2.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place2.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
+            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
@@ -199,21 +181,17 @@ namespace GestionFormation.Tests
 
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
             var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, agreement.AggregateId);
 
             _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place1.AggregateId);
 
             var convention = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, convention.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().NotContain(a => a.AgreementId == convention.AggregateId && a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
-            result.Should().Contain(a => a.AgreementId == convention.AggregateId && a.BookingNotificationType == BookingNotificationType.AgreementToSign);
+            result.Should().NotContain(a => a.AgreementId == convention.AggregateId && a.NotificationType == NotificationType.AgreementToCreate);
+            result.Should().Contain(a => a.AgreementId == convention.AggregateId && a.NotificationType == NotificationType.AgreementToSign);
         }
 
         [TestMethod]
@@ -223,28 +201,24 @@ namespace GestionFormation.Tests
             var place2 = _context.CreateSeat(place1.CompanyId);
 
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
             _context.App.Command<RefuseSeat>().Execute(place2.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place2.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().Contain(a=> a.BookingNotificationType == BookingNotificationType.AgreementToCreate && a.SessionId == place1.SessionId && a.CompanyId == place1.CompanyId);
+            result.Should().Contain(a=> a.NotificationType == NotificationType.AgreementToCreate && a.SessionId == place1.SessionId && a.CompanyId == place1.CompanyId);
         }
 
         [TestMethod]
         public void create_distinct_notification_when_adding_prevalided_seat()
         {
-            var place1 = _context.CreateSeat(sendValidationNotification:true);
+            var place1 = _context.CreateSeat();
             var place2 = _context.CreateSeat(place1.CompanyId, false);
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
             var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
             var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
 
-            operatorNotif.Should().HaveCount(1).And.Contain(a=>a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
-            managerNotif.Should().HaveCount(1).And.Contain(a => a.BookingNotificationType == BookingNotificationType.PlaceToValidate);
+            operatorNotif.Should().HaveCount(1).And.Contain(a=>a.NotificationType == NotificationType.AgreementToCreate);
+            managerNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.SeatToValidate);
         }
 
         [TestMethod]
@@ -254,15 +228,12 @@ namespace GestionFormation.Tests
             var place2 = _context.CreateSeat(place1.CompanyId, false);
 
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
-
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
             var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
             var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
 
-            operatorNotif.Should().HaveCount(1).And.Contain(a => a.BookingNotificationType == BookingNotificationType.AgreementToCreate);
+            operatorNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.AgreementToCreate);
             managerNotif.Should().BeEmpty();
         }
 
@@ -273,25 +244,20 @@ namespace GestionFormation.Tests
             var place2 = _context.CreateSeat(place1.CompanyId, sendValidationNotification: false);
 
             _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
             _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);            
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place1.SessionId, place1.CompanyId);
 
             var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
             var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
-            _context.App.Command<SendAgreementToSignNotification>().Execute(place1.SessionId, place1.CompanyId, agreement.AggregateId);
 
             var place3 = _context.CreateSeat(place1.CompanyId, sendValidationNotification:false);
             _context.App.Command<ValidateSeat>().Execute(place3.AggregateId);
-            _context.App.Command<SendAgreementToCreateNotification>().Execute(place3.SessionId, place3.CompanyId);
 
             _context.App.Command<RefuseSeat>().Execute(place3.AggregateId, "test");
-            _context.App.Command<AdjustBookingNotification>().Execute(place3.AggregateId);
 
             var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
             var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
 
-            operatorNotif.Should().HaveCount(1).And.Contain(a => a.BookingNotificationType == BookingNotificationType.AgreementToSign);
+            operatorNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.AgreementToSign);
             managerNotif.Should().BeEmpty();
         }
     }
@@ -324,9 +290,8 @@ namespace GestionFormation.Tests
                 companyId = company.AggregateId;
             }
 
-            var seat = _service.Command<ReserveSeat>().Execute(SessionId, student.AggregateId, companyId.Value);
-            if(sendValidationNotification)
-                _service.Command<SendSeatToValidateNotification>().Execute(SessionId, seat.CompanyId, seat.AggregateId);
+            var seat = _service.Command<ReserveSeat>().Execute(SessionId, student.AggregateId, companyId.Value, sendValidationNotification);
+            
             seat.SessionId.Should().NotBeEmpty();            
 
             return seat;

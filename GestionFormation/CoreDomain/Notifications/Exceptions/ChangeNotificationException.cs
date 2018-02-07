@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GestionFormation.Kernel;
+﻿using GestionFormation.Kernel;
 
-namespace GestionFormation.CoreDomain.BookingNotifications.Exceptions
+namespace GestionFormation.CoreDomain.Notifications.Exceptions
 {
     public class ChangeNotificationException : DomainException
     {

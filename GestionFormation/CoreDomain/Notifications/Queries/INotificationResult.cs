@@ -1,14 +1,13 @@
 ﻿using System;
-using GestionFormation.CoreDomain.BookingNotifications.Projections;
 
-namespace GestionFormation.CoreDomain.BookingNotifications.Queries
+namespace GestionFormation.CoreDomain.Notifications.Queries
 {
     public interface INotificationResult
     {
         Guid AggregateId { get; }
         string Label { get; }
         
-        BookingNotificationType BookingNotificationType { get; }
+        NotificationType NotificationType { get; }
 
         Guid? SeatId { get; }
         Guid SessionId { get; }

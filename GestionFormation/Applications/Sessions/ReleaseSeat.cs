@@ -1,4 +1,6 @@
 ﻿using System;
+using GestionFormation.CoreDomain.Notifications;
+using GestionFormation.CoreDomain.Notifications.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.Kernel;
@@ -7,19 +9,26 @@ namespace GestionFormation.Applications.Sessions
 {
     public class ReleaseSeat : ActionCommand
     {
-        public ReleaseSeat(EventBus eventBus) : base(eventBus)
-        {            
+        private readonly INotificationQueries _notificationManagerQueries;
+
+        public ReleaseSeat(EventBus eventBus, INotificationQueries notificationManagerQueries) : base(eventBus)
+        {
+            _notificationManagerQueries = notificationManagerQueries ?? throw new ArgumentNullException(nameof(notificationManagerQueries));
         }
 
-        public void Execute(Guid sessionId, Guid placeId, string reason)
+        public void Execute(Guid sessionId, Guid seatId, string reason)
         {
             var session = GetAggregate<Session>(sessionId);
-            var place = GetAggregate<Seat>(placeId);
+            var seat = GetAggregate<Seat>(seatId);
 
             session.ReleaseSeat();
-            place.Cancel(reason);
+            seat.Cancel(reason);
 
-            PublishUncommitedEvents(session, place);
+            var managerId = _notificationManagerQueries.GetNotificationManagerId(sessionId);
+            var manager = GetAggregate<NotificationManager>(managerId);
+            manager.SignalSeatCanceled(seat.AggregateId, seat.CompanyId);
+
+            PublishUncommitedEvents(session, seat);
         }
     }
 }

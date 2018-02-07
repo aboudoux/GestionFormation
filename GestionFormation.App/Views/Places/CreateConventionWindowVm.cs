@@ -8,7 +8,6 @@ using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.Applications.Agreements;
-using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.Applications.Contacts;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
@@ -141,7 +140,6 @@ namespace GestionFormation.App.Views.Places
                     var firstPlace = Places.First();
 
                     var result = _applicationService.Command<CreateAgreement>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType);
-                    _applicationService.Command<SendAgreementToSignNotification>().Execute(_sessionInfos.Result.SessionId, firstPlace.SocieteId, result.AggregateId);
                     return result;
 
                 });

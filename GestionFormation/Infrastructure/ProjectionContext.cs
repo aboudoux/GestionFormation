@@ -1,10 +1,10 @@
 using System;
 using System.Data.Entity;
 using GestionFormation.CoreDomain.Agreements.Projections;
-using GestionFormation.CoreDomain.BookingNotifications.Projections;
 using GestionFormation.CoreDomain.Companies.Projections;
 using GestionFormation.CoreDomain.Contacts.Projections;
 using GestionFormation.CoreDomain.Locations.Projections;
+using GestionFormation.CoreDomain.Notifications.Projections;
 using GestionFormation.CoreDomain.Seats.Projections;
 using GestionFormation.CoreDomain.Sessions.Projections;
 using GestionFormation.CoreDomain.Students.Projections;
@@ -30,7 +30,8 @@ namespace GestionFormation.Infrastructure
         public DbSet<ContactSqlEntity> Contacts { get; set; }  
         public DbSet<AgreementSqlEntity> Agreements { get; set; }
         public DbSet<UserSqlEntity> Users { get; set; }
-        public DbSet<BookingNotificationSqlEntity> BookingNotifications { get; set; }
+        public DbSet<NotificationSqlEntity> Notifications { get; set; }
+        public DbSet<NotificationManagerSqlEntity> NotificationManagers { get; set; }
 
 
         public T GetEntity<T>(Guid id) where T : class

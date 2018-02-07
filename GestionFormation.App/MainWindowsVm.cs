@@ -1,10 +1,8 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using DevExpress.Mvvm.POCO;
 using GalaSoft.MvvmLight;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views;
@@ -15,9 +13,8 @@ using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Places;
 using GestionFormation.App.Views.Sessions;
-using GestionFormation.Applications.BookingNotifications;
-using GestionFormation.CoreDomain.BookingNotifications.Queries;
-using GestionFormation.CoreDomain.Sessions;
+using GestionFormation.Applications.Notifications;
+using GestionFormation.CoreDomain.Notifications.Queries;
 
 namespace GestionFormation.App
 {
@@ -129,7 +126,7 @@ namespace GestionFormation.App
             if( MessageBoxResult.No == MessageBox.Show("Vous êtes sur le point de retirer cette notification.\r\nEtes vous sûr de vouloir continuer ?", "Suppression", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No) )
                 return;
 
-            await Task.Run(()=>_applicationService.Command<RemoveBookingNotification>().Execute(SelectedRappel.NotificationId));
+            await Task.Run(()=>_applicationService.Command<RemoveNotification>().Execute(SelectedRappel.SessionId, SelectedRappel.NotificationId));
             await RefreshRappels.ExecuteAsync();
         }
 
@@ -153,7 +150,7 @@ namespace GestionFormation.App
             NotificationId = result.AggregateId;
         }
 
-        public Guid? SessionId { get; }
+        public Guid SessionId { get; }
         public Guid? ConventionId { get; }
         public Guid NotificationId { get; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using GestionFormation.CoreDomain.Locations;
 using GestionFormation.CoreDomain.Locations.Exceptions;
+using GestionFormation.CoreDomain.Notifications;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Trainers;
 using GestionFormation.CoreDomain.Trainers.Exceptions;
@@ -32,10 +33,11 @@ namespace GestionFormation.Applications.Sessions
                     throw new LocationNotExistsException();
                 location.Assign(debut, durée);
             }
-
-
+            
             var session = Session.Plan(formationId, debut, durée, nombrePlace, lieuId, formateurId);
-            PublishUncommitedEvents(trainer, location, session);
+            var notification = NotificationManager.Create(session.AggregateId);
+
+            PublishUncommitedEvents(trainer, location, session, notification);
 
             return session;
         }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
+using GestionFormation.CoreDomain.Notifications;
+using GestionFormation.CoreDomain.Notifications.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.Kernel;
 
@@ -11,10 +13,12 @@ namespace GestionFormation.Applications.Agreements
     public class CreateAgreement : ActionCommand
     {
         private readonly IAgreementQueries _agreementQueries;
+        private readonly INotificationQueries _notificationQueries;
 
-        public CreateAgreement(EventBus eventBus, IAgreementQueries agreementQueries) : base(eventBus)
+        public CreateAgreement(EventBus eventBus, IAgreementQueries agreementQueries, INotificationQueries notificationQueries) : base(eventBus)
         {
             _agreementQueries = agreementQueries ?? throw new ArgumentNullException(nameof(agreementQueries));
+            _notificationQueries = notificationQueries ?? throw new ArgumentNullException(nameof(notificationQueries));
         }
 
         public Agreement Execute(Guid contactId, IEnumerable<Guid> seatsIds, AgreementType agreementType)
@@ -30,14 +34,25 @@ namespace GestionFormation.Applications.Agreements
             var agreement = Agreement.Create(contactId, agreementNumber, agreementType);
             aggregatesToCommit.Add(agreement);
 
+            NotificationManager manager = null;
+
             foreach (var seatId in seatsIds)
             {
                 var seat = GetAggregate<Seat>(seatId);
+                if (manager == null)
+                {
+                    var managerId = _notificationQueries.GetNotificationManagerId(seat.SessionId);
+                    manager = GetAggregate<NotificationManager>(managerId);                    
+                    aggregatesToCommit.Add(manager);
+                }
+
                 if (companyId.HasValue && companyId.Value != seat.CompanyId)
                     throw new AgreementCompanyException();
                 companyId = seat.CompanyId;
 
                 seat.AssociateAgreement(agreement.AggregateId);
+                manager.SignalAgreementAssociated(agreement.AggregateId, seat.AggregateId, seat.CompanyId);
+
                 aggregatesToCommit.Add(seat);
             }
 

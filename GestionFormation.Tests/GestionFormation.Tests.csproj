@@ -105,14 +105,14 @@
     <Compile Include="Fakes\FakeDomainEvent.cs" />
     <Compile Include="Fakes\FakeEventStamping.cs" />
     <Compile Include="Fakes\FakeEventStore.cs" />
+    <Compile Include="Fakes\FakeNotificationQueries.cs" />
     <Compile Include="Fakes\FakeTrainingQueries.cs" />
     <Compile Include="Fakes\FakeLocationQueries.cs" />
     <Compile Include="Fakes\FakeMessenger.cs" />
     <Compile Include="Fakes\FakeSessionProjection.cs" />
     <Compile Include="Fakes\FakeSessionQueries.cs" />
     <Compile Include="Fakes\TestDomainEvent.cs" />
-    <Compile Include="BookingNotificationShould.cs" />
-    <Compile Include="SessionNotificationShould.cs" />
+    <Compile Include="NotificationManagerShould.cs" />
     <Compile Include="TrainerShould.cs" />
     <Compile Include="FormationShould.cs" />
     <Compile Include="LearningTests.cs" />

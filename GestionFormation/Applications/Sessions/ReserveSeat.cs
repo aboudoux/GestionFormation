@@ -1,23 +1,32 @@
 ﻿using System;
-using System.Globalization;
+using GestionFormation.CoreDomain.Notifications;
+using GestionFormation.CoreDomain.Notifications.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
-using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Sessions
 {
     public class ReserveSeat : ActionCommand
     {
-        public ReserveSeat(EventBus eventBus) : base(eventBus)
+        private readonly INotificationQueries _notificationManagerQueries;
+
+        public ReserveSeat(EventBus eventBus, INotificationQueries notificationManagerQueries) : base(eventBus)
         {
+            _notificationManagerQueries = notificationManagerQueries ?? throw new ArgumentNullException(nameof(notificationManagerQueries));
         }
 
-        public Seat Execute(Guid sessionId, Guid studentId, Guid companyId)
+        public Seat Execute(Guid sessionId, Guid studentId, Guid companyId, bool sendNotification)
         {
             var session = GetAggregate<Session>(sessionId);
             var seat = session.BookSeat(studentId, companyId);
-            PublishUncommitedEvents(session, seat);
+
+            var managerId = _notificationManagerQueries.GetNotificationManagerId(sessionId);
+            var manager = GetAggregate<NotificationManager>(managerId);
+            
+            manager.SignalSeatCreated(seat.AggregateId, companyId, sendNotification);
+
+            PublishUncommitedEvents(session, seat, manager);
             return seat;
         }
     }

@@ -170,7 +170,7 @@ namespace GestionFormation.Tests
             fakeStorage.Save(new SeatCreated(placeId, 1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
 
             var bus = new EventBus(new EventDispatcher(), fakeStorage );
-            new ReleaseSeat(bus).Execute(sessionId, placeId, "essai");
+            new ReleaseSeat(bus, new FakeNotificationQueries()).Execute(sessionId, placeId, "essai");
 
             fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1));
             fakeStorage.GetEvents(placeId).Should().Contain(new SeatCanceled(placeId, 1, "essai"));

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.Applications.Companies;
 using GestionFormation.Applications.Seats;
 using GestionFormation.Applications.Sessions;
@@ -191,15 +190,9 @@ namespace GestionFormation.App.Views.Places
 
             await HandleMessageBoxError.ExecuteAsync(async () =>
             {
-                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStagiaire.Id, SelectedSociete.Id));
+                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStagiaire.Id, SelectedSociete.Id,!validate));
                 if(validate)
-                    await Task.Run(()=>
-                    {
-                        _applicationService.Command<ValidateSeat>().Execute(seat.AggregateId);
-                        _applicationService.Command<SendAgreementToCreateNotification>().Execute(seat.SessionId, seat.CompanyId);
-                    });
-                else
-                    await Task.Run(() => _applicationService.Command<SendSeatToValidateNotification>().Execute(seat.SessionId, seat.CompanyId, seat.AggregateId));
+                    await Task.Run(()=>_applicationService.Command<ValidateSeat>().Execute(seat.AggregateId));
 
                 await RefreshPlaces();
                 SelectedStagiaire = null;
@@ -267,7 +260,6 @@ namespace GestionFormation.App.Views.Places
                         await Task.Run(() =>
                         {
                             _applicationService.Command<CancelSeat>().Execute(selectedPlace.PlaceId, vm.Raison);
-                            _applicationService.Command<AdjustBookingNotification>().Execute(selectedPlace.PlaceId);
                             
                         });                        
                     });
@@ -285,7 +277,6 @@ namespace GestionFormation.App.Views.Places
                     await Task.Run(() =>
                     {
                         _applicationService.Command<ValidateSeat>().Execute(selectedPlace.PlaceId);
-                        _applicationService.Command<SendAgreementToCreateNotification>().Execute(_sessionId, selectedPlace.SocieteId);
                     });                    
                 });
             }
@@ -304,7 +295,6 @@ namespace GestionFormation.App.Views.Places
                         await Task.Run(() =>
                         {
                             _applicationService.Command<RefuseSeat>().Execute(selectedPlace.PlaceId, vm.Raison);
-                            _applicationService.Command<AdjustBookingNotification>().Execute(selectedPlace.PlaceId);
                         });                        
                     });
                 }

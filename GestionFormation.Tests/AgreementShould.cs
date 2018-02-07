@@ -80,7 +80,7 @@ namespace GestionFormation.Tests
             eventStore.Save(new SeatValided(place1Id, 2));
             eventStore.Save(new SeatValided(place2Id, 2));
 
-            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), eventStore), new FakeAgreementQueries());
+            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), eventStore), new FakeAgreementQueries(), new FakeNotificationQueries());
             Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id}, AgreementType.Free);
 
             action.ShouldThrow<AgreementCompanyException>();
@@ -90,7 +90,7 @@ namespace GestionFormation.Tests
         public void throw_error_if_create_convention_has_duplicate_()
         {
             var placeId = Guid.NewGuid();
-            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeAgreementQueries());
+            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), new FakeEventStore()), new FakeAgreementQueries(), new FakeNotificationQueries());
             Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() { placeId, placeId},AgreementType.Free);
 
             action.ShouldThrow<ArgumentException>();

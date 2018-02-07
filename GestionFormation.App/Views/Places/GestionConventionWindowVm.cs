@@ -10,7 +10,6 @@ using DevExpress.Xpf.Editors.RangeControl;
 using GalaSoft.MvvmLight.CommandWpf;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Agreements;
-using GestionFormation.Applications.BookingNotifications;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
@@ -184,7 +183,6 @@ namespace GestionFormation.App.Views.Places
                 await Task.Run(()=>
                 {
                     _applicationService.Command<SignAgreement>().Execute(_conventionId, documentId);
-                    _applicationService.Command<RemoveBookingNotification>().FromAgreement(_conventionId);
                 });
                 await base.ExecuteValiderAsync();
             });

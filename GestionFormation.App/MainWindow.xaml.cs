@@ -1,7 +1,7 @@
 ﻿using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Scheduling;
 using GestionFormation.App.Core;
-using GestionFormation.CoreDomain.BookingNotifications.Queries;
+using GestionFormation.CoreDomain.Notifications.Queries;
 
 namespace GestionFormation.App
 {

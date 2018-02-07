@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GestionFormation.CoreDomain.Users;
 
-namespace GestionFormation.CoreDomain.BookingNotifications.Projections
+namespace GestionFormation.CoreDomain.Notifications.Projections
 {
-    [Table("BookingNotification")]
-    public class BookingNotificationSqlEntity
+    [Table("Notification")]
+    public class NotificationSqlEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -17,6 +17,6 @@ namespace GestionFormation.CoreDomain.BookingNotifications.Projections
         public string Label { get; set; }
         public UserRole AffectedRole { get; set; }
         public Guid? AgreementId { get; set; }
-        public BookingNotificationType ReminderType { get; set; }
+        public NotificationType ReminderType { get; set; }
     }
 }

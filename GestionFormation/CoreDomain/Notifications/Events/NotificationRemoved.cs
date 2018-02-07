@@ -1,13 +1,13 @@
 ﻿using System;
 using GestionFormation.Kernel;
 
-namespace GestionFormation.CoreDomain.BookingNotifications.Events
+namespace GestionFormation.CoreDomain.Notifications.Events
 {
-    public class BookingNotificationRemoved : DomainEvent
+    public class NotificationRemoved : DomainEvent
     {
         public Guid NotificationId { get; }
 
-        public BookingNotificationRemoved(Guid aggregateId, int sequence, Guid notificationId) : base(aggregateId, sequence)
+        public NotificationRemoved(Guid aggregateId, int sequence, Guid notificationId) : base(aggregateId, sequence)
         {
             NotificationId = notificationId;
         }

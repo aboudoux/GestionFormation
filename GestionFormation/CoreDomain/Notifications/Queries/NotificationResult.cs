@@ -1,15 +1,15 @@
 ﻿using System;
-using GestionFormation.CoreDomain.BookingNotifications.Projections;
+using GestionFormation.CoreDomain.Notifications.Projections;
 
-namespace GestionFormation.CoreDomain.BookingNotifications.Queries
+namespace GestionFormation.CoreDomain.Notifications.Queries
 {
     public class NotificationResult : INotificationResult
     {
-        public NotificationResult(BookingNotificationSqlEntity entity)
+        public NotificationResult(NotificationSqlEntity entity)
         {
             AggregateId = entity.Id;
             Label = entity.Label;
-            BookingNotificationType = entity.ReminderType;
+            NotificationType = entity.ReminderType;
             SeatId = entity.SeatId;
             SessionId = entity.SessionId;
             CompanyId = entity.CompanyId;
@@ -18,7 +18,7 @@ namespace GestionFormation.CoreDomain.BookingNotifications.Queries
 
         public Guid AggregateId { get; }
         public string Label { get; }
-        public BookingNotificationType BookingNotificationType { get; }
+        public NotificationType NotificationType { get; }
         public Guid? SeatId { get; }
         public Guid SessionId { get; }
         public Guid CompanyId { get; }
