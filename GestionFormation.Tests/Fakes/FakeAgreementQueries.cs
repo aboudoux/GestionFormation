@@ -11,7 +11,12 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public IPrintableAgreementResult GetPrintableAgreement(Guid AgreementId)
+        public IPrintableAgreementResult GetPrintableAgreement(Guid agreementId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guid? GetSignedAgreementDocumentId(Guid agreementId)
         {
             throw new NotImplementedException();
         }

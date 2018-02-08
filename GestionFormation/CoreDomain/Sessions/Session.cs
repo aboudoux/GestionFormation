@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.CoreDomain.Sessions.Exceptions;
+using GestionFormation.CoreDomain.Students.Events;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Sessions
@@ -11,6 +13,7 @@ namespace GestionFormation.CoreDomain.Sessions
         private bool _isCanceled;
         private int _availableSeats;
         private int _bookedSeats;
+        private HashSet<Guid> _reportedMissingStudents = new HashSet<Guid>();
 
         public Guid? TrainerId { get; private set; }
         public Guid? LocationId { get; private set; }
@@ -43,7 +46,8 @@ namespace GestionFormation.CoreDomain.Sessions
                     Duration = e.Duration;
                 })
                 .Add<SessionSeatBooked>(e => _bookedSeats++)
-                .Add<SessionSeatReleased>(e => _bookedSeats--);
+                .Add<SessionSeatReleased>(e => _bookedSeats--)
+                .Add<MissingStudentReported>(e=>_reportedMissingStudents.Add(e.StudentId));
         }
 
         public static Session Plan(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
@@ -107,6 +111,12 @@ namespace GestionFormation.CoreDomain.Sessions
         {
             if(_bookedSeats > 0)
                 RaiseEvent(new SessionSeatReleased(AggregateId, GetNextSequence()));
+        }
+
+        public void ReportMissingStudent(Guid studentId)
+        {
+            if(_reportedMissingStudents.Contains(studentId)) return;
+            RaiseEvent(new MissingStudentReported(AggregateId, GetNextSequence(), studentId));
         }
 
         private static bool PeriodHaveWeekendDay(DateTime start, int duration)

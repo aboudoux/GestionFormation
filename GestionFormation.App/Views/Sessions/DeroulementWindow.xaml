@@ -16,8 +16,8 @@
         </dxb:BarContainerControl>
         <dxg:GridControl ItemsSource="{Binding Path=Places}" SelectionMode="Row" SelectedItems="{Binding Path=SelectedPlaces}">
             <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="Stagiaire"  Header="Stagiaire"/>
-                <dxg:GridColumn FieldName="Societe" Header="Société"/>
+                <dxg:GridColumn FieldName="Student"  Header="Stagiaire"/>
+                <dxg:GridColumn FieldName="Company" Header="Société"/>
                 <dxg:GridColumn FieldName="Contact" Header="Contact"/>
                 <dxg:GridColumn FieldName="Telephone" Header="Telephone"/>
                 <dxg:GridColumn FieldName="Email" Header="Email">

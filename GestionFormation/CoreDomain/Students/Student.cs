@@ -5,8 +5,7 @@ using GestionFormation.Kernel;
 namespace GestionFormation.CoreDomain.Students
 {
     public class Student : AggregateRootUpdatableAndDeletable<StudentUpdated, StudentDeleted>
-    {
-        
+    {        
         public Student(History history) : base(history)
         {
         }        
@@ -28,6 +27,6 @@ namespace GestionFormation.CoreDomain.Students
         public void Delete()
         {
             Delete(new StudentDeleted(AggregateId, GetNextSequence()));          
-        }
+        }       
     }
 }

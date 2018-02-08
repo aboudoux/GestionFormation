@@ -36,8 +36,8 @@
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>
         </dxlc:LayoutControl>
-        
-        <Grid Grid.Row="2">
+
+        <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="100"></ColumnDefinition>
@@ -49,6 +49,20 @@
             <TextBlock Grid.Row="0" Margin="5,0" VerticalAlignment="Bottom">Définir le document de convention signé</TextBlock>
             <TextBox Grid.Column="0" Grid.Row="1" Margin="5,0,5,0" Text="{Binding Path=DocumentPath}"></TextBox>
             <Button Grid.Column="1" Grid.Row="1" Margin="0,0,5,0" Command="{Binding Path=ChooseDocumentCommand}">Parcourir</Button>
+        </Grid>
+
+        <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Center">Convention signée enregistrée</TextBlock>
+            <Button Grid.Row="1" Grid.Column="0" Margin="5,0,5,0" Command="{Binding Path=OpenSignedDocumentCommand}">Ouvrir</Button>
+            <Button Grid.Column="1" Grid.Row="1" Margin="5,0,5,0" Command ="{Binding Path=ReassignSignedDocumentCommand}">Redéfinir</Button>
         </Grid>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">

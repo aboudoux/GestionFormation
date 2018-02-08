@@ -21,7 +21,7 @@ namespace GestionFormation.App.Views.Places
 {
     public class GestionConventionWindowVm : PopupWindowVm
     {
-        private readonly Guid _conventionId;
+        private readonly Guid _agreementId;
         private readonly IApplicationService _applicationService;
         private readonly ISeatQueries _seatQueries;
         private readonly IContactQueries _contactQueries;
@@ -35,12 +35,13 @@ namespace GestionFormation.App.Views.Places
         private string _telephone;
         private ObservableCollection<IAgreementSeatResult> _places;
         private string _documentPath;
+        private bool _showSavedDocument;
 
-        public GestionConventionWindowVm(Guid conventionId, ISeatQueries seatQueries, 
+        public GestionConventionWindowVm(Guid agreementId, ISeatQueries seatQueries, 
             IApplicationService applicationService, IContactQueries contactQueries, IAgreementQueries agreementQueries,
             IComputerService computerService, IDocumentCreator documentCreator, IDocumentRepository documentRepository)
         {
-            _conventionId = conventionId;
+            _agreementId = agreementId;
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));            
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
             _contactQueries = contactQueries ?? throw new ArgumentNullException(nameof(contactQueries));
@@ -52,19 +53,28 @@ namespace GestionFormation.App.Views.Places
             ChooseDocumentCommand = new RelayCommand(ExecuteChooseDocumentAsync);
             PrintCommand = new RelayCommandAsync(ExecutePrintAsync);
             SendMailCommand = new RelayCommandAsync(ExecuteSendEmailAsync);
+            OpenSignedDocumentCommand = new RelayCommandAsync(ExecuteOpenSignedDocumentAsync);
+            ReassignSignedDocumentCommand = new RelayCommand(ExecuteReassignSignedDocument);
+
 
             SetValiderCommandCanExecute(()=>File.Exists(DocumentPath));
         }        
 
         public override async Task Init()
         {
-            var placesTask = Task.Run(()=>_seatQueries.GetSeatAgreements(_conventionId));
-            var contactTask = LoadContact(_conventionId);
+            var placesTask = Task.Run(()=>_seatQueries.GetSeatAgreements(_agreementId));
+            var documentTask = Task.Run(() => _agreementQueries.GetSignedAgreementDocumentId(_agreementId));
+            var contactTask = LoadContact(_agreementId);
 
-            await Task.WhenAll(placesTask, contactTask);
+            await Task.WhenAll(placesTask, contactTask, documentTask);
 
             Places = new ObservableCollection<IAgreementSeatResult>(placesTask.Result);
+            SignedDocumentId = documentTask.Result;
+            if (SignedDocumentId.HasValue)
+                ShowSavedDocument = true;
         }
+
+        public Guid? SignedDocumentId { get; set; }
 
         private async Task LoadContact(Guid conventionId)
         {
@@ -76,6 +86,12 @@ namespace GestionFormation.App.Views.Places
                 Email = contact.Email;
                 Telephone = contact.Telephone;
             }
+        }
+
+        public bool ShowSavedDocument
+        {
+            get => _showSavedDocument;
+            set { Set(()=>ShowSavedDocument, ref _showSavedDocument, value); }
         }
 
         public ObservableCollection<IAgreementSeatResult> Places
@@ -147,7 +163,7 @@ namespace GestionFormation.App.Views.Places
             await HandleMessageBoxError.ExecuteAsync(async () =>
             {                
                 var doc = await GenerateAgreementDocument();
-                var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_conventionId));
+                var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
                 
                 _computerService.OpenMailInOutlook($"TREND - Convention de formation {conv.Training} du {conv.StartDate:d}", 
                     "Bonjour," + Environment.NewLine +
@@ -158,11 +174,24 @@ namespace GestionFormation.App.Views.Places
             });
         }
 
+        public RelayCommandAsync OpenSignedDocumentCommand { get; }
+        private async Task ExecuteOpenSignedDocumentAsync()
+        {
+            var documentPath = await Task.Run(()=>_documentRepository.GetDocument(SignedDocumentId.Value));
+            Process.Start(documentPath);
+        }
+
+        public RelayCommand ReassignSignedDocumentCommand { get; }
+        private void ExecuteReassignSignedDocument()
+        {
+            ShowSavedDocument = false;
+        }
+
         private async Task<string> GenerateAgreementDocument()
         {
             var firstPlace = Places.First();
 
-            var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_conventionId));
+            var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
 
             if (conv.AgreementType == AgreementType.Free)
                 return _documentCreator.CreateFreeAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Nom, Prenom), conv.Training, conv.StartDate, conv.Duration, conv.Location, Places.Select(a => new Participant(a.Student, a.Company)).ToList());
@@ -182,7 +211,7 @@ namespace GestionFormation.App.Views.Places
                 var documentId = await Task.Run(()=>_documentRepository.Save(DocumentPath));
                 await Task.Run(()=>
                 {
-                    _applicationService.Command<SignAgreement>().Execute(_conventionId, documentId);
+                    _applicationService.Command<SignAgreement>().Execute(_agreementId, documentId);
                 });
                 await base.ExecuteValiderAsync();
             });

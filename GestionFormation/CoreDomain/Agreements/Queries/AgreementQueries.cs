@@ -28,12 +28,12 @@ namespace GestionFormation.CoreDomain.Agreements.Queries
             }
         }
 
-        public IPrintableAgreementResult GetPrintableAgreement(Guid AgreementId)
+        public IPrintableAgreementResult GetPrintableAgreement(Guid agreementId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var query = from agreement in context.Agreements
-                    where agreement.AgreementId == AgreementId
+                    where agreement.AgreementId == agreementId
                     join seat in context.Seats on agreement.AgreementId equals seat.AssociatedAgreementId
                     join session in context.Sessions on seat.SessionId equals session.SessionId
                     join training in context.Trainings on session.TrainingId equals training.TrainingId
@@ -51,6 +51,14 @@ namespace GestionFormation.CoreDomain.Agreements.Queries
                     StartDate = conv.DateDebut,
                     Duration = conv.DuréeEnJour
                 };                    
+            }
+        }
+
+        public Guid? GetSignedAgreementDocumentId(Guid agreementId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                return context.Agreements.Find(agreementId).DocumentId;
             }
         }
 

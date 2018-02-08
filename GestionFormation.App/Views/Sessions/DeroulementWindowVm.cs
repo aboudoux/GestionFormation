@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
+using GestionFormation.Applications.Students;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
@@ -17,16 +18,18 @@ namespace GestionFormation.App.Views.Sessions
         private readonly Guid _sessionId;
         private readonly IDocumentCreator _documentCreator;
         private readonly ISessionQueries _sessionQueries;
+        private readonly IApplicationService _applicationService;
         private ObservableCollection<ISeatValidatedResult> _places;
         private ObservableCollection<ISeatValidatedResult> _selectedPlaces;
         private ICompleteSessionResult _sessionInfos;
 
-        public DeroulementWindowVm(ISeatQueries seatQueries, Guid sessionId, IDocumentCreator documentCreator, ISessionQueries sessionQueries)
+        public DeroulementWindowVm(ISeatQueries seatQueries, Guid sessionId, IDocumentCreator documentCreator, ISessionQueries sessionQueries, IApplicationService applicationService)
         {
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
             _sessionId = sessionId;
             _documentCreator = documentCreator ?? throw new ArgumentNullException(nameof(documentCreator));
             _sessionQueries = sessionQueries ?? throw new ArgumentNullException(nameof(sessionQueries));
+            _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
             RefreshCommand = new RelayCommandAsync(ExecuteRefreshAsync);
 
             SelectedPlaces = new ObservableCollection<ISeatValidatedResult>();
@@ -35,13 +38,15 @@ namespace GestionFormation.App.Views.Sessions
                 PrintCertificatAssiduiteCommand.RaiseCanExecuteChanged();
                 PrintQuestionnaireCommand.RaiseCanExecuteChanged();
                 PrintDiplomeCommand.RaiseCanExecuteChanged();
+                AbsenceCommand.RaiseCanExecuteChanged();
             };
             
             PrintFeuillePresenceCommand = new RelayCommand(ExecutePrintFeuillePresence);
             PrintCertificatAssiduiteCommand = new RelayCommand(ExecutePrintCertificatAssiduite, () => SelectedPlaces.Any());
             PrintQuestionnaireCommand = new RelayCommand(ExecutePrintQuestionnaire, () => SelectedPlaces.Any());
             PrintDiplomeCommand = new RelayCommand(ExecutePrintDiplome, () => SelectedPlaces.Any());
-        }
+            AbsenceCommand = new RelayCommandAsync(ExecuteAbsenceAsync, () => SelectedPlaces.Any());
+        }        
 
         public ObservableCollection<ISeatValidatedResult> Places
         {
@@ -73,6 +78,16 @@ namespace GestionFormation.App.Views.Sessions
         }
 
         public RelayCommandAsync AbsenceCommand { get; }
+        private async Task ExecuteAbsenceAsync()
+        {
+            foreach (var place in _selectedPlaces)
+            {
+                await HandleMessageBoxError.ExecuteAsync(async () =>
+                    {
+                        await Task.Run(() => _applicationService.Command<ReportMissingStudent>().Execute(_sessionId, place.StudentId));
+                    });
+            }
+        }
 
         public RelayCommand PrintFeuillePresenceCommand { get; }
         private void ExecutePrintFeuillePresence()

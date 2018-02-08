@@ -21,6 +21,7 @@ namespace GestionFormation.Infrastructure
         }
 
         public DbSet<StudentSqlEntity> Students { get; set; }
+        public DbSet<MissingStudentSqlEntity> MissingStudents { get; set; }
         public DbSet<TrainingSqlEntity> Trainings { get; set; }
         public DbSet<SessionSqlEntity> Sessions { get; set; }
         public DbSet<TrainerSqlEntity> Trainers { get; set; }

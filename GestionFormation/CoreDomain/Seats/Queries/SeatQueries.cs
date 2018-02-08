@@ -76,6 +76,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                     where p.SessionId == sessionId && p.Status == SeatStatus.Valid && agreement.DocumentId.HasValue
                     select new
                     {
+                        StudentId = student.StudentId,
                         StagiaireNom = student.Lastname,
                         StagiairePrenom = student.Firstname,
                         SocieteNom = company.Name,
@@ -85,7 +86,7 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                         Email = contact.Email
                     };
 
-                return querie.ToList().Select(a => new SeatValidatedResult(a.StagiaireNom,  a.StagiairePrenom, a.SocieteNom, a.ContactNom, a.ContactPrenom, a.Telephone, a.Email));
+                return querie.ToList().Select(a => new SeatValidatedResult(a.StudentId, a.StagiaireNom,  a.StagiairePrenom, a.SocieteNom, a.ContactNom, a.ContactPrenom, a.Telephone, a.Email));
             }
         }
 
