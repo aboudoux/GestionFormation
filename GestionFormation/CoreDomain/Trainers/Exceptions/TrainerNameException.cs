@@ -1,4 +1,5 @@
-﻿using GestionFormation.Kernel;
+﻿using System;
+using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Trainers.Exceptions
 {

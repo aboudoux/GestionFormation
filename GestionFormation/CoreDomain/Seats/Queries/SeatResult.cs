@@ -7,8 +7,11 @@ namespace GestionFormation.CoreDomain.Seats.Queries
 {
     public class SeatResult : ISeatResult
     {
-        public SeatResult(SeatSqlentity a, AgreementSqlEntity agreement)
+        public SeatResult(SeatSqlentity a, AgreementSqlEntity agreement, string studentLastname, string studentFirstname, string companieName)
         {
+            StudentLastname = studentLastname;
+            StudentFirstname = studentFirstname;
+            CompanyName = companieName;
             SeatId = a.SeatId;
             StudentId = a.StudentId;
             CompanyId = a.CompanyId;
@@ -37,5 +40,8 @@ namespace GestionFormation.CoreDomain.Seats.Queries
         public AgreementType AgreementType { get; }
         public Guid SessionId { get; }
         public bool AgreementRevoked { get; }
+        public string StudentLastname { get; }
+        public string StudentFirstname { get; }
+        public string CompanyName { get; }
     }
 }

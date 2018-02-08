@@ -720,7 +720,7 @@ namespace GestionFormation.Tests.Applications
 
              var formationId = Guid.NewGuid();
 
-             var formateur = new CreateTrainer(eventBus).Execute("BOUDOUX", "Aurelien", "test@test.com");
+             var formateur = new CreateTrainer(eventBus, new FakeTrainerQueries()).Execute("BOUDOUX", "Aurelien", "test@test.com");
              var lieu = new CreateLocation(eventBus, new FakeLocationQueries()).Execute("Paris", "test", 5);
 
              new PlanSession(eventBus).Execute(formationId, new DateTime(2017, 12, 20), 3, 3, lieu.AggregateId, formateur.AggregateId);

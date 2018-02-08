@@ -15,11 +15,13 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             {
                 var querie = from seat in context.Seats
                     where seat.SessionId == sessionId
+                    join student in context.Students on seat.StudentId equals student.StudentId
+                    join company in context.Companies on seat.CompanyId equals company.CompanyId
                     join agreement in context.Agreements on seat.AssociatedAgreementId equals agreement.AgreementId into pc
                     from agreement in pc.DefaultIfEmpty()
-                    select new {Seat = seat, Agreement = agreement};
+                    select new {Seat = seat, Agreement = agreement, student.Firstname, student.Lastname, company.Name};
 
-                return querie.ToList().Select(a => new SeatResult(a.Seat, a.Agreement));
+                return querie.ToList().Select(a => new SeatResult(a.Seat, a.Agreement, a.Lastname, a.Firstname, a.Name));
             }
         }
 
@@ -29,12 +31,14 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             {
                 var querie = from seat in context.Seats
                     where seat.SeatId == seatId
+                    join student in context.Students on seat.StudentId equals student.StudentId
+                    join company in context.Companies on seat.CompanyId equals company.CompanyId
                     join agreement in context.Agreements on seat.AssociatedAgreementId equals agreement.AgreementId into pc
                     from agreement in pc.DefaultIfEmpty()
-                    select new { Seat = seat, Agreement = agreement };
+                    select new { Seat = seat, Agreement = agreement, student.Firstname, student.Lastname, company.Name };
 
                 var result = querie.FirstOrDefault();
-                return result == null ? null : new SeatResult(result.Seat, result.Agreement);
+                return result == null ? null : new SeatResult(result.Seat, result.Agreement, result.Lastname, result.Firstname, result.Name);
             }
         }
 

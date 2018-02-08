@@ -11,5 +11,6 @@ namespace GestionFormation.CoreDomain.Students.Projections
         public Guid StudentId { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }
+        public bool Removed { get; set; }
     }
 }

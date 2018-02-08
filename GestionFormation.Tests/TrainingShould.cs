@@ -10,7 +10,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class FormationShould
+    public class TrainingShould
     {
         [TestMethod]
         public void raise_formationCreated_on_create_new_formation()

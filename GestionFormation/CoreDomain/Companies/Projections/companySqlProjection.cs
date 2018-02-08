@@ -5,7 +5,7 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Companies.Projections
 {
-    public class SocieteSqlProjection : IProjectionHandler,
+    public class CompanySqlProjection : IProjectionHandler,
         IEventHandler<CompanyCreated>,
         IEventHandler<CompanyUpdated>,
         IEventHandler<CompanyDeleted>
@@ -49,9 +49,8 @@ namespace GestionFormation.CoreDomain.Companies.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new CompanySqlEntity() {CompanyId = @event.AggregateId};
-                context.Companies.Attach(entity);
-                context.Companies.Remove(entity);
+                var entity = context.GetEntity<CompanySqlEntity>(@event.AggregateId);
+                entity.Removed = true;
                 context.SaveChanges();
             }
         }

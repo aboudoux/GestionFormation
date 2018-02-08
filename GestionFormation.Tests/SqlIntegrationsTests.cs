@@ -44,9 +44,14 @@ namespace GestionFormation.Tests
             var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
             var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
-            var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1", "CONVENTION TEST", "", "");
-            var societe2 = service.Command<CreateCompany>().Execute("SOCIETE2", "CONVENTION TEST", "", "");
-            var societe3 = service.Command<CreateCompany>().Execute("SOCIETE3", "CONVENTION TEST", "", "");
+
+            var sname1 = "SOCIETE1 " + Guid.NewGuid();
+            var sname2 = "SOCIETE2 " + Guid.NewGuid();
+            var sname3 = "SOCIETE3 " + Guid.NewGuid();
+
+            var societe1 = service.Command<CreateCompany>().Execute(sname1, "CONVENTION TEST", "", "");
+            var societe2 = service.Command<CreateCompany>().Execute(sname2, "CONVENTION TEST", "", "");
+            var societe3 = service.Command<CreateCompany>().Execute(sname3, "CONVENTION TEST", "", "");
 
             var createdFormation = service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2);
             var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);
@@ -75,9 +80,9 @@ namespace GestionFormation.Tests
 
             // then 
             allConventions.Should().HaveCount(3);
-            allConventions.First(a => a.Company == "SOCIETE1").Seats.Count.Should().Be(2);
-            allConventions.First(a => a.Company == "SOCIETE2").Seats.Count.Should().Be(2);
-            allConventions.First(a => a.Company == "SOCIETE3").Seats.Count.Should().Be(1);
+            allConventions.First(a => a.Company == sname1).Seats.Count.Should().Be(2);
+            allConventions.First(a => a.Company == sname2).Seats.Count.Should().Be(2);
+            allConventions.First(a => a.Company == sname3).Seats.Count.Should().Be(1);
 
             allConventions.All(a => !string.IsNullOrWhiteSpace(a.AgreementNumber)).Should().BeTrue();
         }
@@ -90,7 +95,7 @@ namespace GestionFormation.Tests
             var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
             var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
-            var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1", "CONVENTION TEST", "", "");
+            var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1 " + Guid.NewGuid(), "CONVENTION TEST", "", "");
 
             var createdFormation = service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2);
             var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);

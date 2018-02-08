@@ -6,7 +6,7 @@ namespace GestionFormation.Applications.Students
 {
     public class UpdateStudent : ActionCommand
     {
-        protected UpdateStudent(EventBus eventBus) : base(eventBus)
+        public UpdateStudent(EventBus eventBus) : base(eventBus)
         {
         }
 

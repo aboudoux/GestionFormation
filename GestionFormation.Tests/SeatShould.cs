@@ -13,7 +13,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class PlacesShould
+    public class SeatShould
     {
         [TestMethod]
         public void be_created_when_reserve_place_in_session()

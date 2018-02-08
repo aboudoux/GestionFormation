@@ -68,10 +68,14 @@
                     </dxe:ComboBoxEdit.Buttons>
                 </dxe:ComboBoxEdit>
 
-                <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <dx:SimpleButton Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddPlaceCommand}" Margin="0,0,15,0">Reserver AVEC demande de validation</dx:SimpleButton>
-                    <dx:SimpleButton Glyph="{dx:DXImage Image=Fill_16x16.png}" Command="{Binding Path=AddValidatedPlaceCommand}">Reserver SANS demande de validation</dx:SimpleButton>
-                </StackPanel>
+                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,10,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <dx:SimpleButton Grid.Column="0"  Margin="5,0,5,0" Glyph="{dx:DXImage Image=Show_32x32.png}" Command="{Binding Path=AddPlaceCommand}">Reserver AVEC demande de validation</dx:SimpleButton>
+                    <dx:SimpleButton Grid.Column="1"  Margin="5,0,5,0" Glyph="{dx:DXImage Image=Hide_32x32.png}" Command="{Binding Path=AddValidatedPlaceCommand}">Reserver SANS demande de validation</dx:SimpleButton>
+                </Grid>
 
                 
             </Grid>

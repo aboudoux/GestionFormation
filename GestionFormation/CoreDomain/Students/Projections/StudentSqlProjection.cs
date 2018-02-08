@@ -46,9 +46,8 @@ namespace GestionFormation.CoreDomain.Students.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new StudentSqlEntity() {StudentId = @event.AggregateId};
-                context.Students.Attach(entity);
-                context.Students.Remove(entity);
+                var entity =  context.GetEntity<StudentSqlEntity>(@event.AggregateId);
+                entity.Removed = true;
                 context.SaveChanges();
             }
         }

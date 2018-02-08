@@ -14,7 +14,7 @@ namespace GestionFormation.CoreDomain.Students.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Students.ToList().Select(entity => new StudentResult(entity)).ToList();
+                return context.Students.Where(a=>a.Removed == false).ToList().Select(entity => new StudentResult(entity)).ToList();
             }
         }
 

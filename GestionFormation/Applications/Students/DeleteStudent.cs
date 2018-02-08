@@ -6,7 +6,7 @@ namespace GestionFormation.Applications.Students
 {
     public class DeleteStudent : ActionCommand
     {
-        protected DeleteStudent(EventBus eventBus) : base(eventBus)
+        public DeleteStudent(EventBus eventBus) : base(eventBus)
         {
         }
 

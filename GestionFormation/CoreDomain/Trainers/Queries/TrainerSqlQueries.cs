@@ -15,5 +15,16 @@ namespace GestionFormation.CoreDomain.Trainers.Queries
                 return context.Trainers.ToList().Select(a=>new TrainerResult(a)).ToList();
             }
         }
+
+        public bool Exists(string lastname, string firstname)
+        {
+            var lastnameLower = lastname.ToLower();
+            var firstnameLower = firstname.ToLower();
+
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                return context.Trainers.Any(a => a.Firstname.ToLower() == firstnameLower && a.Lastname.ToLower() == lastnameLower);
+            }
+        }
     }
 }

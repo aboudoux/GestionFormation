@@ -9,6 +9,7 @@ using GestionFormation.Applications.Companies;
 using GestionFormation.Applications.Seats;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Students;
+using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Companies.Queries;
 using GestionFormation.CoreDomain.Seats;
@@ -202,7 +203,7 @@ namespace GestionFormation.App.Views.Places
 
         private async Task RefreshPlaces()
         {
-            var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, Stagiaires.First(b=>b.Id == a.StudentId ).Label, Societes.First(b=>b.Id == a.CompanyId).Label)));
+            var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new PlaceItem(a, new FullName(a.StudentLastname, a.StudentFirstname).ToString(), a.CompanyName)));
             Places = new ObservableCollection<PlaceItem>(items);
             RefreshCompteurs();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using GestionFormation.Applications.Contacts.Exceptions;
 using GestionFormation.CoreDomain.Companies.Queries;
 using GestionFormation.CoreDomain.Contacts;
 using GestionFormation.Kernel;
@@ -17,7 +18,7 @@ namespace GestionFormation.Applications.Contacts
         public Contact Execute(Guid societeId, string nom, string prenom, string email, string telephone)
         {
             if(!_companyQueries.Exists(societeId))
-                throw new Exception("Impossible de créer le contact car la société à laquele vous voulez le rattacher n'existe pas");
+                throw new CreateContactException();
 
             var contact = Contact.Create(societeId, nom, prenom, email, telephone);
             PublishUncommitedEvents(contact);

@@ -26,7 +26,7 @@ namespace GestionFormation.CoreDomain.Locations
         public static Location Create(string name, string address, int seats)
         {
             if(string.IsNullOrWhiteSpace(name))
-                throw new LieuWithEmptyNameException();
+                throw new LocationWithEmptyNameException();
 
             var location = new Location(History.Empty);
             location.AggregateId = Guid.NewGuid();
@@ -37,7 +37,7 @@ namespace GestionFormation.CoreDomain.Locations
         public void Update(string name, string address, int seats)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new LieuWithEmptyNameException();
+                throw new LocationWithEmptyNameException();
 
             Update(new LocationUpdated(AggregateId, GetNextSequence(), name, address, seats));
         }

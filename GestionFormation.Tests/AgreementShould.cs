@@ -5,6 +5,7 @@ using GestionFormation.Applications.Agreements;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Events;
 using GestionFormation.CoreDomain.Agreements.Exceptions;
+using GestionFormation.CoreDomain.Notifications.Events;
 using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
@@ -71,17 +72,22 @@ namespace GestionFormation.Tests
         public void throw_error_if_create_convention_with_not_same_societe()
         {
             var sessionId = Guid.NewGuid();
-            var place1Id = Guid.NewGuid();
-            var place2Id = Guid.NewGuid();
+            var notificationManagerId = Guid.NewGuid();
+            var seat1Id = Guid.NewGuid();
+            var seat2Id = Guid.NewGuid();
 
             var eventStore = new FakeEventStore();
-            eventStore.Save(new SeatCreated(place1Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
-            eventStore.Save(new SeatCreated(place2Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
-            eventStore.Save(new SeatValided(place1Id, 2));
-            eventStore.Save(new SeatValided(place2Id, 2));
+            eventStore.Save(new SeatCreated(seat1Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            eventStore.Save(new SeatCreated(seat2Id,1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            eventStore.Save(new SeatValided(seat1Id, 2));
+            eventStore.Save(new SeatValided(seat2Id, 2));
+            eventStore.Save(new NotificationManagerCreated(notificationManagerId, 1, sessionId));
 
-            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), eventStore), new FakeAgreementQueries(), new FakeNotificationQueries());
-            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {place1Id, place2Id}, AgreementType.Free);
+            var queries = new FakeNotificationQueries();
+            queries.AddNotificationManager(sessionId, notificationManagerId);
+            
+            var createConvention = new CreateAgreement(new EventBus(new EventDispatcher(), eventStore), new FakeAgreementQueries(), queries);
+            Action action = () => createConvention.Execute(Guid.NewGuid(), new List<Guid>() {seat1Id, seat2Id}, AgreementType.Free);
 
             action.ShouldThrow<AgreementCompanyException>();
         }

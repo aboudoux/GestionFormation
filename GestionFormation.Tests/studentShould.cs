@@ -11,7 +11,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class StagiaireShould
+    public class StudentShould
     {
         [TestMethod]
         public void raise_stagiaireCreated_on_create_new_stagiaire()

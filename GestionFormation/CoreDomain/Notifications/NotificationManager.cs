@@ -83,7 +83,7 @@ namespace GestionFormation.CoreDomain.Notifications
 
             RaiseEvent(new AgreementAssociatedToSeatSignaled(AggregateId, GetNextSequence(), seatId, agreementId));
 
-            if (_notifications.OfType<AgreementToSignNotificationSent>().All(a => a.CompanyId != companyId))
+            if (_notifications.OfType<AgreementToSignNotificationSent>().All(a => a.CompanyId != companyId || a.AgreementId != agreementId))
                 RaiseEvent(new AgreementToSignNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, agreementId, Guid.NewGuid()));
 
             RemoveNotifications<AgreementToCreateNotificationSent>(a => a.CompanyId == companyId);
@@ -127,10 +127,11 @@ namespace GestionFormation.CoreDomain.Notifications
         {
             GuidAssert.AreNotEmpty(agreementId);
 
+            RemoveNotifications<AgreementToSignNotificationSent>(a => a.AgreementId == agreementId);
+
             var companyId = _seatStates.FirstOrDefault(a => a.AssociatedAgreement == agreementId)?.CompanyId;
-
-            if(!companyId.HasValue) return;
-
+            if(!companyId.HasValue) return;      
+            
             if (_seatStates.Any(a => a.CompanyId == companyId && a.Status == SeatStatus.Valid))
                 RaiseEvent(new AgreementToCreateNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId.Value, Guid.NewGuid()));
         }

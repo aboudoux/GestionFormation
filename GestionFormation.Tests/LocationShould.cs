@@ -15,7 +15,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class LieuShould
+    public class LocationShould
     {
         [TestMethod]
         public void raise_LieuCreated_on_create_new_lieu()
@@ -103,7 +103,7 @@ namespace GestionFormation.Tests
             queries.Add("lala", "test",1);
 
             Action action = () => new CreateLocation(new EventBus(new EventDispatcher(), new FakeEventStore()), queries).Execute("lala", "ok", 1);
-            action.ShouldThrow<LieuAlreadyExistsException>();
+            action.ShouldThrow<LocationAlreadyExistsException>();
         }
         
         [TestMethod]
@@ -119,7 +119,7 @@ namespace GestionFormation.Tests
             eventStore.Save(new LocationCreated(lieuId,1, "COUCOU", "osef",1));
             
             Action action = () => new UpdateLocation(new EventBus(new EventDispatcher(), eventStore), queries).Execute(lieuId,"lala", "ok", 1);
-            action.ShouldThrow<LieuAlreadyExistsException>();
+            action.ShouldThrow<LocationAlreadyExistsException>();
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace GestionFormation.Tests
         public void throw_error_if_create_with_empty_name()
         {
             Action action = () => Location.Create("", "",1);
-            action.ShouldThrow<LieuWithEmptyNameException>();
+            action.ShouldThrow<LocationWithEmptyNameException>();
         }
 
         [TestMethod]
@@ -154,7 +154,7 @@ namespace GestionFormation.Tests
 
             var lieu = new Location(history);
             Action action =  () => lieu.Update(null, "TEST",1);
-            action.ShouldThrow<LieuWithEmptyNameException>();
+            action.ShouldThrow<LocationWithEmptyNameException>();
         }
 
         [TestMethod]

@@ -2,10 +2,13 @@
 using System.Collections.Specialized;
 using System.Globalization;
 using FluentAssertions;
+using GestionFormation.Applications.Trainers;
 using GestionFormation.CoreDomain.Trainers;
 using GestionFormation.CoreDomain.Trainers.Events;
 using GestionFormation.CoreDomain.Trainers.Exceptions;
+using GestionFormation.CoreDomain.Trainers.Queries;
 using GestionFormation.Kernel;
+using GestionFormation.Tests.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GestionFormation.Tests
@@ -227,6 +230,30 @@ namespace GestionFormation.Tests
 
             assignedSession.Add(start, 10);
             assignedSession.PeriodExists(start.AddHours(1), 10).Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void throw_exception_if_create_2_trainer_with_same_lastname_and_firstname()
+        {
+            var query = new FakeTrainerQueries();
+            query.AddTrainer("Cordier", "Fabrice");
+
+            Action action = () => new CreateTrainer(new EventBus(new EventDispatcher(), new FakeEventStore()), query).Execute("CORDIER", "fabrice","");
+            action.ShouldThrow<TrainerAlreadyExistsException>();
+        }
+
+        [TestMethod]
+        public void throw_exception_if_update_formateur_with_existing_name()
+        {
+            var query = new FakeTrainerQueries();
+            query.AddTrainer("Cordier", "Fabrice");
+
+            var eventStore = new FakeEventStore();
+            var trainerId = Guid.NewGuid();
+            eventStore.Save(new TrainerCreated(trainerId, 1, "BOUDOXU", "Aurélien",""));
+
+            Action action = ()=>new UpdateTrainer(new EventBus(new EventDispatcher(), eventStore), query).Execute(trainerId, "cordier", "fabrice", "");
+            action.ShouldThrow<TrainerAlreadyExistsException>();
         }
     }
 }

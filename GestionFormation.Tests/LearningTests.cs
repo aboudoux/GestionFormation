@@ -7,6 +7,7 @@ using FluentAssertions;
 using GestionFormation.App.Core;
 using GestionFormation.Applications;
 using GestionFormation.CoreDomain;
+using GestionFormation.CoreDomain.Notifications.Events;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
@@ -62,6 +63,18 @@ namespace GestionFormation.Tests
         {
             ComputerService service = new ComputerService();
             service.OpenMailInOutlook("test", "cect est un test", new List<MailAttachement>(){ new MailAttachement(@"C:\Users\H264376\AppData\Local\Temp\2c147147-1058-410c-81ec-f7f512196820.rtf", "convention") });
+        }
+
+        [TestMethod]
+        public void test_any()
+        {
+            List<NotificationEvent> _notifications = new List<NotificationEvent>();
+
+            var companyId = Guid.NewGuid();
+            _notifications.Add(new AgreementToSignNotificationSent(Guid.NewGuid(), 1, Guid.NewGuid(), companyId, Guid.NewGuid(), Guid.NewGuid()));
+
+            var  agreementId = Guid.NewGuid();
+            _notifications.OfType<AgreementToSignNotificationSent>().All(a => a.CompanyId != companyId || a.AgreementId != agreementId).Should().BeTrue();
         }
     }
 

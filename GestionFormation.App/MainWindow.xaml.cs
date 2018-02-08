@@ -12,7 +12,7 @@ namespace GestionFormation.App
             InitializeComponent();
             DataControlBase.AllowInfiniteGridSize = true;
             SchedulerControl.AllowInfiniteSize = true;
-            DataContext = new MainWindowsVm(Bootstrapper.Start(DocumentGroup), new BookingNotificationQueries());
+            DataContext = new MainWindowsVm(Bootstrapper.Start(DocumentGroup), new NotificationQueries());
         }
     }
 }

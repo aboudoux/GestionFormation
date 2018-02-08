@@ -24,7 +24,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("IntegrationTests")]
-    public class RappelSqlProjectionsShould
+    public class NotificationSqlProjectionsShould
     {
         private RappelTestContext _context;
         private static SqlTestApplicationService _service;
@@ -44,7 +44,7 @@ namespace GestionFormation.Tests
             var lieu = _service.Command<CreateLocation>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);
             var session = _service.Command<PlanSession>().Execute(formation.AggregateId, DateTime.Now, 1, 20, lieu.AggregateId, formateur.AggregateId);
 
-            _context = new RappelTestContext(_service, session, new BookingNotificationQueries());
+            _context = new RappelTestContext(_service, session, new NotificationQueries());
         }
 
         [TestMethod]

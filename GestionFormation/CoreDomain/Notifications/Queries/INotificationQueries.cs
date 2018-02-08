@@ -8,5 +8,6 @@ namespace GestionFormation.CoreDomain.Notifications.Queries
     {
         IEnumerable<INotificationResult> GetAll(UserRole role);
         Guid GetNotificationManagerId(Guid sessionId);
+        Guid GetNotificationManagerIdFromAgreement(Guid agreementId);
     }
 }

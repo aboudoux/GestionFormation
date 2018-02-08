@@ -6,7 +6,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class NomCompletShould
+    public class FulleNameShould
     {
         [DataTestMethod]
         [DataRow("boudoux", "aurelien", "Aurelien BOUDOUX")]

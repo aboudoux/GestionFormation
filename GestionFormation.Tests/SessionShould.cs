@@ -2,6 +2,7 @@
 using System.Globalization;
 using FluentAssertions;
 using GestionFormation.Applications.Sessions;
+using GestionFormation.CoreDomain.Notifications.Events;
 using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Sessions.Events;
@@ -162,18 +163,23 @@ namespace GestionFormation.Tests
         public void release_session_place_on_releasePlace_command()
         {
             var sessionId = Guid.NewGuid();
-            var placeId = Guid.NewGuid();
+            var seatId = Guid.NewGuid();
+            var notificatioManagerId = Guid.NewGuid();
 
             var fakeStorage = new FakeEventStore();            
             fakeStorage.Save(new SessionPlanned(sessionId, 1, Guid.NewGuid(), new DateTime(2018,1,9), 1, 5, null, null ));
+            fakeStorage.Save(new NotificationManagerCreated(notificatioManagerId, 1, sessionId ));
             fakeStorage.Save(new SessionSeatBooked(sessionId, 2));
-            fakeStorage.Save(new SeatCreated(placeId, 1, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            fakeStorage.Save(new SeatCreated(seatId, 3, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+
+            var notifQueries = new FakeNotificationQueries();
+            notifQueries.AddNotificationManager(sessionId, notificatioManagerId);
 
             var bus = new EventBus(new EventDispatcher(), fakeStorage );
-            new ReleaseSeat(bus, new FakeNotificationQueries()).Execute(sessionId, placeId, "essai");
+            new ReleaseSeat(bus, notifQueries).Execute(sessionId, seatId, "essai");
 
             fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1));
-            fakeStorage.GetEvents(placeId).Should().Contain(new SeatCanceled(placeId, 1, "essai"));
+            fakeStorage.GetEvents(seatId).Should().Contain(new SeatCanceled(seatId, 1, "essai"));
         }
 
         private class TestSession

@@ -8,7 +8,7 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Notifications.Queries
 {
-    public class BookingNotificationQueries : INotificationQueries, IRuntimeDependency
+    public class NotificationQueries : INotificationQueries, IRuntimeDependency
     {
         public IEnumerable<INotificationResult> GetAll(UserRole role)
         {
@@ -25,6 +25,17 @@ namespace GestionFormation.CoreDomain.Notifications.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 return context.NotificationManagers.First(a => a.SessionId == sessionId).Id;
+            }
+        }
+
+        public Guid GetNotificationManagerIdFromAgreement(Guid agreementId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                return (from seat in context.Seats
+                    where seat.AssociatedAgreementId == agreementId
+                    join n in context.NotificationManagers on seat.SessionId equals n.SessionId
+                    select n.Id).First();
             }
         }
     }

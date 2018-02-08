@@ -13,7 +13,7 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Contacts.Where(a=>a.CompanyId == companyId).ToList().Select(a => new ContactResult(a));
+                return context.Contacts.Where(a=>a.CompanyId == companyId && a.Removed == false).ToList().Select(a => new ContactResult(a));
             }
         }
 
@@ -21,7 +21,7 @@ namespace GestionFormation.CoreDomain.Contacts.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Contacts.ToList().Select(a => new ContactResult(a));
+                return context.Contacts.Where(a=>a.Removed == false).ToList().Select(a => new ContactResult(a));
             }
         }
 

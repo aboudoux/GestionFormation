@@ -52,9 +52,8 @@ namespace GestionFormation.CoreDomain.Contacts.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new ContactSqlEntity() { ContactId = @event.AggregateId };
-                context.Contacts.Attach(entity);
-                context.Contacts.Remove(entity);
+                var entity = context.GetEntity<ContactSqlEntity>(@event.AggregateId);
+                entity.Removed = true;
                 context.SaveChanges();
             }
         }

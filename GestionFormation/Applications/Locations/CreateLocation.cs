@@ -18,7 +18,7 @@ namespace GestionFormation.Applications.Locations
         public Location Execute(string name, string address, int seats)
         {
             if(_locationQueries.GetLocation(name).HasValue)
-                throw new LieuAlreadyExistsException(name);
+                throw new LocationAlreadyExistsException(name);
 
             var location = Location.Create(name, address, seats);
             PublishUncommitedEvents(location);

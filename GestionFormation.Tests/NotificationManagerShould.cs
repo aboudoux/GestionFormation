@@ -149,7 +149,7 @@ namespace GestionFormation.Tests
        
             var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
             handler.Notifications.Should().BeEmpty();
-        }
+        }        
 
         [TestMethod]
         public void remove_SeatToValidate_when_refuse_seat()
@@ -247,10 +247,8 @@ namespace GestionFormation.Tests
             notif.SignalAgreementRevoked(agreementId);
            
             var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
-            handler.Notifications.Should().HaveCount(2)
-                .And.Contain(a => a.Type == NotificationType.AgreementToCreate)
-                .And.Contain(a => a.Type == NotificationType.AgreementToSign)
-                ;
+            handler.Notifications.Should().HaveCount(1)
+                .And.Contain(a => a.Type == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
@@ -301,6 +299,7 @@ namespace GestionFormation.Tests
             notif.SignalAgreementAssociated(agreementId1, context.Seat(1).SeatId, context.Seat(1).CompanyId);
 
             notif.SignalSeatCanceled(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalAgreementRevoked(agreementId1);
 
             var agreementId2 = Guid.NewGuid();
             notif.SignalAgreementAssociated(agreementId2, context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -309,6 +308,59 @@ namespace GestionFormation.Tests
             hanlder.Notifications.Should().HaveCount(1).And.Contain(a => a.Type == NotificationType.AgreementToSign && a.AgreementId == agreementId2);
         }
 
+        [TestMethod]
+        public void create_2_agreementToSignNotification_for_different_convention_at_same_company()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+            context.AddSeat(context.Seat(0).CompanyId);
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            var agreementId1 = Guid.NewGuid();
+            var agreementId2 = Guid.NewGuid();
+
+            notif.SignalAgreementAssociated(agreementId1, context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalAgreementAssociated(agreementId2, context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            var hanlder = new FakeNotificationHanlder(notif.UncommitedEvents);
+            hanlder.Notifications.Should().HaveCount(2)
+                .And.Contain(a => a.Type == NotificationType.AgreementToSign && a.AgreementId == agreementId1)
+                .And.Contain(a => a.Type == NotificationType.AgreementToSign && a.AgreementId == agreementId2);
+        }
+
+        [TestMethod]
+        public void raise_remove_AgreementToSignNotificationSent_when_signal_agreement_signed_for_secon_convention()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+            context.AddSeat(context.Seat(0).CompanyId);
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            var agreementId1 = Guid.NewGuid();
+            var agreementId2 = Guid.NewGuid();
+
+            notif.SignalAgreementAssociated(agreementId1, context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalAgreementAssociated(agreementId2, context.Seat(1).SeatId, context.Seat(1).CompanyId);
+
+            notif.SignalAgreementSigned(agreementId1);
+            var hanlder = new FakeNotificationHanlder(notif.UncommitedEvents);
+            hanlder.Notifications.Should().HaveCount(1)
+                .And.Contain(a => a.Type == NotificationType.AgreementToSign && a.AgreementId == agreementId2);
+        }
 
         private class TestSessionNotification
         {

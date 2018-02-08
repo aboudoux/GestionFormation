@@ -20,7 +20,7 @@ namespace GestionFormation.Applications.Locations
             var foundLocationId = _locationQueries.GetLocation(newName);
 
             if (foundLocationId.HasValue && foundLocationId.Value != locationId)
-                throw new LieuAlreadyExistsException(newName);
+                throw new LocationAlreadyExistsException(newName);
 
             var location = GetAggregate<Location>(locationId);
             location.Update(newName, address, seats);

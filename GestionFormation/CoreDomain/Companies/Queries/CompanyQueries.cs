@@ -7,13 +7,22 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Companies.Queries
 {
-    public class CompanySqlQueries : ICompanyQueries, IRuntimeDependency
+    public class CompanyQueries : ICompanyQueries, IRuntimeDependency
     {
         public IEnumerable<ICompanyResult> GetAll()
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Companies.ToList().Select(a => new CompanyResult(a));
+                return context.Companies.Where(a=>a.Removed == false).ToList().Select(a => new CompanyResult(a));
+            }
+        }
+
+        public bool Exists(string companyName)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var lowerCompanyName = companyName.ToLower();
+                return context.Companies.Any(a => a.Name.ToLower() == lowerCompanyName && a.Removed == false);
             }
         }
 

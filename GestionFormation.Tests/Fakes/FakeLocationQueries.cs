@@ -7,21 +7,21 @@ namespace GestionFormation.Tests.Fakes
 {
     public class FakeLocationQueries : ILocationQueries
     {
-        private List<ILocationResult> _lieux = new List<ILocationResult>();
+        private readonly List<ILocationResult> _locations = new List<ILocationResult>();
 
         public void Add(string nom, string addresse, int places)
         {
-            _lieux.Add(new Result(Guid.NewGuid(), nom, addresse, places));
+            _locations.Add(new Result(Guid.NewGuid(), nom, addresse, places));
         }
         
         public IReadOnlyList<ILocationResult> GetAll()
         {
-            return _lieux;
+            return _locations;
         }
 
         public Guid? GetLocation(string nom)
         {
-            return _lieux.FirstOrDefault(a => a.Name == nom)?.LocationId;
+            return _locations.FirstOrDefault(a => a.Name == nom)?.LocationId;
         }
 
         private class Result : ILocationResult
