@@ -19,7 +19,7 @@ namespace GestionFormation.Applications.Seats
 
         public void Execute(Guid seatId, string reason)
         {
-            var seat = GetAggregate<Seat>(seatId);
+            var seat = GetAggregate<Seat>(seatId);            
             seat.Cancel(reason);
 
             var managerId = _notificationManagerQueries.GetNotificationManagerId(seat.SessionId);
@@ -35,7 +35,7 @@ namespace GestionFormation.Applications.Seats
             }
 
             var session = GetAggregate<Session>(seat.SessionId);
-            session.ReleaseSeat();
+            session.ReleaseSeat(seat.StudentId);
 
             PublishUncommitedEvents(seat, agreement, session, manager);
         }

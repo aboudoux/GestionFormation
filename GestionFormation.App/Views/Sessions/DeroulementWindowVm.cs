@@ -3,12 +3,16 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
+using GestionFormation.Applications.Seats;
 using GestionFormation.Applications.Students;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
+using MessageBox = System.Windows.MessageBox;
 
 namespace GestionFormation.App.Views.Sessions
 {
@@ -65,6 +69,8 @@ namespace GestionFormation.App.Views.Sessions
             await RefreshCommand.ExecuteAsync();
         }
 
+        public override string Title => "Déroulement de la formation";
+
         public RelayCommandAsync RefreshCommand { get; }
         private async Task ExecuteRefreshAsync()
         {
@@ -80,13 +86,20 @@ namespace GestionFormation.App.Views.Sessions
         public RelayCommandAsync AbsenceCommand { get; }
         private async Task ExecuteAbsenceAsync()
         {
+            if( MessageBoxResult.Yes != MessageBox.Show(
+                "Attention : vous êtes sur le point de signaler une absence pour les stagiaires sélectionnés.\r\nVoulez vous continuer ?",
+                "Signaler une absence", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) )
+                return;
+
             foreach (var place in _selectedPlaces)
             {
                 await HandleMessageBoxError.ExecuteAsync(async () =>
-                    {
-                        await Task.Run(() => _applicationService.Command<ReportMissingStudent>().Execute(_sessionId, place.StudentId));
-                    });
+                {
+                    await Task.Run(() => _applicationService.Command<ReportMissingStudent>().Execute(place.SeatId));
+                });
             }
+
+            await RefreshCommand.ExecuteAsync();
         }
 
         public RelayCommand PrintFeuillePresenceCommand { get; }

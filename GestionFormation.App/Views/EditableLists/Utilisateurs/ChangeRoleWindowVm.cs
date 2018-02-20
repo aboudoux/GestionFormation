@@ -17,5 +17,7 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
             get => _role;
             set { Set(()=>Role, ref _role, value); }
         }
+
+        public override string Title => "Changement du rôle";
     }
 }

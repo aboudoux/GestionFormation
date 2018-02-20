@@ -12,12 +12,12 @@ namespace GestionFormation.Infrastructure
     {
         private readonly string _templateDirectory;
 
-        private const string CertificatAssiduite = "CertificatAssiduite.rtf";
-        private const string Diplome = "Diplome.rtf";
-        private const string FeuillePresence = "Presence.rtf";
-        private const string Questionnaire = "Questionnaire.rtf";
-        private const string ConventionGratuite = "ConventionG.rtf";
-        private const string ConventionPayante = "ConventionP.rtf";
+        private const string CertificateOfAttendance = "CertificatAssiduite.rtf";
+        private const string Degree = "Diplome.rtf";
+        private const string Timesheet = "Presence.rtf";
+        private const string Survey = "Questionnaire.rtf";
+        private const string FreeAgreement = "ConventionG.rtf";
+        private const string PaidAgreement = "ConventionP.rtf";
 
         public DocumentCreator()
         {
@@ -31,7 +31,7 @@ namespace GestionFormation.Infrastructure
        
         public string CreateCertificateOfAttendance(FullName student, string company, string training, string location, int duration, FullName trainer, DateTime startSession)
         {
-            return MakeDocument(CertificatAssiduite)
+            return MakeDocument(CertificateOfAttendance)
                 .Merge("$stagiaire$", student.ToString())
                 .Merge("$societe$", company)
                 .Merge("$formation$", training)
@@ -45,7 +45,7 @@ namespace GestionFormation.Infrastructure
 
         public string CreateDegree(FullName student, string company, DateTime startSession, DateTime endSession, FullName trainer)
         {
-            return MakeDocument(Diplome)
+            return MakeDocument(Degree)
                 .Merge("$stagiaire$", student.ToString())
                 .Merge("$societe$", company)
                 .Merge("$datedebut$", startSession.ToString("d"))
@@ -64,7 +64,7 @@ namespace GestionFormation.Infrastructure
             if(participants.Count() > 20)
                 throw new Exception("Impossible de générer une feuille de présence car il y à plus de 20 participants");
 
-            var document = MakeDocument(FeuillePresence)
+            var document = MakeDocument(Timesheet)
                 .Merge("$formation$", training)
                 .Merge("$datedebut$", startSession.ToString("d"))
                 .Merge("$duree$", duration.ToString())
@@ -84,7 +84,7 @@ namespace GestionFormation.Infrastructure
 
         public string CreateSurvey(FullName trainer, string training)
         {
-            return MakeDocument(Questionnaire)
+            return MakeDocument(Survey)
                 .Merge("$formateur$", trainer.ToString())
                 .Merge("$formation$", training)
                 .Merge("$date$", DateTime.Now.ToString("d"))
@@ -102,7 +102,7 @@ namespace GestionFormation.Infrastructure
             if (participants.Count() > 8)
                 throw new Exception("Impossible de générer une convention avec plus de 8 participants");
 
-            var document = MakeDocument(ConventionGratuite)
+            var document = MakeDocument(FreeAgreement)
                 .Merge("$numero$", agreementNumber)
                 .Merge("$societe$", company)
                 .Merge("$adresse$", address)
@@ -138,7 +138,7 @@ namespace GestionFormation.Infrastructure
             if (participants.Count() > 8)
                 throw new Exception("Impossible de générer une convention avec plus de 8 participants");
 
-            var document = MakeDocument(ConventionPayante)
+            var document = MakeDocument(PaidAgreement)
                 .Merge("$numero$", agreementNumber)
                 .Merge("$societe$", company)
                 .Merge("$adresse$", address)

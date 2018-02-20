@@ -120,14 +120,14 @@
     <Compile Include="TrainingShould.cs" />
     <Compile Include="LearningTests.cs" />
     <Compile Include="LocationShould.cs" />
-    <Compile Include="FulleNameShould.cs" />
+    <Compile Include="FullNameShould.cs" />
     <Compile Include="SeatShould.cs" />
     <Compile Include="NotificationSqlProjectionsShould.cs" />
     <Compile Include="RelayCommandAsyncShould.cs" />
     <Compile Include="SessionShould.cs" />
     <Compile Include="SqlEventStoreShould.cs" />
     <Compile Include="SqlIntegrationsTests.cs" />
-    <Compile Include="StagiaireInSqlShould.cs" />
+    <Compile Include="StudentInSqlShould.cs" />
     <Compile Include="StudentShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Aggregate.cs" />

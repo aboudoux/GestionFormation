@@ -86,6 +86,8 @@ namespace GestionFormation.App.Views.Logins
             {
                 Connecting = false;
             }
-        }        
+        }
+
+        public override string Title => "Gestion formation";
     }
 }

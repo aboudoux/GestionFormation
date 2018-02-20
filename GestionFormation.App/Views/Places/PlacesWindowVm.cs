@@ -74,7 +74,7 @@ namespace GestionFormation.App.Views.Places
         private int _placesValide;
         private ObservableCollection<PlaceItem> _selectedPlaces;
         private SessionInfos _sessionInfos;
-        public string Title => "Gestion des places";
+        public override string Title => "Gestion des places";
 
         public Security Security { get; }
 

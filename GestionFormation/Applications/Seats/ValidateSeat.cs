@@ -18,7 +18,7 @@ namespace GestionFormation.Applications.Seats
 
         public void Execute(Guid seatId)
         {            
-            var seat = GetAggregate<Seat>(seatId);                              
+            var seat = GetAggregate<Seat>(seatId);
             seat.Validate();
 
             var managerId = _notificationQueries.GetNotificationManagerId(seat.SessionId);

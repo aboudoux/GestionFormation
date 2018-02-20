@@ -11,7 +11,9 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
         IEventHandler<SessionUpdated>, 
         IEventHandler<SessionDeleted>,
         IEventHandler<SessionCanceled>, 
-        IEventHandler<TrainingDeleted>
+        IEventHandler<TrainingDeleted>,
+        IEventHandler<SessionSurveySent>,
+        IEventHandler<SessionTimesheetSent>
     {
         public void Handle(SessionPlanned @event)
         {
@@ -84,6 +86,26 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 context.Database.ExecuteSqlCommand($"DELETE FROM dbo.SESSION WHERE TrainerId = '{@event.AggregateId}'");
+            }
+        }
+
+        public void Handle(SessionSurveySent @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.GetEntity<SessionSqlEntity>(@event.AggregateId);
+                entity.SurveyId = @event.DocumentId;
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(SessionTimesheetSent @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.GetEntity<SessionSqlEntity>(@event.AggregateId);
+                entity.TimesheetId = @event.DocumentId;
+                context.SaveChanges();
             }
         }
     }

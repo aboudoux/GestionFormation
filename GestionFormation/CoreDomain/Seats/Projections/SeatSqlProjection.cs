@@ -1,6 +1,7 @@
 ﻿using System;
 using GestionFormation.CoreDomain.Agreements.Events;
 using GestionFormation.CoreDomain.Seats.Events;
+using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
@@ -12,8 +13,10 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         IEventHandler<SeatCanceled>, 
         IEventHandler<SeatRefused>, 
         IEventHandler<SeatValided>,
-        IEventHandler<AgreementAssociated>   ,
-        IEventHandler<AgreementRevoked>
+        IEventHandler<AgreementAssociated>,
+        IEventHandler<AgreementRevoked>,
+        IEventHandler<MissingStudentReported>,
+        IEventHandler<CertificatOfAttendanceSent>
     {
         public void Handle(SeatCreated @event)
         {
@@ -51,15 +54,13 @@ namespace GestionFormation.CoreDomain.Seats.Projections
             UpdateStatus(@event.AggregateId, SeatStatus.Valid);
         }      
 
-        private void UpdateStatus(Guid placeId , SeatStatus status, string reason = "")
+        private void UpdateStatus(Guid seatId , SeatStatus status, string reason = "")
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var place = context.Seats.Find(placeId);
-                if (place == null)
-                    throw new EntityNotFoundException(placeId, "Place");
-                place.Status = status;
-                place.Reason = reason;
+                var seat = context.GetEntity<SeatSqlentity>(seatId);
+                seat.Status = status;
+                seat.Reason = reason;
                 context.SaveChanges();
             }
         }
@@ -68,11 +69,9 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var place = context.Seats.Find(@event.AggregateId);
-                if (place == null)
-                    throw new EntityNotFoundException(@event.AggregateId, "Place");
-                place.AssociatedAgreementId = @event.AgreementId;
-                place.AgreementRevoked = false;
+                var seat = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                seat.AssociatedAgreementId = @event.AgreementId;
+                seat.AgreementRevoked = false;
                 context.SaveChanges();
             }
         }
@@ -82,6 +81,26 @@ namespace GestionFormation.CoreDomain.Seats.Projections
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 context.Database.ExecuteSqlCommand($"UPDATE Seat SET AssociatedAgreementId = NULL, AgreementRevoked = 1 WHERE AssociatedAgreementId = '{@event.AggregateId}'");
+            }
+        }
+
+        public void Handle(MissingStudentReported @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var seat = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                seat.StudentMissing = true;
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(CertificatOfAttendanceSent @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var seat = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                seat.CertificateOfAttendanceId = @event.DocumentId;
+                context.SaveChanges();
             }
         }
     }

@@ -21,7 +21,7 @@ namespace GestionFormation.Applications.Sessions
             var session = GetAggregate<Session>(sessionId);
             var seat = GetAggregate<Seat>(seatId);
 
-            session.ReleaseSeat();
+            session.ReleaseSeat(seat.StudentId);
             seat.Cancel(reason);
 
             var managerId = _notificationManagerQueries.GetNotificationManagerId(sessionId);

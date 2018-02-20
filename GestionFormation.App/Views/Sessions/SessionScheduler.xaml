@@ -32,6 +32,7 @@
                 <dxb:BarItemLinkSeparator/>
                 <dxb:BarButtonItem Content="Places" Glyph="/Images/chair_16x16.png" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenPlacesCommand}" IsVisible="{Binding Path=Security[3]}"/>
                 <dxb:BarButtonItem Content="Déroulement" Glyph="{dx:DXImage Image=PublicFix_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenDeroulementCommand}" IsVisible="{Binding Path=Security[4]}"/>
+                <dxb:BarButtonItem Content="Clôture" Glyph="{dx:DXImage Image=SnapToggleFieldHighlighting_32x32.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=OpenClotureCommand}" IsVisible="{Binding Path=Security[3]}"/>
             </dxb:ToolBarControl>
         </dxb:BarContainerControl>
 

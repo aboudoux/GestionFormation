@@ -10,7 +10,7 @@ namespace GestionFormation.Tests
 {
     [TestClass]
     [TestCategory("IntegrationTests")]
-    public class StagiaireInSqlShould
+    public class StudentInSqlShould
     {
         [TestMethod]
         public void be_reidrated_from_database()

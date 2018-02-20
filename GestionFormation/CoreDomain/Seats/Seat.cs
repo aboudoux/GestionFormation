@@ -2,6 +2,7 @@
 using GestionFormation.CoreDomain.Agreements.Events;
 using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.CoreDomain.Seats.Exceptions;
+using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Seats
@@ -13,7 +14,9 @@ namespace GestionFormation.CoreDomain.Seats
 
         public Guid SessionId { get; private set; }
         public Guid CompanyId { get; private set; }
+        public Guid StudentId { get; private set; }
 
+        private bool _missingStudent;
 
         public Seat(History history) : base(history)
         {
@@ -21,7 +24,7 @@ namespace GestionFormation.CoreDomain.Seats
 
         protected override void AddPlayers(EventPlayer player)
         {
-            if (player == null) throw new ArgumentNullException(nameof(player));            
+            if (player == null) throw new ArgumentNullException(nameof(player));
             player
                 .Add<SeatCanceled>(e => _currentSeatStatus = SeatStatus.Canceled)
                 .Add<SeatValided>(e => _currentSeatStatus = SeatStatus.Valid)
@@ -30,9 +33,11 @@ namespace GestionFormation.CoreDomain.Seats
                 {
                     SessionId = e.SessionId;
                     CompanyId = e.CompanyId;
+                    StudentId = e.StudentId;
                 })
                 .Add<AgreementAssociated>(e => AssociatedAgreementId = e.AgreementId)
-                .Add<AgreementDisassociated>(e => AssociatedAgreementId = null);
+                .Add<AgreementDisassociated>(e => AssociatedAgreementId = null)
+                .Add<MissingStudentReported>(e => _missingStudent = true);
         }
 
         public static Seat Create(Guid sessionId, Guid studentId, Guid companyId)
@@ -91,6 +96,17 @@ namespace GestionFormation.CoreDomain.Seats
         {
             if(AssociatedAgreementId.HasValue)
                 RaiseEvent(new AgreementDisassociated(AggregateId, GetNextSequence()));
+        }
+
+        public void ReportMissingStudent()
+        {
+            if(!_missingStudent)
+                RaiseEvent(new MissingStudentReported(AggregateId, GetNextSequence()));
+        }
+
+        public void SendCertificatOfAttendance(Guid documentId)
+        {
+            RaiseEvent(new CertificatOfAttendanceSent(AggregateId, GetNextSequence(), documentId));
         }
     }
 }

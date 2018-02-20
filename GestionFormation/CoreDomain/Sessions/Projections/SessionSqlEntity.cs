@@ -19,5 +19,7 @@ namespace GestionFormation.CoreDomain.Sessions.Projections
 
         public bool Canceled { get; set; }
         public string CancelReason { get; set; }
+        public Guid? SurveyId { get; set; }
+        public Guid? TimesheetId { get; set; }
     }
 }

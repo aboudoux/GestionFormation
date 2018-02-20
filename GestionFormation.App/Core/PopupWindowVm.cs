@@ -5,9 +5,9 @@ using GalaSoft.MvvmLight.Command;
 
 namespace GestionFormation.App.Core
 {
-    public class PopupWindowVm : ViewModelBase, IPopupVm
+    public abstract class PopupWindowVm : ViewModelBase, IPopupVm
     {
-        public PopupWindowVm()
+        protected PopupWindowVm()
         {
             AnnulerCommand = new RelayCommand(Close);
             ValiderCommand = new RelayCommandAsync(ExecuteValiderAsync);
@@ -41,5 +41,7 @@ namespace GestionFormation.App.Core
 
         public bool IsValidated { get; private set; }
         public object Item { get; protected set; }
+
+        public abstract string Title { get; }
     }
 }

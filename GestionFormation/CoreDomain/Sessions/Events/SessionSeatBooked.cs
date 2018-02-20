@@ -5,8 +5,11 @@ namespace GestionFormation.CoreDomain.Sessions.Events
 {
     public class SessionSeatBooked : DomainEvent
     {
-        public SessionSeatBooked(Guid aggregateId, int sequence) : base(aggregateId, sequence)
+        public Guid StudentId { get; }
+
+        public SessionSeatBooked(Guid aggregateId, int sequence, Guid studentId) : base(aggregateId, sequence)
         {
+            StudentId = studentId;
         }
 
         protected override string Description => "Place reservée";

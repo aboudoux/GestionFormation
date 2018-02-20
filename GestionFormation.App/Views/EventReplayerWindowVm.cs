@@ -63,6 +63,8 @@ namespace GestionFormation.App.Views
             if (ProgressMax == 0)
                 ProgressMax = totalCount;
             ProgressValue = current;
-        }    
+        }
+
+        public override string Title => "Réidratation de la base";
     }
 }

@@ -137,8 +137,6 @@ namespace GestionFormation.App.Views.Places
             await HandleMessageBoxError.ExecuteAsync(async () => {
                 await Task.Run(() =>
                 {
-                    var firstPlace = Places.First();
-
                     var result = _applicationService.Command<CreateAgreement>().Execute(SelectedContact.Id, Places.Select(a => a.PlaceId), AgreementType);
                     return result;
 
@@ -146,6 +144,8 @@ namespace GestionFormation.App.Views.Places
                 await base.ExecuteValiderAsync();
             });
         }
+
+        public override string Title => "Créer une convention";
     }
 
     public class ContactItem

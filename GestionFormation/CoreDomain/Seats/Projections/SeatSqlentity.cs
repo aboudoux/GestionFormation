@@ -16,5 +16,7 @@ namespace GestionFormation.CoreDomain.Seats.Projections
         public string Reason { get; set; }
         public Guid? AssociatedAgreementId { get; set; }        
         public bool AgreementRevoked { get; set; }
+        public Guid? CertificateOfAttendanceId { get; set; }
+        public bool StudentMissing { get; set; }
     }
 }

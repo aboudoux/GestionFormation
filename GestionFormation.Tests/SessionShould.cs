@@ -100,13 +100,13 @@ namespace GestionFormation.Tests
             var context = TestSession.Create();
             var session = context.Builder.Create();
 
-            var stagiaireId = Guid.NewGuid();
-            var societeId = Guid.NewGuid();
-            var place = session.BookSeat(stagiaireId, societeId);
+            var studentId = Guid.NewGuid();
+            var companyId = Guid.NewGuid();
+            var seat = session.BookSeat(studentId, companyId);
 
-            session.UncommitedEvents.GetStream().Should().Contain(new SessionSeatBooked(Guid.Empty, 0));
-            place.UncommitedEvents.GetStream().Should()
-                .Contain(new SeatCreated(Guid.Empty, 1, session.AggregateId, stagiaireId, societeId));
+            session.UncommitedEvents.GetStream().Should().Contain(new SessionSeatBooked(Guid.Empty, 0, studentId));
+            seat.UncommitedEvents.GetStream().Should()
+                .Contain(new SeatCreated(Guid.Empty, 1, session.AggregateId, studentId, companyId));
         }
 
         
@@ -165,12 +165,13 @@ namespace GestionFormation.Tests
             var sessionId = Guid.NewGuid();
             var seatId = Guid.NewGuid();
             var notificatioManagerId = Guid.NewGuid();
+            var studentId = Guid.NewGuid();
 
             var fakeStorage = new FakeEventStore();            
             fakeStorage.Save(new SessionPlanned(sessionId, 1, Guid.NewGuid(), new DateTime(2018,1,9), 1, 5, null, null ));
             fakeStorage.Save(new NotificationManagerCreated(notificatioManagerId, 1, sessionId ));
-            fakeStorage.Save(new SessionSeatBooked(sessionId, 2));
-            fakeStorage.Save(new SeatCreated(seatId, 3, sessionId, Guid.NewGuid(), Guid.NewGuid()));
+            fakeStorage.Save(new SessionSeatBooked(sessionId, 2, Guid.NewGuid()));
+            fakeStorage.Save(new SeatCreated(seatId, 3, sessionId, studentId, Guid.NewGuid()));
 
             var notifQueries = new FakeNotificationQueries();
             notifQueries.AddNotificationManager(sessionId, notificatioManagerId);
@@ -178,8 +179,38 @@ namespace GestionFormation.Tests
             var bus = new EventBus(new EventDispatcher(), fakeStorage );
             new ReleaseSeat(bus, notifQueries).Execute(sessionId, seatId, "essai");
 
-            fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1));
+            fakeStorage.GetEvents(sessionId).Should().Contain(new SessionSeatReleased(sessionId, 1, studentId));
             fakeStorage.GetEvents(seatId).Should().Contain(new SeatCanceled(seatId, 1, "essai"));
+        }
+
+
+        [TestMethod]
+        public void send_certificateOfAttendenceSent()
+        {
+            var context = TestSession.Create();
+
+            var studentId = Guid.NewGuid();
+            var documentId = Guid.NewGuid();
+            context.Builder.AddEvent(new SessionSeatBooked(Guid.Empty, 5, studentId));
+            var session = context.Builder.Create();
+
+            session.SendCertificateOfAttendance(studentId, documentId);
+
+            session.UncommitedEvents.GetStream().Should().Contain(new CertificateOfAttendanceSent(Guid.Empty, 1, studentId, documentId));
+        }
+
+        [TestMethod]
+        public void throw_error_if_traying_to_set_certificateOfAttendence_to_non_assigned_student()
+        {
+            var context = TestSession.Create();
+
+            var studentId = Guid.NewGuid();
+            var documentId = Guid.NewGuid();
+            context.Builder.AddEvent(new SessionSeatBooked(Guid.Empty, 5, studentId));
+            var session = context.Builder.Create();
+
+            Action action = () => session.SendCertificateOfAttendance(Guid.NewGuid(), documentId);
+            action.ShouldThrow<StudentNotInSessionException>();
         }
 
         private class TestSession

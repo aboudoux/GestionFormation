@@ -55,12 +55,12 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                         StudentLastname = student.Lastname,
                         StudentFirstname = student.Firstname,
                         CompanyName = company.Name,
-                        Addresse = company.Address,
-                        CodePostal = company.ZipCode,
-                        Ville = company.City,                        
+                        company.Address,
+                        company.ZipCode,
+                        company.City,                        
                     };
 
-                return querie.ToList().Select(a=>new AgreementSeatResult(){ Company = a.CompanyName, Student = new FullName(a.StudentLastname , a.StudentFirstname), Address = a.Addresse, ZipCode = a.CodePostal, City = a.Ville});
+                return querie.ToList().Select(a=>new AgreementSeatResult(){ Company = a.CompanyName, Student = new FullName(a.StudentLastname , a.StudentFirstname), Address = a.Address, ZipCode = a.ZipCode, City = a.City});
             }
         }
 
@@ -72,21 +72,24 @@ namespace GestionFormation.CoreDomain.Seats.Queries
                     join agreement in context.Agreements on p.AssociatedAgreementId equals agreement.AgreementId
                     join contact in context.Contacts on agreement.ContactId equals contact.ContactId             
                     join student in context.Students on p.StudentId equals student.StudentId
-                    join company in context.Companies on p.CompanyId equals company.CompanyId
-                    where p.SessionId == sessionId && p.Status == SeatStatus.Valid && agreement.DocumentId.HasValue
+                    join company in context.Companies on p.CompanyId equals company.CompanyId                                        
+                    where p.SessionId == sessionId && p.Status == SeatStatus.Valid && agreement.DocumentId.HasValue                    
                     select new
                     {
-                        StudentId = student.StudentId,
-                        StagiaireNom = student.Lastname,
-                        StagiairePrenom = student.Firstname,
-                        SocieteNom = company.Name,
-                        ContactNom = contact.Lastname,
-                        ContactPrenom = contact.Firstname,
-                        Telephone = contact.Telephone,
-                        Email = contact.Email
+                        p.SeatId,
+                        student.StudentId,
+                        StudentLastname = student.Lastname,
+                        StudentFirstname = student.Firstname,
+                        CompanyName = company.Name,
+                        ContactLastname = contact.Lastname,
+                        ContactFirstname = contact.Firstname,
+                        contact.Telephone,
+                        contact.Email,
+                        Missing = p.StudentMissing,
+                        p.CertificateOfAttendanceId
                     };
 
-                return querie.ToList().Select(a => new SeatValidatedResult(a.StudentId, a.StagiaireNom,  a.StagiairePrenom, a.SocieteNom, a.ContactNom, a.ContactPrenom, a.Telephone, a.Email));
+                return querie.ToList().Select(a => new SeatValidatedResult(a.SeatId, a.StudentId, a.StudentLastname,  a.StudentFirstname, a.CompanyName, a.ContactLastname, a.ContactFirstname, a.Telephone, a.Email, a.Missing, a.CertificateOfAttendanceId));
             }
         }
 
@@ -95,32 +98,32 @@ namespace GestionFormation.CoreDomain.Seats.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var querie = from p in context.Seats
-                        join stagiaire in context.Students on p.StudentId equals stagiaire.StudentId
-                        join societe in context.Companies on p.CompanyId equals societe.CompanyId
+                        join student in context.Students on p.StudentId equals student.StudentId
+                        join company in context.Companies on p.CompanyId equals company.CompanyId
                         join session in context.Sessions on p.SessionId equals session.SessionId
-                        join formateur in context.Trainers on session.TrainerId equals formateur.TrainerId
-                        join formation in context.Trainings on session.TrainingId equals formation.TrainingId
-                        join convention in context.Agreements on p.AssociatedAgreementId equals convention.AgreementId into conventions
-                        from convention in conventions.DefaultIfEmpty()
-                        join contact in context.Contacts on convention.ContactId equals contact.ContactId into contacts
+                        join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
+                        join training in context.Trainings on session.TrainingId equals training.TrainingId
+                        join agreement in context.Agreements on p.AssociatedAgreementId equals agreement.AgreementId into agreements
+                        from agreement in agreements.DefaultIfEmpty()
+                        join contact in context.Contacts on agreement.ContactId equals contact.ContactId into contacts
                         from contact in contacts.DefaultIfEmpty()
 
                         select new ListSeatResult()
                         {
                             SeatStatus = p.Status,
-                            Company = societe.Name,
-                            StudentLastname = stagiaire.Lastname,
-                            StudentFirstname = stagiaire.Firstname,
-                            TrainerLastname = formateur.Lastname,
-                            TrainerFirstname = formateur.Firstname,
-                            Training = formation.Name,
+                            Company = company.Name,
+                            StudentLastname = student.Lastname,
+                            StudentFirstname = student.Firstname,
+                            TrainerLastname = trainer.Lastname,
+                            TrainerFirstname = trainer.Firstname,
+                            Training = training.Name,
                             SessionStart = session.SessionStart,
                             Duration = session.Duration,
-                            AgreementNumber = convention == null ? "" : convention.AgreementNumber,
-                            ContactLastname = convention == null ? "" : contact.Lastname,
-                            Contactfirstname = convention == null ? "" : contact.Firstname,
-                            Telephone = convention == null ? "" : contact.Telephone,
-                            Email = convention == null ? "" : contact.Email
+                            AgreementNumber = agreement == null ? "" : agreement.AgreementNumber,
+                            ContactLastname = agreement == null ? "" : contact.Lastname,
+                            Contactfirstname = agreement == null ? "" : contact.Firstname,
+                            Telephone = agreement == null ? "" : contact.Telephone,
+                            Email = agreement == null ? "" : contact.Email
                         };
 
                 return querie.ToList();

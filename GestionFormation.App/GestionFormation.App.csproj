@@ -231,6 +231,10 @@
       <DependentUpon>CreateItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\CreateItemVm.cs" />
+    <Compile Include="Views\Sessions\ClotureWindow.xaml.cs">
+      <DependentUpon>ClotureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sessions\ClotureWindowVm.cs" />
     <Compile Include="Views\Sessions\CreateSessionWindow.xaml.cs">
       <DependentUpon>CreateSessionWindow.xaml</DependentUpon>
     </Compile>
@@ -316,6 +320,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditableLists\CreateItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Sessions\ClotureWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -460,6 +468,10 @@
     <Resource Include="Images\Etats\Conventions\signature_pending.png" />
     <Resource Include="Images\Etats\Conventions\signed.png" />
     <Resource Include="Images\Etats\Conventions\to_create.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Apply_32x32.png" />
+    <Resource Include="Images\Cancel_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

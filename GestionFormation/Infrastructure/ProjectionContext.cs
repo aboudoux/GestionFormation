@@ -21,7 +21,6 @@ namespace GestionFormation.Infrastructure
         }
 
         public DbSet<StudentSqlEntity> Students { get; set; }
-        public DbSet<MissingStudentSqlEntity> MissingStudents { get; set; }
         public DbSet<TrainingSqlEntity> Trainings { get; set; }
         public DbSet<SessionSqlEntity> Sessions { get; set; }
         public DbSet<TrainerSqlEntity> Trainers { get; set; }
@@ -33,7 +32,6 @@ namespace GestionFormation.Infrastructure
         public DbSet<UserSqlEntity> Users { get; set; }
         public DbSet<NotificationSqlEntity> Notifications { get; set; }
         public DbSet<NotificationManagerSqlEntity> NotificationManagers { get; set; }
-
 
         public T GetEntity<T>(Guid id) where T : class
         {

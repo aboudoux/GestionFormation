@@ -216,6 +216,8 @@ namespace GestionFormation.App.Views.Places
                 await base.ExecuteValiderAsync();
             });
 
-        }             
+        }
+
+        public override string Title => "Gestion de convention";
     }
 }

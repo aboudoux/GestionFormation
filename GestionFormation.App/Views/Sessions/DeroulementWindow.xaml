@@ -5,7 +5,9 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:dxgt="http://schemas.devexpress.com/winfx/2008/xaml/grid/themekeys"
     Title="{Binding Path=Title}" Height="350" Width="625">
+    
     <StackPanel>
         <dxb:BarContainerControl ContainerType="Top" Margin="0,20,0,0">
             <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">
@@ -33,6 +35,15 @@
 
             <dxg:GridControl.View>
                 <dxg:TableView AutoWidth="True" AllowGrouping="False" ShowGroupPanel="False">
+                    <dxg:TableView.CellStyle>
+                        <Style BasedOn="{StaticResource {dxgt:GridRowThemeKey ResourceKey=LightweightCellStyle}}" TargetType="{x:Type dxg:LightweightCellEditor}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=RowData.Row.IsMissing}" Value="True">
+                                    <Setter Property="Background" Value="Red"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </dxg:TableView.CellStyle>
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>

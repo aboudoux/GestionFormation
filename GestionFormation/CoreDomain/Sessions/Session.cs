@@ -13,7 +13,7 @@ namespace GestionFormation.CoreDomain.Sessions
         private bool _isCanceled;
         private int _availableSeats;
         private int _bookedSeats;
-        private HashSet<Guid> _reportedMissingStudents = new HashSet<Guid>();
+        private readonly HashSet<Guid> _bookedStudent = new HashSet<Guid>();
 
         public Guid? TrainerId { get; private set; }
         public Guid? LocationId { get; private set; }
@@ -26,7 +26,7 @@ namespace GestionFormation.CoreDomain.Sessions
 
         protected override void AddPlayers(EventPlayer player)
         {
-            player.Add<SessionDeleted>(e => _isDeleted = true)                
+            player.Add<SessionDeleted>(e => _isDeleted = true)
                 .Add<SessionUpdated>(e =>
                 {
                     _lastUpdate = e;
@@ -45,9 +45,16 @@ namespace GestionFormation.CoreDomain.Sessions
                     SessionStart = e.SessionStart;
                     Duration = e.Duration;
                 })
-                .Add<SessionSeatBooked>(e => _bookedSeats++)
-                .Add<SessionSeatReleased>(e => _bookedSeats--)
-                .Add<MissingStudentReported>(e=>_reportedMissingStudents.Add(e.StudentId));
+                .Add<SessionSeatBooked>(e =>
+                {
+                    _bookedSeats++;
+                    _bookedStudent.Add(e.StudentId);
+                })
+                .Add<SessionSeatReleased>(e =>
+                {
+                    _bookedSeats--;
+                    _bookedStudent.Remove(e.StudentId);
+                });
         }
 
         public static Session Plan(Guid trainingId, DateTime sessionStart, int duration, int seats, Guid? locationId, Guid? trainerId)
@@ -102,21 +109,35 @@ namespace GestionFormation.CoreDomain.Sessions
             if(_availableSeats - _bookedSeats <= 0)
                 throw new NoMoreSeatAvailableException();
 
-            RaiseEvent(new SessionSeatBooked(AggregateId, GetNextSequence()));
+            RaiseEvent(new SessionSeatBooked(AggregateId, GetNextSequence(), studentId));
             
             return Seat.Create(AggregateId, studentId, companyId);
         }
 
-        public void ReleaseSeat()
+        public void ReleaseSeat(Guid studentId)
         {
             if(_bookedSeats > 0)
-                RaiseEvent(new SessionSeatReleased(AggregateId, GetNextSequence()));
+                RaiseEvent(new SessionSeatReleased(AggregateId, GetNextSequence(), studentId));
+        }
+      
+        public void SendSurvey(Guid documentId)
+        {
+            GuidAssert.AreNotEmpty(documentId);
+            RaiseEvent(new SessionSurveySent(AggregateId, GetNextSequence(), documentId));
         }
 
-        public void ReportMissingStudent(Guid studentId)
+        public void SendTimesheet(Guid documentId)
         {
-            if(_reportedMissingStudents.Contains(studentId)) return;
-            RaiseEvent(new MissingStudentReported(AggregateId, GetNextSequence(), studentId));
+            GuidAssert.AreNotEmpty(documentId);
+            RaiseEvent(new SessionTimesheetSent(AggregateId, GetNextSequence(), documentId));
+        }
+
+        public void SendCertificateOfAttendance(Guid studentId, Guid documentId)
+        {
+            GuidAssert.AreNotEmpty(studentId, documentId);
+            if(!_bookedStudent.Contains(studentId))
+                throw new StudentNotInSessionException();
+            RaiseEvent(new CertificateOfAttendanceSent(AggregateId, GetNextSequence(), studentId, documentId));
         }
 
         private static bool PeriodHaveWeekendDay(DateTime start, int duration)

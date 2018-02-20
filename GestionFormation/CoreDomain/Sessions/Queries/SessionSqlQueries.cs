@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GestionFormation.CoreDomain.Sessions.Projections;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
@@ -18,11 +17,11 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
             }
         }
 
-        public IEnumerable<ISessionResult> GetAll(Guid TrainingId)
+        public IEnumerable<ISessionResult> GetAll(Guid trainingId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Sessions.Where(a => a.TrainingId == TrainingId).ToList().Select(a => new SessionResult(a)).ToList();
+                return context.Sessions.Where(a => a.TrainingId == trainingId).ToList().Select(a => new SessionResult(a)).ToList();
             }
         }
 
@@ -34,9 +33,9 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
                     join training in context.Trainings on session.TrainingId equals training.TrainingId
                     join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
                     join location in context.Locations on session.LocationId equals location.Id 
-                    select new {session, Formation = training.Name, PrenomFormateur = trainer.Firstname, NomFormateur = trainer.Lastname, Lieu = location.Name};                                       
+                    select new {session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name};                                       
 
-                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.Formation, a.Lieu, a.NomFormateur, a.PrenomFormateur)).ToList();
+                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.TrainingName, a.Location, a.TrainerLastname, a.TrainerFirstname)).ToList();
             }
         }
 
@@ -57,25 +56,25 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
                 join training in context.Trainings on session.TrainingId equals training.TrainingId
                 join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
                 join location in context.Locations on session.LocationId equals location.Id
-                select new { session, Formation = training.Name, PrenomFormateur = trainer.Firstname, NomFormateur = trainer.Lastname, Lieu = location.Name };
+                select new { session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name };
 
                 var result = query.FirstOrDefault();
-                return result == null ? null : new CompleteSessionResult(result.session, result.Formation, result.Lieu, result.NomFormateur, result.PrenomFormateur);
+                return result == null ? null : new CompleteSessionResult(result.session, result.TrainingName, result.Location, result.TrainerLastname, result.TrainerFirstname);
             }
         }
-    }
 
-    public class CompleteSessionResult : SessionResult, ICompleteSessionResult
-    {       
-        public CompleteSessionResult(SessionSqlEntity session, string trainingName, string location, string trainerLastname, string trainerFirstname): base(session)
+        public IClosedSessionResult GetClosedSession(Guid sessionId)
         {
-            Training = trainingName;
-            Trainer = new FullName(trainerLastname, trainerFirstname);
-            Location = location;
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var query = from session in context.Sessions
+                    where session.SessionId == sessionId
+                    join training in context.Trainings on session.TrainingId equals training.TrainingId              
+                    select new { TrainingName = training.Name, session.SessionStart, session.SurveyId, session.TimesheetId};
+
+                var result = query.FirstOrDefault();
+                return result == null ? null : new ClosedSessionResultResult(result.TrainingName, result.SessionStart, result.SurveyId, result.TimesheetId);
+            }
         }
-       
-        public string Training { get; }
-        public FullName Trainer { get;  }
-        public string Location { get;  }
     }
 }

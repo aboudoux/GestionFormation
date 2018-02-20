@@ -11,5 +11,6 @@ namespace GestionFormation.CoreDomain.Sessions.Queries
         IEnumerable<ICompleteSessionResult> GetAllCompleteSession();
         IEnumerable<string> GetAllLocation();
         ICompleteSessionResult GetSession(Guid sessionId);
+        IClosedSessionResult GetClosedSession(Guid sessionId);
     }
 }

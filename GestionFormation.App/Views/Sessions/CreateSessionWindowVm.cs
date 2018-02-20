@@ -33,7 +33,7 @@ namespace GestionFormation.App.Views.Sessions
         private int _places;
         private Guid? _sessionId;        
 
-        public string Title => "Planifier une nouvelle session";
+        public override string Title => "Planifier une nouvelle session";
 
         public CreateSessionWindowVm(IApplicationService applicationService, ITrainingQueries trainingQueries, ITrainerQueries trainerQueries, ILocationQueries locationQueries, AppointmentItem appointmentItem)
         {
@@ -245,7 +245,7 @@ namespace GestionFormation.App.Views.Sessions
             SelectedLieu = Lieux.FirstOrDefault(a => a.Id == selectedLieuId);
         }
     }
-
+   
     public class FormateurItem
     {
         private readonly ITrainerResult _result;

@@ -44,5 +44,7 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
 
             await base.ExecuteValiderAsync();
         }
+
+        public override string Title => "Changement du mot de passe";
     }
 }

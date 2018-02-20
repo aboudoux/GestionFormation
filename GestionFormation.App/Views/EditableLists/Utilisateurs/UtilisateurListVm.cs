@@ -121,6 +121,9 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
                 case UserRole.Guest:
                     Role = "Invité";
                     break;
+                case UserRole.Trainer:
+                    Role = "Formateur";
+                    break;
                 default:
                     Role = "Inconnu";
                     break;

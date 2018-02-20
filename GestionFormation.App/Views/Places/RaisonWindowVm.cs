@@ -19,6 +19,8 @@ namespace GestionFormation.App.Views.Places
                 Set(()=>Raison, ref _raison, value);
                 ValiderCommand.RaiseCanExecuteChanged();
             }
-        }       
+        }
+
+        public override string Title => "Pourquoi ?";
     }
 }

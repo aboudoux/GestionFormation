@@ -1,4 +1,5 @@
 using System.Linq;
+using GestionFormation.CoreDomain.Sessions.Events;
 using GestionFormation.CoreDomain.Students.Events;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
@@ -9,10 +10,7 @@ namespace GestionFormation.CoreDomain.Students.Projections
     public class StudentSqlProjection : IProjectionHandler,
         IEventHandler<StudentCreated>, 
         IEventHandler<StudentUpdated>, 
-        IEventHandler<StudentDeleted>,
-        IEventHandler<MissingStudentReported>
-
-
+        IEventHandler<StudentDeleted>        
     {
         public void Handle(StudentCreated @event)
         {
@@ -54,24 +52,6 @@ namespace GestionFormation.CoreDomain.Students.Projections
                 entity.Removed = true;
                 context.SaveChanges();
             }
-        }
-
-        public void Handle(MissingStudentReported @event)
-        {
-            using (var context = new ProjectionContext(ConnectionString.Get()))
-            {
-                var entity = context.MissingStudents.FirstOrDefault(a=>a.SessionId == @event.AggregateId && a.StudentId == @event.StudentId);
-                if (entity == null)
-                {
-                    entity = new MissingStudentSqlEntity();
-                    context.MissingStudents.Add(entity);
-                }
-
-                entity.StudentId = @event.StudentId;
-                entity.SessionId = @event.AggregateId;
-
-                context.SaveChanges();
-            }
-        }
+        }             
     }
 }

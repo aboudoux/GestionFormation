@@ -34,12 +34,14 @@ namespace GestionFormation.App.Views.Sessions
             EditCommand = new RelayCommandAsync(ExecuteEditCommandAsync, () => SelectedSessions.Any());
             OpenPlacesCommand = new RelayCommandAsync(ExecutePlacesAsync, () => SelectedSessions.Any());
             OpenDeroulementCommand = new RelayCommandAsync(ExecuteOpenDeroulementAsync, () => SelectedSessions.Any());
+            OpenClotureCommand = new RelayCommandAsync(ExecuteOpenClotureAsync, () => SelectedSessions.Any());
             SelectedSessions.CollectionChanged += (sender, args) =>
             {
                 DeleteCommand.RaiseCanExecuteChanged();
                 EditCommand.RaiseCanExecuteChanged();
                 OpenPlacesCommand.RaiseCanExecuteChanged();
                 OpenDeroulementCommand.RaiseCanExecuteChanged();
+                OpenClotureCommand.RaiseCanExecuteChanged();
             };
             DropSession = new RelayCommandAsync<SessionDropped>(ExecuteDropSessionAsync);
             Security = new Security(applicationService);            
@@ -140,6 +142,13 @@ namespace GestionFormation.App.Views.Sessions
         {
             var selectedSession = SelectedSessions.First();
             await _applicationService.OpenPopup<DeroulementWindowVm>(selectedSession.Id);
+        }
+
+        public RelayCommandAsync OpenClotureCommand { get; }
+        private async Task ExecuteOpenClotureAsync()
+        {
+            var selectedSession = SelectedSessions.First();
+            await _applicationService.OpenPopup<ClotureWindowVm>(selectedSession.Id);
         }
     }
 

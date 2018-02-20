@@ -45,6 +45,11 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
+        public IClosedSessionResult GetClosedSession(Guid sessionId)
+        {
+            throw new NotImplementedException();
+        }
+
         private class FakeSessionResult : ISessionResult
         {
             public Guid SessionId { get; set; }
