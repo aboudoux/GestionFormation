@@ -14,6 +14,8 @@ using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.CoreDomain.Seats.Queries;
+using GestionFormation.Infrastructure.Agreements.Queries;
+using GestionFormation.Infrastructure.Seats.Queries;
 using GestionFormation.Tests.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

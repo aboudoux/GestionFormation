@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.EventStore.Queries

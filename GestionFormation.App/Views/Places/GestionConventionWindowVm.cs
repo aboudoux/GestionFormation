@@ -16,6 +16,7 @@ using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.CoreDomain.Contacts.Queries;
 using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
+using GestionFormation.Infrastructure;
 
 namespace GestionFormation.App.Views.Places
 {

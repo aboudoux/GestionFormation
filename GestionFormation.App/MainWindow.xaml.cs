@@ -2,6 +2,7 @@
 using DevExpress.Xpf.Scheduling;
 using GestionFormation.App.Core;
 using GestionFormation.CoreDomain.Notifications.Queries;
+using GestionFormation.Infrastructure.Notifications.Queries;
 
 namespace GestionFormation.App
 {

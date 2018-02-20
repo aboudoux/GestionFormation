@@ -17,6 +17,7 @@ using GestionFormation.CoreDomain.Notifications.Queries;
 using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Users;
+using GestionFormation.Infrastructure.Notifications.Queries;
 using GestionFormation.Tests.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

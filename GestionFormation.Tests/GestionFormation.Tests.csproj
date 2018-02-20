@@ -97,6 +97,7 @@
     <Compile Include="Applications\SessionApplicationShould.cs" />
     <Compile Include="AgreementShould.cs" />
     <Compile Include="CompanyShould.cs" />
+    <Compile Include="ConnectionStringShould.cs" />
     <Compile Include="CreateTrainingShould.cs" />
     <Compile Include="DocumentRepositoryShould.cs" />
     <Compile Include="EventBusShould.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="EventPlayerShould.cs" />
     <Compile Include="Fakes\FakeAgreementQueries.cs" />
     <Compile Include="Fakes\FakeCompanyQueries.cs" />
+    <Compile Include="Fakes\FakeConnectionStringProvider.cs" />
     <Compile Include="Fakes\FakeDomainEvent.cs" />
     <Compile Include="Fakes\FakeEventStamping.cs" />
     <Compile Include="Fakes\FakeEventStore.cs" />

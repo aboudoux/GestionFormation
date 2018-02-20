@@ -1,16 +1,16 @@
 using System;
 using System.Data.Entity;
-using GestionFormation.CoreDomain.Agreements.Projections;
-using GestionFormation.CoreDomain.Companies.Projections;
-using GestionFormation.CoreDomain.Contacts.Projections;
-using GestionFormation.CoreDomain.Locations.Projections;
-using GestionFormation.CoreDomain.Notifications.Projections;
-using GestionFormation.CoreDomain.Seats.Projections;
-using GestionFormation.CoreDomain.Sessions.Projections;
-using GestionFormation.CoreDomain.Students.Projections;
-using GestionFormation.CoreDomain.Trainers.Projections;
-using GestionFormation.CoreDomain.Trainings.Projections;
-using GestionFormation.CoreDomain.Users.Projections;
+using GestionFormation.Infrastructure.Agreements.Projections;
+using GestionFormation.Infrastructure.Companies.Projections;
+using GestionFormation.Infrastructure.Contacts.Projections;
+using GestionFormation.Infrastructure.Locations.Projections;
+using GestionFormation.Infrastructure.Notifications.Projections;
+using GestionFormation.Infrastructure.Seats.Projections;
+using GestionFormation.Infrastructure.Sessions.Projections;
+using GestionFormation.Infrastructure.Students.Projections;
+using GestionFormation.Infrastructure.Trainers.Projections;
+using GestionFormation.Infrastructure.Trainings.Projections;
+using GestionFormation.Infrastructure.Users.Projections;
 
 namespace GestionFormation.Infrastructure
 {

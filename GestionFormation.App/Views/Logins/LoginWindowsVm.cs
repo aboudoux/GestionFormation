@@ -72,7 +72,7 @@ namespace GestionFormation.App.Views.Logins
                 Connecting = true;                            
                 await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
-                    if (!_userQueries.Exists("admin"))
+                    if (! await  Task.Run(()=>_userQueries.Exists("admin")))
                         await Task.Run(() => _applicationService.Command<CreateUser>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UserRole.Admin));
 
                     var command = new Logon(_userQueries);

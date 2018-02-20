@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using GestionFormation.CoreDomain.Students;
-using GestionFormation.CoreDomain.Students.Projections;
 using GestionFormation.EventStore;
+using GestionFormation.Infrastructure.Students.Projections;
 using GestionFormation.Kernel;
 using GestionFormation.Tests.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
