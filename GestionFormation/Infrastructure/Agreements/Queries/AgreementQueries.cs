@@ -58,7 +58,7 @@ namespace GestionFormation.Infrastructure.Agreements.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Agreements.Find(agreementId).DocumentId;
+                return context.Agreements.Find(agreementId)?.DocumentId;
             }
         }
 

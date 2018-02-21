@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevExpress.Xpf.Editors.RangeControl;
 using GalaSoft.MvvmLight.CommandWpf;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Agreements;
@@ -15,7 +14,6 @@ using GestionFormation.CoreDomain.Agreements;
 using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.CoreDomain.Contacts.Queries;
 using GestionFormation.CoreDomain.Seats.Queries;
-using GestionFormation.CoreDomain.Sessions.Queries;
 using GestionFormation.Infrastructure;
 
 namespace GestionFormation.App.Views.Places
@@ -56,7 +54,7 @@ namespace GestionFormation.App.Views.Places
             SendMailCommand = new RelayCommandAsync(ExecuteSendEmailAsync);
             OpenSignedDocumentCommand = new RelayCommandAsync(ExecuteOpenSignedDocumentAsync);
             ReassignSignedDocumentCommand = new RelayCommand(ExecuteReassignSignedDocument);
-
+            RemindAgreementCommand = new RelayCommandAsync(ExecuteRemingAgreementAsync);
 
             SetValiderCommandCanExecute(()=>File.Exists(DocumentPath));
         }        
@@ -183,10 +181,25 @@ namespace GestionFormation.App.Views.Places
         }
 
         public RelayCommand ReassignSignedDocumentCommand { get; }
+        private async Task ExecuteRemingAgreementAsync()
+        {
+            var doc = await GenerateAgreementDocument();
+            var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
+
+            _computerService.OpenMailInOutlook("Retour convention signée",
+                "Bonjour," + Environment.NewLine +
+                $"Dans le cadre de la formation {conv.Training} du {conv.StartDate:D}, nous sommes toujours en attente d'un retour de convention signée." + Environment.NewLine +
+                "Pouvez-vous s'il vous plait nous la faire parvenir au plus vite afin que nous puissions avancer sur le dossier." + Environment.NewLine +
+                "En vous souhaitant bonne reception." + Environment.NewLine +
+                "Cordialement,", new List<MailAttachement>() { new MailAttachement(doc, "convention") }, Email);                           
+        }
+
         private void ExecuteReassignSignedDocument()
         {
             ShowSavedDocument = false;
         }
+
+        public RelayCommandAsync RemindAgreementCommand { get; }
 
         private async Task<string> GenerateAgreementDocument()
         {
@@ -216,7 +229,6 @@ namespace GestionFormation.App.Views.Places
                 });
                 await base.ExecuteValiderAsync();
             });
-
         }
 
         public override string Title => "Gestion de convention";

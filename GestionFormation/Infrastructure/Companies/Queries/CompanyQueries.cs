@@ -17,12 +17,12 @@ namespace GestionFormation.Infrastructure.Companies.Queries
             }
         }
 
-        public bool Exists(string companyName)
+        public Guid? GetIdIfExists(string companyName)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var lowerCompanyName = companyName.ToLower();
-                return context.Companies.Any(a => a.Name.ToLower() == lowerCompanyName && a.Removed == false);
+                return context.Companies.FirstOrDefault(a => a.Name.ToLower() == lowerCompanyName && a.Removed == false)?.CompanyId;
             }
         }
 

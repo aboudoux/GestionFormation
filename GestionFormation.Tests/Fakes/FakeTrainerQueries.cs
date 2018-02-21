@@ -9,9 +9,9 @@ namespace GestionFormation.Tests.Fakes
     {
         private readonly List<ITrainerResult> _trainerResut = new List<ITrainerResult>();
 
-        public void AddTrainer(string lastname, string firstname, string email = null)
+        public void AddTrainer(string lastname, string firstname, string email = null, Guid? trainerId = null)
         {
-            _trainerResut.Add(new Result(Guid.NewGuid(), lastname, firstname, email));
+            _trainerResut.Add(new Result(trainerId ??  Guid.NewGuid(), lastname, firstname, email));
         }
 
         public IReadOnlyList<ITrainerResult> GetAll()
@@ -19,9 +19,9 @@ namespace GestionFormation.Tests.Fakes
             return _trainerResut;
         }
 
-        public bool Exists(string lastname, string firstname)
+        public Guid? GetTrainer(string lastname, string firstname)
         {
-            return _trainerResut.Any(a=>a.Firstname.ToLower() == firstname.ToLower() && a.Lastname.ToLower() == lastname.ToLower());
+            return _trainerResut.FirstOrDefault(a=>a.Firstname.ToLower() == firstname.ToLower() && a.Lastname.ToLower() == lastname.ToLower())?.Id;
         }
 
         private class Result : ITrainerResult

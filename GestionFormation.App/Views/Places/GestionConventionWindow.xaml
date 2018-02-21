@@ -40,7 +40,7 @@
         <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
@@ -48,10 +48,14 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Margin="5,0" VerticalAlignment="Bottom">Définir le document de convention signé</TextBlock>
             <TextBox Grid.Column="0" Grid.Row="1" Margin="5,0,5,0" Text="{Binding Path=DocumentPath}"></TextBox>
-            <Button Grid.Column="1" Grid.Row="1" Margin="0,0,5,0" Command="{Binding Path=ChooseDocumentCommand}">Parcourir</Button>
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,5,0" Orientation="Horizontal">
+                <Button Margin="0,0,5,0" Command="{Binding Path=ChooseDocumentCommand}">Parcourir</Button>
+                <Button Command="{Binding Path=RemindAgreementCommand}">Relancer</Button>
+            </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <!--<Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource BooleanToVisibilityConverter}}">-->
+        <Grid Grid.Row="2" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GestionFormation.CoreDomain.Trainers.Queries
 {
@@ -6,6 +7,6 @@ namespace GestionFormation.CoreDomain.Trainers.Queries
     {
         IReadOnlyList<ITrainerResult> GetAll();
 
-        bool Exists(string lastname, string firstname);
+        Guid? GetTrainer(string lastname, string firstname);
     }
 }

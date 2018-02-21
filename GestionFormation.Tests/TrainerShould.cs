@@ -243,7 +243,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void throw_exception_if_update_formateur_with_existing_name()
+        public void throw_exception_if_update_trainer_with_existing_name()
         {
             var query = new FakeTrainerQueries();
             query.AddTrainer("Cordier", "Fabrice");
@@ -254,6 +254,22 @@ namespace GestionFormation.Tests
 
             Action action = ()=>new UpdateTrainer(new EventBus(new EventDispatcher(), eventStore), query).Execute(trainerId, "cordier", "fabrice", "");
             action.ShouldThrow<TrainerAlreadyExistsException>();
+        }
+
+        [TestMethod]
+        public void dont_throw_exception_if_updateing_current_trainer()
+        {
+            var query = new FakeTrainerQueries();
+            query.AddTrainer("Cordier", "Fabrice");
+
+            var eventStore = new FakeEventStore();
+            var trainerId = Guid.NewGuid();
+            eventStore.Save(new TrainerCreated(trainerId, 1, "BOUDOUX", "Aurélien", ""));
+            query.AddTrainer("BOUDOUX", "Aurélien", trainerId: trainerId);
+
+            new UpdateTrainer(new EventBus(new EventDispatcher(), eventStore), query).Execute(trainerId, "BOUDOUX", "Aurélien", "aurelien@boudoux.fr");
+
+            eventStore.GetEvents(trainerId).Should().Contain(new TrainerUpdated(Guid.Empty, 0, "BOUDOUX", "Aurélien", "aurelien@boudoux.fr"));
         }
     }
 }

@@ -17,7 +17,8 @@ namespace GestionFormation.Applications.Trainers
 
         public void Execute(Guid trainerId, string lastname, string firsname, string email)
         {
-            if(_trainerQueries.Exists(lastname, firsname))
+            var existingTrainerId = _trainerQueries.GetTrainer(lastname, firsname);
+            if( existingTrainerId.HasValue && existingTrainerId.Value != trainerId)
                 throw new TrainerAlreadyExistsException();
 
             var trainer = GetAggregate<Trainer>(trainerId);

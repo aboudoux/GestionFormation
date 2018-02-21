@@ -17,7 +17,8 @@ namespace GestionFormation.Applications.Companies
 
         public void Execute(Guid companyId, string name, string address, string zipCode, string city)
         {
-            if(_companyQueries.Exists(name))
+            var existingCompanyId = _companyQueries.GetIdIfExists(name);
+            if(existingCompanyId.HasValue && existingCompanyId.Value != companyId)            
                 throw new CompanyAlreadyExistsException(name);
 
             var societe = GetAggregate<Company>(companyId);

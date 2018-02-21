@@ -9,9 +9,9 @@ namespace GestionFormation.Tests.Fakes
     {
         private readonly List<ICompanyResult> _companies = new List<ICompanyResult>();
 
-        public void Add(string name, string address = null, string zipCode = null, string city = null)
+        public void Add(string name, string address = null, string zipCode = null, string city = null, Guid? companyId = null)
         {
-            _companies.Add(new Result(Guid.NewGuid(), name, address, zipCode, city));
+            _companies.Add(new Result(companyId ?? Guid.NewGuid(), name, address, zipCode, city));
         }
 
         public IEnumerable<ICompanyResult> GetAll()
@@ -19,9 +19,9 @@ namespace GestionFormation.Tests.Fakes
             return _companies;
         }
 
-        public bool Exists(string companyName)
+        public Guid? GetIdIfExists(string companyName)
         {
-            return _companies.Any(a => string.Equals(a.Name, companyName, StringComparison.CurrentCultureIgnoreCase));
+            return _companies.FirstOrDefault(a => string.Equals(a.Name, companyName, StringComparison.CurrentCultureIgnoreCase))?.CompanyId;
         }
 
         public bool Exists(Guid companyId)

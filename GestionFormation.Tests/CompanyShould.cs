@@ -41,5 +41,21 @@ namespace GestionFormation.Tests
             Action action = () => new UpdateCompany(new EventBus(new EventDispatcher(), eventStore), queries).Execute(trainerId, "TREND", String.Empty, String.Empty, String.Empty);
             action.ShouldThrow<CompanyAlreadyExistsException>();
         }
+
+        [TestMethod]
+        public void dont_throw_error_if_updating_existing_company()
+        {
+            var queries = new FakeCompanyQueries();
+            queries.Add("trend");            
+
+            var eventStore = new FakeEventStore();
+            var companyId = Guid.NewGuid();
+            eventStore.Save(new CompanyCreated(companyId, 1, "Peaks", "", "", ""));
+            queries.Add("Peaks", companyId: companyId);
+
+            new UpdateCompany(new EventBus(new EventDispatcher(), eventStore), queries).Execute(companyId, "Peaks", "ceci est un test", String.Empty, String.Empty);
+
+            eventStore.GetEvents(companyId).Should().Contain(new CompanyUpdated(Guid.Empty, 0, "Peaks", "ceci est un test", String.Empty, String.Empty));
+        }
     }
 }

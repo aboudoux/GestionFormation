@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.CoreDomain.Trainers.Queries;
 using GestionFormation.EventStore;
@@ -16,14 +17,14 @@ namespace GestionFormation.Infrastructure.Trainers.Queries
             }
         }
 
-        public bool Exists(string lastname, string firstname)
+        public Guid? GetTrainer(string lastname, string firstname)
         {
             var lastnameLower = lastname.ToLower();
             var firstnameLower = firstname.ToLower();
 
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Trainers.Any(a => a.Firstname.ToLower() == firstnameLower && a.Lastname.ToLower() == lastnameLower);
+                return context.Trainers.FirstOrDefault(a => a.Firstname.ToLower() == firstnameLower && a.Lastname.ToLower() == lastnameLower)?.TrainerId;
             }
         }
     }

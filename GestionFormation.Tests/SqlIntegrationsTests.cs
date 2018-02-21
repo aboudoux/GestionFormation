@@ -94,7 +94,7 @@ namespace GestionFormation.Tests
         {
             var service = new SqlTestApplicationService();
 
-            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
+            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION " + Guid.NewGuid(), DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
             var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
             var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1 " + Guid.NewGuid(), "CONVENTION TEST", "", "");

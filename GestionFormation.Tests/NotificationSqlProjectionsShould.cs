@@ -38,8 +38,7 @@ namespace GestionFormation.Tests
         
         [TestInitialize]
         public void TestInitialize()
-        {
-            
+        {            
             var formation = _service.Command<CreateTraining>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20);
             var formateur = _service.Command<CreateTrainer>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
             var lieu = _service.Command<CreateLocation>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);

@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Data.Common;
 using System.IO;
 using System.Security.Cryptography;
@@ -7,19 +6,32 @@ using System.Text;
 
 namespace GestionFormation.Infrastructure
 {
-    public static class ConnectionString
+    public class ConnectionString
     {
-        private static readonly byte[] Key = Encoding.ASCII.GetBytes("F2D26648F1AB4A459B4F8D609EBA4020");
-        private static readonly byte[] Iv = Encoding.ASCII.GetBytes("1BD3141C52E84DB0");
-        public static IConnectionStringProvider ConnectionStringProvider { get; set; } = new AppConfigConnectionStringProvider();
+        private readonly IConnectionStringProvider _connectionStringProvider;
+        private readonly byte[] Key = Encoding.ASCII.GetBytes("F2D26648F1AB4A459B4F8D609EBA4020");
+        private readonly byte[] Iv = Encoding.ASCII.GetBytes("1BD3141C52E84DB0");
+        
+        public ConnectionString(IConnectionStringProvider connectionStringProvider)
+        {
+            _connectionStringProvider = connectionStringProvider ?? throw new ArgumentNullException(nameof(connectionStringProvider));
+        }
 
-        private static string _connectionString;
+        private static string _loadedConnectionString;
         public static string Get()
         {
-            if (!string.IsNullOrWhiteSpace(_connectionString))
-                return _connectionString;
+            if (string.IsNullOrWhiteSpace(_loadedConnectionString))
+            {
+                var cs = new ConnectionString(new AppConfigConnectionStringProvider());
+                _loadedConnectionString = cs.GetConnectionString();
+            }
 
-            var connectionString = ConnectionStringProvider.Read();
+            return _loadedConnectionString;
+        }
+
+        public string GetConnectionString()
+        {
+            var connectionString = _connectionStringProvider.Read();
 
             if(string.IsNullOrWhiteSpace(connectionString))
                 throw new Exception("impossible d'obtenir la chaine de connexion");
@@ -28,29 +40,23 @@ namespace GestionFormation.Infrastructure
             builder.ConnectionString = connectionString;
 
             if (!builder.ContainsKey("password"))
-            {
-                _connectionString = connectionString;
-                return _connectionString;
-            }
+                return connectionString;
 
             var password = builder["password"] as string;
             if (password.Contains("secret:"))
             {
                 var decryptedPassword = DecryptStringFromBytes_Aes(Convert.FromBase64String(password.Remove(0, 7)),Key, Iv);
                 builder["password"] = decryptedPassword;
-                _connectionString = builder.ConnectionString;
-                return _connectionString;
+                return builder.ConnectionString;
             }
 
-            _connectionString = connectionString;
-
             builder["password"] = "secret:" + Convert.ToBase64String(EncryptStringToBytes_Aes(password, Key, Iv));
-            ConnectionStringProvider.Write(builder.ConnectionString);
+            _connectionStringProvider.Write(builder.ConnectionString);
 
-            return _connectionString;
+            return connectionString;
         }
 
-        private static byte[] EncryptStringToBytes_Aes(string plainText, byte[] key, byte[] iv)
+        private byte[] EncryptStringToBytes_Aes(string plainText, byte[] key, byte[] iv)
         {
             if (plainText == null || plainText.Length <= 0)
                 throw new ArgumentNullException("plainText");
@@ -65,13 +71,13 @@ namespace GestionFormation.Infrastructure
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
 
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                using (MemoryStream msEncrypt = new MemoryStream())
+                using (var msEncrypt = new MemoryStream())
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (var swEncrypt = new StreamWriter(csEncrypt))
                         {
                             swEncrypt.Write(plainText);
                         }
@@ -81,7 +87,7 @@ namespace GestionFormation.Infrastructure
             }
             return encrypted;
         }
-        private static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] key, byte[] iv)
+        private string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] key, byte[] iv)
         {
             if (cipherText == null || cipherText.Length <= 0)
                 throw new ArgumentNullException("cipherText");
@@ -92,18 +98,18 @@ namespace GestionFormation.Infrastructure
 
             string plaintext = null;
 
-            using (Aes aesAlg = Aes.Create())
+            using (var aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
 
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                using (var msDecrypt = new MemoryStream(cipherText))
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (var srDecrypt = new StreamReader(csDecrypt))
                         {
                             plaintext = srDecrypt.ReadToEnd();
                         }
@@ -112,28 +118,6 @@ namespace GestionFormation.Infrastructure
             }
 
             return plaintext;
-        }
-    }
-
-    public interface IConnectionStringProvider
-    {
-        void Write(string connectionString);
-        string Read();
-    }
-
-    public class AppConfigConnectionStringProvider : IConnectionStringProvider
-    {
-        public void Write(string connectionString)
-        {
-            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.ConnectionStrings.ConnectionStrings["local"].ConnectionString = connectionString;
-            config.Save(ConfigurationSaveMode.Modified, true);
-            ConfigurationManager.RefreshSection("connectionStrings");
-        }
-
-        public string Read()
-        {
-            return ConfigurationManager.ConnectionStrings["local"].ConnectionString;
         }
     }
 }

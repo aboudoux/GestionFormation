@@ -17,7 +17,7 @@ namespace GestionFormation.Applications.Companies
 
         public Company Execute(string name, string address, string zipCode, string city)
         {
-            if (_companyQueries.Exists(name))
+            if (_companyQueries.GetIdIfExists(name).HasValue)
                 throw new CompanyAlreadyExistsException(name);
 
             var company = Company.Create(name, address, zipCode, city);

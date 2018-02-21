@@ -17,7 +17,7 @@ namespace GestionFormation.Applications.Trainers
 
         public Trainer Execute(string lastname, string firstname, string email)
         {
-            if(_trainerQueries.Exists(lastname, firstname))
+            if(_trainerQueries.GetTrainer(lastname, firstname).HasValue)
                 throw new TrainerAlreadyExistsException();
 
             var trainer = Trainer.Create(lastname, firstname, email);
