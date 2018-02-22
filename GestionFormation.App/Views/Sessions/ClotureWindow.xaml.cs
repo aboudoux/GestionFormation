@@ -23,6 +23,6 @@ namespace GestionFormation.App.Views.Sessions
         public ClotureWindow()
         {
             InitializeComponent();
-        }
+        }        
     }
 }

@@ -16,6 +16,8 @@ namespace GestionFormation.CoreDomain
         string CreateFreeAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession, int duration, string location, IReadOnlyList<Participant> participants);
 
         string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession,  int duration, string location, IReadOnlyList<Participant> participants);
+
+        string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city);
     }
 
     public class Participant

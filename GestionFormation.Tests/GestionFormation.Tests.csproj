@@ -141,6 +141,7 @@
     <None Include="packages.config" />
     <None Include="Templates\CertificatAssiduite.rtf" />
     <None Include="Templates\Diplome.rtf" />
+    <None Include="Templates\FirstPage.rtf" />
     <None Include="Templates\Presence.rtf" />
     <None Include="Templates\Questionnaire.rtf" />
   </ItemGroup>

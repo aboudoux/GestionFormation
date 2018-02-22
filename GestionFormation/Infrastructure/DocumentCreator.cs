@@ -18,6 +18,7 @@ namespace GestionFormation.Infrastructure
         private const string Survey = "Questionnaire.rtf";
         private const string FreeAgreement = "ConventionG.rtf";
         private const string PaidAgreement = "ConventionP.rtf";
+        private const string FirstPage = "FirstPage.rtf";
 
         public DocumentCreator()
         {
@@ -162,6 +163,20 @@ namespace GestionFormation.Infrastructure
             }
 
             return document.Generate();
+        }
+
+        public string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city)
+        {
+            return MakeDocument(FirstPage)
+                .Merge("$societe$", company)
+                .Merge("$contact$", contact.ToString())
+                .Merge("$adresse$", address)
+                .Merge("$cp$", zipCode)
+                .Merge("$ville$", city)
+                .Merge("$date$", DateTime.Now.ToString("d"))
+                .Merge("$formation$", training)
+                .Merge("$longdate$", startSession.ToString("D"))
+                .Generate();
         }
 
         private DocumentGenerator MakeDocument(string templateName)

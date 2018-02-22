@@ -75,7 +75,7 @@ namespace GestionFormation.Infrastructure.Seats.Queries
                     join contact in context.Contacts on agreement.ContactId equals contact.ContactId             
                     join student in context.Students on p.StudentId equals student.StudentId
                     join company in context.Companies on p.CompanyId equals company.CompanyId                                        
-                    where p.SessionId == sessionId && p.Status == SeatStatus.Valid && agreement.DocumentId.HasValue                    
+                    where p.SessionId == sessionId && p.Status == SeatStatus.Valid //&& agreement.DocumentId.HasValue                    
                     select new
                     {
                         p.SeatId,
@@ -83,15 +83,19 @@ namespace GestionFormation.Infrastructure.Seats.Queries
                         StudentLastname = student.Lastname,
                         StudentFirstname = student.Firstname,
                         CompanyName = company.Name,
+                        company.Address,
+                        company.ZipCode,
+                        company.City,
                         ContactLastname = contact.Lastname,
                         ContactFirstname = contact.Firstname,
                         contact.Telephone,
                         contact.Email,
                         Missing = p.StudentMissing,
-                        p.CertificateOfAttendanceId
+                        p.CertificateOfAttendanceId,
+                        agreement.DocumentId,
                     };
 
-                return querie.ToList().Select(a => new SeatValidatedResult(a.SeatId, a.StudentId, a.StudentLastname,  a.StudentFirstname, a.CompanyName, a.ContactLastname, a.ContactFirstname, a.Telephone, a.Email, a.Missing, a.CertificateOfAttendanceId));
+                return querie.ToList().Select(a => new SeatValidatedResult(a.SeatId, a.StudentId, a.StudentLastname,  a.StudentFirstname, a.CompanyName, a.ContactLastname, a.ContactFirstname, a.Telephone, a.Email, a.Missing, a.CertificateOfAttendanceId, a.DocumentId, a.Address, a.ZipCode, a.City));
             }
         }
 

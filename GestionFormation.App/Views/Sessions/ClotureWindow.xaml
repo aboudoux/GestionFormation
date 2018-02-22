@@ -5,16 +5,15 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    Title="{Binding Path=Title}" Height="350" Width="525"
+    Title="{Binding Path=Title}" Height="600" Width="600"
     >
     <Grid>
-<Grid.RowDefinitions>
-    <RowDefinition Height="Auto"></RowDefinition>
-    <RowDefinition Height="Auto"></RowDefinition>
-    <RowDefinition Height="Auto"></RowDefinition>
-    <RowDefinition></RowDefinition>
-    <RowDefinition Height="40"></RowDefinition>
-</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="32"></ColumnDefinition>
             <ColumnDefinition Width="120"></ColumnDefinition>
@@ -23,26 +22,7 @@
 
         <TextBlock Grid.Row="0" Grid.ColumnSpan="5"  Margin="0,0,0,5" HorizontalAlignment="Center" FontSize="24" Text="{Binding Path=SessionTitle}"></TextBlock>
 
-        <Image Grid.Row="1">
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Setter Property="Source" Value="/Images/Cancel_32x32.png"></Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SurveyAvailable}" Value="True">
-                            <Setter Property="Source" Value="/Images/Apply_32x32.png"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
-
-        <TextBlock Grid.Row="1" Grid.Column="1"  Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Center">Feuille de présence :</TextBlock>
-        <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,0,0,5" Orientation="Horizontal">
-            <Button Width="120" HorizontalAlignment="Left" Command="{Binding Path=DisplaySurveyCommand}" Margin="0,0,5,0" Visibility="{Binding Path=SurveyAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">Consulter</Button>
-            <Button Width="120" HorizontalAlignment="Left" Command="{Binding Path=SendSurveyCommand}">Envoyer</Button>
-        </StackPanel>
-
-        <Image Grid.Row="2">
+        <Image Grid.Row="1" Margin="5,0,0,5">
             <Image.Style>
                 <Style TargetType="{x:Type Image}">
                     <Setter Property="Source" Value="/Images/Cancel_32x32.png"></Setter>
@@ -55,38 +35,55 @@
             </Image.Style>
         </Image>
 
-        <TextBlock Grid.Row="2" Grid.Column="1"  Margin="0,0,0,5" HorizontalAlignment="Right"  VerticalAlignment="Center">Questionnaires :</TextBlock>
-        <StackPanel Grid.Row="2" Grid.Column="2"  Margin="5,0,0,5" Orientation="Horizontal">
+        <TextBlock Grid.Row="1" Grid.Column="1"  Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Center">Feuille de présence :</TextBlock>
+        <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,0,0,5" Orientation="Horizontal">
             <Button Width="120" HorizontalAlignment="Left" Command="{Binding Path=DisplayTimesheetCommand}" Margin="0,0,5,0" Visibility="{Binding Path=TimesheetAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">Consulter</Button>
             <Button Width="120" HorizontalAlignment="Left" Command="{Binding Path=SendTimesheetCommand}">Envoyer</Button>
         </StackPanel>
 
-        <dxg:GridControl Grid.Row="3" Grid.ColumnSpan="5" SelectionMode="Row" ItemsSource="{Binding Path=Seats}">
+        <dxg:GridControl Grid.Row="2" Grid.ColumnSpan="5" SelectionMode="Row" ItemsSource="{Binding Path=Seats}" AutoExpandAllGroups="True">
             <dxg:GridControl.Columns>
-                <dxg:GridColumn Header="OK" Width="32">
-                    <dxg:GridColumn.CellTemplate>
-                        <DataTemplate>
-                                <Image Source="{Binding RowData.Row.Icon}" Width="16" Height="16"></Image>
-                        </DataTemplate>
-                    </dxg:GridColumn.CellTemplate>
-                </dxg:GridColumn>
                 <dxg:GridColumn FieldName="Student"  Header="Stagiaire"/>
-                <dxg:GridColumn FieldName="Company" Header="Société"/>
-                <dxg:GridColumn Header="Certificat d'assiduité" Width="*">
+                <dxg:GridColumn FieldName="Company" Header="Société" AllowGrouping="True" GroupIndex="1"/>
+                <dxg:GridColumn Header="Certificat d'assiduité" Width="170">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel  Orientation="Horizontal">
-                                <Button HorizontalAlignment="Left" Command="{Binding RowData.Row.DisplayCertificatCommand}" Margin="0,0,5,0" Visibility="{Binding RowData.Row.CertificatAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">Consulter</Button>
-                                <Button HorizontalAlignment="Left" Command="{Binding RowData.Row.SendCertificatCommand}">Envoyer</Button>
+                                <Image Source="{Binding RowData.Row.CertificatStateIcon}" Width="16" Height="16" Margin="0,0,5,0"></Image>
+                                <Button HorizontalAlignment="Left" Command="{Binding RowData.Row.DisplayCertificatCommand}" Margin="0,5,5,5" Visibility="{Binding RowData.Row.CertificatAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">Consulter</Button>
+                                <Button HorizontalAlignment="Left" Command="{Binding RowData.Row.SendCertificatCommand}"  Margin="0,5,5,5"  >Envoyer</Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
+                <dxg:GridColumn Header="Convention">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel  Orientation="Horizontal">
+                                <Image Source="{Binding RowData.Row.AgreementStateIcon}" Width="16" Height="16" Margin="0,0,5,0" HorizontalAlignment="Center"></Image>
+                                <Button HorizontalAlignment="Center" Command="{Binding RowData.Row.DisplayAgreementCommand}" Margin="0,5,5,5" Visibility="{Binding RowData.Row.AgreementAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">Consulter</Button>
                             </StackPanel>
                         </DataTemplate>
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
             </dxg:GridControl.Columns>
             <dxg:GridControl.View>
-                <dxg:TableView AllowEditing="False" AllowGrouping="False" AllowColumnMoving="False" NavigationStyle="Row" AllowBandMultiRow="False" AllowBandMoving="False" AllowBandResizing="False" ShowBandsInCustomizationForm="False" ShowBandsPanel="False" ShowGroupPanel="False"/>
-            </dxg:GridControl.View>
+                <dxg:TableView AllowEditing="False" AllowGrouping="True" AllowColumnMoving="False" NavigationStyle="Row" AllowBandMultiRow="False" AllowBandMoving="False" AllowBandResizing="False" ShowBandsInCustomizationForm="False" ShowBandsPanel="False" ShowGroupPanel="False" AllowFixedGroups="True">
+                    <dxg:TableView.GroupRowTemplate>
+                        <ItemContainerTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Margin="5" Height="30" Content="{Binding DataContext.Company, StringFormat=Société : {0}}"></Label>
+                                <Button Margin="10" Grid.Column="1" Command="{Binding DataContext.GenerateFinalMailCommand}">Générer le mail de clôture</Button>
+                            </Grid>
+                        </ItemContainerTemplate>
+                    </dxg:TableView.GroupRowTemplate>
+                </dxg:TableView>
 
+            </dxg:GridControl.View>
         </dxg:GridControl>
         <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="5" Command="{Binding Path=ValiderCommand}">Fermer</Button>
     </Grid>

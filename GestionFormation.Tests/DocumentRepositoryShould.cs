@@ -79,5 +79,13 @@ namespace GestionFormation.Tests
             var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", participants);
             //Process.Start(doc);
         }
+
+        [TestMethod]
+        public void GenerateFirstPage()
+        {
+            var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
+            var doc = repo.CreateFirstPage("SET Niveau I", DateTime.Now, "DOT SHARK",new FullName("boudoux", "aurelien"), "111 rue francis de pressensé", "69100", "Villeurbanne");
+            //Process.Start(doc);
+        }
     }
 }

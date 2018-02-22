@@ -46,8 +46,7 @@
                                 AppointmentWindowShowing="SchedulerControl_OnAppointmentWindowShowing"
                                 AppointmentDrop="Scheduler_OnAppointmentDrop" 
                                 SelectedAppointmentsSource="{Binding Path=SelectedSessions}" 
-                                AllowAppointmentMultiSelect="False" AllowAppointmentResize="False"
-                                AllowAppointmentEdit="False"
+                                AllowAppointmentMultiSelect="False"                                 
                                 PopupMenuShowing="Scheduler_OnPopupMenuShowing"
                                 >
             <dxmvvm:Interaction.Behaviors>

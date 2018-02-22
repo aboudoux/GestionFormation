@@ -54,8 +54,7 @@
             </StackPanel>
         </Grid>
 
-        <!--<Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource BooleanToVisibilityConverter}}">-->
-        <Grid Grid.Row="2" Visibility="Hidden">
+        <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
