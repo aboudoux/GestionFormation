@@ -7,7 +7,7 @@ namespace GestionFormation.Tests.Fakes
 {
     public class FakeTrainingQueries : ITrainingQueries
     {
-        private List<ITrainingResult> _formations = new List<ITrainingResult>();
+        private readonly List<ITrainingResult> _formations = new List<ITrainingResult>();
 
         public void AddFormation(string formation, int places)
         {
@@ -41,6 +41,7 @@ namespace GestionFormation.Tests.Fakes
             public Guid Id { get; }
             public string Name { get; }
             public int Seats { get; }
+            public int Color { get; }
         }
     }
 }

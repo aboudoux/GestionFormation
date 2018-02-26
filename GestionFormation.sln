@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionFormation.Tests", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionFormation.App", "GestionFormation.App\GestionFormation.App.csproj", "{F5FF32D2-56F8-445C-9059-2EB3ECD2A8C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigration", "DataMigration\DataMigration.csproj", "{02BEA6FC-5602-426E-8F96-66E1747EC233}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F5FF32D2-56F8-445C-9059-2EB3ECD2A8C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5FF32D2-56F8-445C-9059-2EB3ECD2A8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5FF32D2-56F8-445C-9059-2EB3ECD2A8C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02BEA6FC-5602-426E-8F96-66E1747EC233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02BEA6FC-5602-426E-8F96-66E1747EC233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02BEA6FC-5602-426E-8F96-66E1747EC233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02BEA6FC-5602-426E-8F96-66E1747EC233}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

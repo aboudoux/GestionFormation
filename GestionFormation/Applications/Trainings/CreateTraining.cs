@@ -1,4 +1,5 @@
 ﻿using System;
+
 using GestionFormation.CoreDomain.Trainings;
 using GestionFormation.CoreDomain.Trainings.Exceptions;
 using GestionFormation.CoreDomain.Trainings.Queries;
@@ -14,12 +15,12 @@ namespace GestionFormation.Applications.Trainings
         {
             _queries = queries ?? throw new ArgumentNullException(nameof(queries));
         }
-        public Training Execute(string name, int seats)
+        public Training Execute(string name, int seats, int color)
         {            
             if (_queries.GetTrainingId(name).HasValue)
                 throw new TrainingAlreadyExistsException(name);
             
-            var formation = Training.Create(name, seats);
+            var formation = Training.Create(name, seats, color);
             PublishUncommitedEvents(formation);
             return formation;
         }

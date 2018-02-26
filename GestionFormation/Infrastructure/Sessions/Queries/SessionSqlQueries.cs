@@ -33,9 +33,9 @@ namespace GestionFormation.Infrastructure.Sessions.Queries
                     join training in context.Trainings on session.TrainingId equals training.TrainingId
                     join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
                     join location in context.Locations on session.LocationId equals location.Id 
-                    select new {session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name};                                       
+                    select new {session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name, training.Color};
 
-                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.TrainingName, a.Location, a.TrainerLastname, a.TrainerFirstname)).ToList();
+                return query.ToList().Select(a=>new CompleteSessionResult(a.session, a.TrainingName, a.Location, a.TrainerLastname, a.TrainerFirstname, a.Color)).ToList();
             }
         }
 
@@ -56,10 +56,10 @@ namespace GestionFormation.Infrastructure.Sessions.Queries
                 join training in context.Trainings on session.TrainingId equals training.TrainingId
                 join trainer in context.Trainers on session.TrainerId equals trainer.TrainerId
                 join location in context.Locations on session.LocationId equals location.Id
-                select new { session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name };
+                select new { session, TrainingName = training.Name, TrainerFirstname = trainer.Firstname, TrainerLastname = trainer.Lastname, Location = location.Name, training.Color };
 
                 var result = query.FirstOrDefault();
-                return result == null ? null : new CompleteSessionResult(result.session, result.TrainingName, result.Location, result.TrainerLastname, result.TrainerFirstname);
+                return result == null ? null : new CompleteSessionResult(result.session, result.TrainingName, result.Location, result.TrainerLastname, result.TrainerFirstname, result.Color);
             }
         }
 

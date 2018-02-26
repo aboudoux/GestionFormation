@@ -6,7 +6,6 @@ using DevExpress.Xpf.Docking;
 using FluentAssertions;
 using GestionFormation.App.Core;
 using GestionFormation.Applications;
-using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Notifications.Events;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
@@ -75,7 +74,7 @@ namespace GestionFormation.Tests
 
             var  agreementId = Guid.NewGuid();
             _notifications.OfType<AgreementToSignNotificationSent>().All(a => a.CompanyId != companyId || a.AgreementId != agreementId).Should().BeTrue();
-        }
+        }        
     }
 
     public class TestCommand : ActionCommand

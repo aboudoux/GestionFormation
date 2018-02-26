@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
@@ -53,10 +54,10 @@ namespace GestionFormation.App.Views.EditableLists
             Adresse = result.Address;
             CodePostal = result.ZipCode;
             Ville = result.City;
-        }        
-        
+        }                
 
-        public string Nom { get; set; }
+        public string Nom { get; set; }        
+        [DataType(DataType.MultilineText)]
         public string Adresse { get; set; }
         public string CodePostal { get; set; }
         public string Ville { get; set; }

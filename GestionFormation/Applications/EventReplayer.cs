@@ -24,8 +24,7 @@ namespace GestionFormation.Applications
             foreach (var domainEvent in allEvents)
             {
                 progession?.Invoke(currentEventIndex++,allEvents.Count);                
-                _dispatcher.Dispatch(domainEvent);
-                
+                _dispatcher.Dispatch(domainEvent);                
             }
         }
     }

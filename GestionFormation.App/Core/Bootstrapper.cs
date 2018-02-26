@@ -4,6 +4,7 @@ using DevExpress.Xpf.Docking;
 using GalaSoft.MvvmLight.Messaging;
 using GestionFormation.App.Views;
 using GestionFormation.App.Views.EditableLists;
+using GestionFormation.App.Views.EditableLists.Formations;
 using GestionFormation.App.Views.EditableLists.Utilisateurs;
 using GestionFormation.App.Views.Historiques;
 using GestionFormation.App.Views.Listers;
@@ -15,6 +16,7 @@ using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 using ChangePasswordWindow = GestionFormation.App.Views.EditableLists.Utilisateurs.ChangePasswordWindow;
 using CreateConventionWindow = GestionFormation.App.Views.Places.CreateConventionWindow;
+using CreateFormationWindow = GestionFormation.App.Views.EditableLists.Formations.CreateFormationWindow;
 using CreateItem = GestionFormation.App.Views.EditableLists.CreateItem;
 using CreateSessionWindow = GestionFormation.App.Views.Sessions.CreateSessionWindow;
 using EditableList = GestionFormation.App.Views.EditableLists.EditableList;
@@ -38,7 +40,6 @@ namespace GestionFormation.App.Core
             BootstrapQuery.Launch();
 
             var pagelocator = PageLocator.With()
-                .Element<FormationListVm, EditableList>()
                 .Element<FormateurListVm, EditableList>()
                 .Element<LieuListVm, EditableList>()
                 .Element<StagiaireListVm, EditableList>()
@@ -61,6 +62,8 @@ namespace GestionFormation.App.Core
                 .Element<PlacesListerVm, ListerWindow>()
                 .Element<CreateContactWindowVm, CreateContactWindow>()
                 .Element<ClotureWindowVm, ClotureWindow>()
+                .Element<CreateFormationWindowVm, CreateFormationWindow>()
+                .Element<FormationListVm, EditableList>()
                 .Build();
 
             var dispatcher = new EventDispatcher();

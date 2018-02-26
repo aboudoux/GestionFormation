@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
+using GestionFormation.App.Views.EditableLists.Formations;
 using GestionFormation.Applications.Locations;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Trainers;
@@ -170,12 +171,12 @@ namespace GestionFormation.App.Views.Sessions
         public RelayCommandAsync AddFormationCommand { get; }
         private async Task ExecuteAddFormationAsync()
         {
-            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer une formation", new EditableFormation());
+            var vm = await _applicationService.OpenPopup<CreateFormationWindowVm>("Créer une formation", new EditableFormation());
             if (vm.IsValidated)
             {
                 await HandleMessageBoxError.ExecuteAsync( async ()=>{
                     var item = vm.Item as EditableFormation;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateTraining>().Execute(item.Nom, item.Places));
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateTraining>().Execute(item.Nom, item.Places, ColorHelper.ToInt(item.Couleur)));
                     await InitFormations(newItem.AggregateId);
                 });
             }

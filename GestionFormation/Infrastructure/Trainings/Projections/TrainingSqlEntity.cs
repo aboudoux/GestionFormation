@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 
 namespace GestionFormation.Infrastructure.Trainings.Projections
 {
@@ -11,5 +13,8 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
         public Guid TrainingId { get; set; }
         public string Name { get; set; }
         public int Seats { get; set; }
+        public int Color { get; set; }
+
+       
     }
 }

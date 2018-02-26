@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using GestionFormation.CoreDomain.Trainings.Events;
 using GestionFormation.CoreDomain.Trainings.Exceptions;
 using GestionFormation.Kernel;
@@ -11,23 +12,23 @@ namespace GestionFormation.CoreDomain.Trainings
         {
         }
      
-        public static Training Create(string name, int seats)
-        {
+        public static Training Create(string name, int seats, int color)
+        {            
             if(string.IsNullOrEmpty(name))
                 throw new TrainingEmptyNameException();
 
             var training = new Training(new History());
             training.AggregateId = Guid.NewGuid();
-            training.UncommitedEvents.Add(new TrainingCreated(training.AggregateId, 1, name, seats));
+            training.UncommitedEvents.Add(new TrainingCreated(training.AggregateId, 1, name, seats, color));
             return training;
         }
 
-        public void Update(string name, int seats)
+        public void Update(string name, int seats, int color)
         {
             if (string.IsNullOrEmpty(name))
                 throw new TrainingEmptyNameException();
 
-            Update(new TrainingUpdated(AggregateId, GetNextSequence(), name, seats));
+            Update(new TrainingUpdated(AggregateId, GetNextSequence(), name, seats, color));
         }
 
         public void Delete()

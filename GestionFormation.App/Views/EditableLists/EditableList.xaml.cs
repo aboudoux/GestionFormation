@@ -1,4 +1,9 @@
-﻿namespace GestionFormation.App.Views.EditableLists
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using DevExpress.Xpf.Grid;
+
+namespace GestionFormation.App.Views.EditableLists
 {
     /// <summary>
     /// Logique d'interaction pour EditableList.xaml
@@ -8,6 +13,14 @@
         public EditableList()
         {
             InitializeComponent();
-        }      
+        }
+
+        private void DataControlBase_OnAutoGeneratingColumn(object sender, AutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.FieldType == typeof(Color))
+            {                
+                e.Column.EditFormTemplate = MyGrid.Resources["ColorTemplate"] as DataTemplate;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using FluentAssertions;
 using GestionFormation.Applications.Agreements;
@@ -33,7 +34,7 @@ namespace GestionFormation.Tests
             var formateur = service.Command<CreateTrainer>().Execute("TEST", DateTime.Now.ToString("G"), "test@test.com");
             var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G"), "test", 5);
 
-            var createdFormation = service.Command<CreateTraining>().Execute("Essai " + DateTime.Now.ToString("G"), 2);
+            var createdFormation = service.Command<CreateTraining>().Execute("Essai " + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
             service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018,1,8), 3, 5, lieu.AggregateId, formateur.AggregateId);
         }
 
@@ -55,7 +56,7 @@ namespace GestionFormation.Tests
             var societe2 = service.Command<CreateCompany>().Execute(sname2, "CONVENTION TEST", "", "");
             var societe3 = service.Command<CreateCompany>().Execute(sname3, "CONVENTION TEST", "", "");
 
-            var createdFormation = service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2);
+            var createdFormation = service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
             var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);
 
             var place1 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
@@ -99,7 +100,7 @@ namespace GestionFormation.Tests
             var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
             var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1 " + Guid.NewGuid(), "CONVENTION TEST", "", "");
 
-            var createdFormation = service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2);
+            var createdFormation = service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
             var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);
 
             var place1 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);

@@ -5,5 +5,6 @@
         string Training { get; }
         FullName Trainer { get; }         
         string Location { get; }
+        int Color { get; }
     }
 }

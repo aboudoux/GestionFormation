@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using FluentAssertions;
 using GestionFormation.Applications.Trainings;
@@ -21,7 +22,7 @@ namespace GestionFormation.Tests
             fakeQuery.AddFormation("TEST",1);
             var create = new CreateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery );
 
-            Action action = () =>create.Execute("TEST",1);
+            Action action = () =>create.Execute("TEST",1, Color.Empty.ToArgb());
             action.ShouldThrow<TrainingAlreadyExistsException>();
         }
 
@@ -30,7 +31,7 @@ namespace GestionFormation.Tests
         {
             var fakeQuery = new FakeTrainingQueries();            
             var create = new CreateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery);
-            var formation = create.Execute("TEST",1);
+            var formation = create.Execute("TEST",1, Color.Empty.ToArgb());
 
             var firstEvent = formation.UncommitedEvents.GetStream().First();
             firstEvent.Should().BeAssignableTo<TrainingCreated>();

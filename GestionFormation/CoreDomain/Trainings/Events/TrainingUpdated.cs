@@ -1,17 +1,12 @@
 using System;
-using GestionFormation.Kernel;
+using System.Drawing;
 
 namespace GestionFormation.CoreDomain.Trainings.Events
 {
-    public class TrainingUpdated : DomainEvent
+    public class TrainingUpdated : TrainingCreated
     {
-        public string Name { get; }
-        public int Seats { get; }
-
-        public TrainingUpdated(Guid aggregateId, int sequence, string name, int seats) : base(aggregateId, sequence)
+        public TrainingUpdated(Guid aggregateId, int sequence, string name, int seats, int color) : base(aggregateId, sequence, name, seats, color)
         {
-            Name = name;
-            Seats = seats;
         }
 
         protected override string Description => "Formation modifiée";

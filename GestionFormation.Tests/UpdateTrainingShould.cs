@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using FluentAssertions;
 using GestionFormation.Applications.Trainings;
 using GestionFormation.CoreDomain.Trainings.Exceptions;
@@ -21,7 +22,7 @@ namespace GestionFormation.Tests
             fakeQuery.AddFormation("TEST2", 1);
             
             var update = new UpdateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery );
-            Action action = () => update.Execute(idTest1, "TEST2",1);
+            Action action = () => update.Execute(idTest1, "TEST2",1, Color.Empty.ToArgb());
             action.ShouldThrow<TrainingAlreadyExistsException>();
         }
     }

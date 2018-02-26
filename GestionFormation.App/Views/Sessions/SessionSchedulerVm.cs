@@ -10,6 +10,7 @@ using GestionFormation.App.Views.Places;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.CoreDomain.Sessions.Queries;
 using GestionFormation.CoreDomain.Users;
+using ColorHelper = GestionFormation.App.Views.EditableLists.Formations.ColorHelper;
 
 namespace GestionFormation.App.Views.Sessions
 {
@@ -186,6 +187,8 @@ namespace GestionFormation.App.Views.Sessions
             FormateurId = result.TrainerId;
             LieuId = result.LocationId;
             FormationId = result.TrainingId;
+
+            Couleur = ColorHelper.FromInt(result.Color);
         }
 
         public Guid Id { get; }
@@ -197,5 +200,6 @@ namespace GestionFormation.App.Views.Sessions
         public Guid? FormateurId { get; }
         public Guid? LieuId { get; }    
         public Guid FormationId { get; }
+        public System.Windows.Media.Color Couleur { get; }
     }
 }

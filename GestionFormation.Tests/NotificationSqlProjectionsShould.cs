@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using FluentAssertions;
 using GestionFormation.Applications.Agreements;
@@ -39,7 +40,7 @@ namespace GestionFormation.Tests
         [TestInitialize]
         public void TestInitialize()
         {            
-            var formation = _service.Command<CreateTraining>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20);
+            var formation = _service.Command<CreateTraining>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20, Color.Empty.ToArgb());
             var formateur = _service.Command<CreateTrainer>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
             var lieu = _service.Command<CreateLocation>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);
             var session = _service.Command<PlanSession>().Execute(formation.AggregateId, DateTime.Now, 1, 20, lieu.AggregateId, formateur.AggregateId);

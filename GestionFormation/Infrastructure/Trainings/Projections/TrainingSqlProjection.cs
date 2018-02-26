@@ -23,6 +23,7 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
                 entity.TrainingId = @event.AggregateId;
                 entity.Name = @event.Name;
                 entity.Seats = @event.Seats;
+                entity.Color = @event.Color;
                 
                 context.SaveChanges();
             }
@@ -38,6 +39,7 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
 
                 entity.Name = @event.Name;
                 entity.Seats = @event.Seats;
+                entity.Color = @event.Color;
                 context.SaveChanges();
             }
         }

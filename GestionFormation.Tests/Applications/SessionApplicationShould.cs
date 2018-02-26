@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using FluentAssertions;
 using GestionFormation.Applications.Locations;
@@ -361,7 +362,7 @@ namespace GestionFormation.Tests.Applications
             eventStore.Save(new TrainerAssigned(formateurId2, 4, new DateTime(2017, 10, 21), 2));
             eventStore.Save(new TrainerAssigned(formateurId2, 5, new DateTime(2017, 11, 21), 2));
             eventStore.Save(new TrainerAssigned(formateurId2, 6, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test",1));
+            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test",1, Color.Empty.ToArgb()));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             var sessionQueries = new FakeSessionQueries();
@@ -689,7 +690,7 @@ namespace GestionFormation.Tests.Applications
             eventStore.Save(new LocationAssigned(lieuId2, 4, new DateTime(2017, 10, 21), 2));
             eventStore.Save(new LocationAssigned(lieuId2, 5, new DateTime(2017, 11, 21), 2));
             eventStore.Save(new LocationAssigned(lieuId2, 6, new DateTime(2017, 12, 21), 2));
-            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test", 1));
+            eventStore.Save(new TrainingCreated(formationId, 1, "Formation de test", 1, Color.Empty.ToArgb()));
             var eventBus = new EventBus(dispatcher, eventStore);
 
             var sessionQueries = new FakeSessionQueries();

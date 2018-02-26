@@ -74,16 +74,24 @@
             </dxsch:SchedulerControl.OptionsContextMenu>
 
             <dxsch:SchedulerControl.DataSource>
-                <dxsch:DataSource AppointmentsSource="{Binding Sessions}">
+                <dxsch:DataSource AppointmentsSource="{Binding Sessions}" AppointmentLabelsSource="{Binding Sessions}">
                     <dxsch:DataSource.AppointmentMappings>
                         <dxsch:AppointmentMappings
                             Id="Id"
                             Start="Start" 
                             End="End" 
-                            Description="Description"
+                            Description="Description" LabelId="Id"
                             Subject="Sujet">
                         </dxsch:AppointmentMappings>
                     </dxsch:DataSource.AppointmentMappings>
+
+                    <dxsch:DataSource.AppointmentLabelMappings>
+                        <dxsch:AppointmentLabelMappings 
+                            Id="Id"
+                            Color="Couleur">
+                        </dxsch:AppointmentLabelMappings>
+                    </dxsch:DataSource.AppointmentLabelMappings>
+
                 </dxsch:DataSource>
             </dxsch:SchedulerControl.DataSource>
         </dxsch:SchedulerControl>

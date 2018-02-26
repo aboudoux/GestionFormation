@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
@@ -54,8 +55,9 @@ namespace GestionFormation.App.Views.EditableLists
             Places = result.Seats;
         }
 
-
         public string Nom { get; set; }
+
+        [DataType(DataType.MultilineText)]
         public string Addresse { get; set; }
         public int Places { get; set; }
     }

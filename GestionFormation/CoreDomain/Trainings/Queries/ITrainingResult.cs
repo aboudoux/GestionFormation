@@ -7,5 +7,6 @@ namespace GestionFormation.CoreDomain.Trainings.Queries
         Guid Id { get; }
         string Name { get; }
         int Seats { get; }
+        int Color { get; }
     }
 }

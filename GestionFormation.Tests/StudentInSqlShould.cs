@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Drawing;
+using FluentAssertions;
 using GestionFormation.CoreDomain.Students;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure.Students.Projections;
@@ -28,7 +29,7 @@ namespace GestionFormation.Tests
 
             var stagiaire2 = new Student(new History(eventStore.GetEvents(stagiaireId)));
             stagiaire2.Update("BOUDOUX", "Aurélien");
-            stagiaire2.UncommitedEvents.GetStream().Should().BeEmpty();
+            stagiaire2.UncommitedEvents.GetStream().Should().BeEmpty();            
         }
 
         [TestMethod]

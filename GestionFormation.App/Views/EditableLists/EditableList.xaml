@@ -8,9 +8,10 @@
       xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
       xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
       xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+      xmlns:views="clr-namespace:GestionFormation.App.Views"
+      xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
       mc:Ignorable="d" 
       Caption="{Binding Path=Title}">
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -24,10 +25,29 @@
                 <dxb:BarButtonItem Content="Ajouter" Glyph="{dx:DXImage Image=Add_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=CreateCommand}"/>
             </dxb:ToolBarControl>
         </dxb:BarContainerControl>
+        
+        
 
-        <dxg:GridControl Grid.Row="1" SelectionMode="Row" ItemsSource="{Binding Path=Items}" AutoGenerateColumns="AddNew" ShowLoadingPanel="{Binding Path=IsLoading}" SelectedItem="{Binding Path=SelectedItem}">
-        <dxg:GridControl.View>
-                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False" EditFormShowMode="Inline" EditFormPostMode="Cached" AutoWidth="True" AllowEditing="True">
+        <dxg:GridControl x:Name="MyGrid" Grid.Row="1" SelectionMode="Row" ItemsSource="{Binding Path=Items}"
+                         AutoGenerateColumns="AddNew" ShowLoadingPanel="{Binding Path=IsLoading}" 
+                         SelectedItem="{Binding Path=SelectedItem}" AllowLiveDataShaping="True" AutoGeneratingColumn="DataControlBase_OnAutoGeneratingColumn">
+            <dxg:GridControl.Resources>
+                    <views:templateselector x:Key="templateselector">
+                        <views:templateselector.ColorPickerTemplate >
+                            <DataTemplate>
+                                <dxe:PopupColorEdit Color="{Binding RowData.Row.Couleur, Mode=OneWay}" IsReadOnly="True" ShowMoreColorsButton="False" ShowNoColorButton="False" ShowEditorButtons="False"></dxe:PopupColorEdit>
+                            </DataTemplate>
+                        </views:templateselector.ColorPickerTemplate>
+                    </views:templateselector>
+                <DataTemplate x:Key="ColorTemplate">
+
+                    <dxe:PopupColorEdit Color="{Binding RowData.Source.Row.Couleur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:PopupColorEdit>
+                </DataTemplate>
+            </dxg:GridControl.Resources>
+            
+            <dxg:GridControl.View>
+                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False" EditFormShowMode="Inline" EnableImmediatePosting="True"
+                               EditFormPostMode="Immediate" AutoWidth="True" AllowEditing="True" CellTemplateSelector="{StaticResource templateselector}">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="RowUpdated" Command="{Binding Path=UpdateCommand}"/>
                     </dxmvvm:Interaction.Behaviors>

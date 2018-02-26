@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views;
 using GestionFormation.App.Views.EditableLists;
+using GestionFormation.App.Views.EditableLists.Formations;
 using GestionFormation.App.Views.EditableLists.Utilisateurs;
 using GestionFormation.App.Views.Historiques;
 using GestionFormation.App.Views.Listers;
