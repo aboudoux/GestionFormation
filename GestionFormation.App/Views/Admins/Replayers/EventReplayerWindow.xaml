@@ -1,0 +1,20 @@
+﻿<dx:DXWindow
+    x:Class="GestionFormation.App.Views.Admins.Replayers.EventReplayerWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    Title="Recontruire la base à partir des evenements" Height="350" Width="525"
+    >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">ATTENTION, cette fonctionnalité est reservée à l'administration de la base de données.</TextBlock>
+        <ProgressBar Margin="20" Grid.Row="1" Minimum="{Binding Path=ProgressMin}" Maximum="{Binding Path=ProgressMax}" Value="{Binding Path=ProgressValue}"></ProgressBar>
+        <TextBlock Margin="20" Grid.Row="1" Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Button Grid.Row="2" Margin="30" Command="{Binding Path=StartCommand}">LANCER</Button>
+    </Grid>
+</dx:DXWindow>

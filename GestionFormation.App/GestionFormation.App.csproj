@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>presentation_UKl_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.4.0\lib\net45\CommonServiceLocator.dll</HintPath>
@@ -197,16 +200,11 @@
     <Compile Include="Core\ExceptionExtention.cs" />
     <Compile Include="Core\HandleMessageBoxError.cs" />
     <Compile Include="Core\Security.cs" />
-    <Compile Include="Views\EditableLists\Formations\ColorHelper.cs" />
+    <Compile Include="Views\EditableLists\ColorHelper.cs" />
     <Compile Include="Views\EditableLists\CreateContactWindow.xaml.cs">
       <DependentUpon>CreateContactWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\CreateContactWindowVm.cs" />
-    <Compile Include="Views\EditableLists\Formations\CreateFormationWindow.xaml.cs">
-      <DependentUpon>CreateFormationWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditableLists\Formations\CreateFormationWindowVm.cs" />
-    <Compile Include="Views\EditableLists\Formations\IntToColorConverter.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\BoolToEnumConverter.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml.cs">
       <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
@@ -217,30 +215,36 @@
       <DependentUpon>ChangeRoleWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindowVm.cs" />
-    <Compile Include="Views\Historiques\HistoriqueWindow.xaml.cs">
-      <DependentUpon>HistoriqueWindow.xaml</DependentUpon>
+    <Compile Include="Views\Admins\History\HistoryWindow.xaml.cs">
+      <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Historiques\HistoriqueWindowVm.cs" />
+    <Compile Include="Views\Admins\History\HistoryWindowVm.cs" />
     <Compile Include="Views\Listers\ListerWindow.xaml.cs">
       <DependentUpon>ListerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Listers\ListerWindowVm.cs" />
-    <Compile Include="Views\Listers\PlacesListerVm.cs" />
+    <Compile Include="Views\Listers\SeatsListerVm.cs" />
     <Compile Include="Views\Logins\LoginImage.xaml.cs">
       <DependentUpon>LoginImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\CreateConventionWindow.xaml.cs">
-      <DependentUpon>CreateConventionWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\ContactItem.cs" />
+    <Compile Include="Views\Seats\CreateAgreementWindow.xaml.cs">
+      <DependentUpon>CreateAgreementWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\CreateConventionWindowVm.cs" />
+    <Compile Include="Views\Seats\CreateAgreementWindowVm.cs" />
     <Compile Include="Views\EditableLists\CreateItem.xaml.cs">
       <DependentUpon>CreateItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\CreateItemVm.cs" />
-    <Compile Include="Views\Sessions\ClotureWindow.xaml.cs">
-      <DependentUpon>ClotureWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\AgreementState.cs" />
+    <Compile Include="Views\Seats\SeatState.cs" />
+    <Compile Include="Views\Seats\Item.cs" />
+    <Compile Include="Views\Seats\SeatItem.cs" />
+    <Compile Include="Views\Seats\SessionInfos.cs" />
+    <Compile Include="Views\Sessions\CloseSessionWindow.xaml.cs">
+      <DependentUpon>CloseSessionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sessions\ClotureWindowVm.cs" />
+    <Compile Include="Views\Sessions\CloseSessionWindowVm.cs" />
     <Compile Include="Views\Sessions\CreateSessionWindow.xaml.cs">
       <DependentUpon>CreateSessionWindow.xaml</DependentUpon>
     </Compile>
@@ -265,46 +269,42 @@
     <Compile Include="Core\PageLocator.cs" />
     <Compile Include="Core\RelayCommandAsync.cs" />
     <Compile Include="Core\UnityIocContainer.cs" />
-    <Compile Include="Views\EventReplayerWindow.xaml.cs">
+    <Compile Include="Views\Admins\Replayers\EventReplayerWindow.xaml.cs">
       <DependentUpon>EventReplayerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EventReplayerWindowVm.cs" />
-    <Compile Include="Views\EditableLists\FormateurListVm.cs" />
-    <Compile Include="Views\EditableLists\Formations\FormationListVm.cs" />
+    <Compile Include="Views\Admins\Replayers\EventReplayerWindowVm.cs" />
+    <Compile Include="Views\EditableLists\TrainerListVm.cs" />
+    <Compile Include="Views\EditableLists\TrainingListVm.cs" />
     <Compile Include="MainWindowsVm.cs" />
-    <Compile Include="Views\Places\GestionConventionWindow.xaml.cs">
-      <DependentUpon>GestionConventionWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\ManageAgreementWindow.xaml.cs">
+      <DependentUpon>ManageAgreementWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\GestionConventionWindowVm.cs" />
+    <Compile Include="Views\Seats\ManageAgreementWindowVm.cs" />
     <Compile Include="Views\ILoadableVm.cs" />
-    <Compile Include="Views\EditableLists\LieuListVm.cs" />
-    <Compile Include="Views\Places\PlacesWindow.xaml.cs">
-      <DependentUpon>PlacesWindow.xaml</DependentUpon>
+    <Compile Include="Views\EditableLists\LocationListVm.cs" />
+    <Compile Include="Views\Seats\SeatsWindow.xaml.cs">
+      <DependentUpon>SeatsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\PlacesWindowVm.cs" />
-    <Compile Include="Views\Places\RaisonWindow.xaml.cs">
-      <DependentUpon>RaisonWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\SeatsWindowVm.cs" />
+    <Compile Include="Views\Seats\ReasonWindow.xaml.cs">
+      <DependentUpon>ReasonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\RaisonWindowVm.cs" />
-    <Compile Include="Views\Sessions\DeroulementWindow.xaml.cs">
-      <DependentUpon>DeroulementWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\ReasonWindowVm.cs" />
+    <Compile Include="Views\Sessions\TrainingFlowWindow.xaml.cs">
+      <DependentUpon>TrainingFlowWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sessions\DeroulementWindowVm.cs" />
+    <Compile Include="Views\Sessions\TrainingFlowWindowVm.cs" />
     <Compile Include="Views\Sessions\SessionScheduler.xaml.cs">
       <DependentUpon>SessionScheduler.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Sessions\SessionSchedulerVm.cs" />
-    <Compile Include="Views\EditableLists\SocieteListVm.cs" />
-    <Compile Include="Views\EditableLists\StagiaireListVm.cs" />
+    <Compile Include="Views\EditableLists\CompanyListVm.cs" />
+    <Compile Include="Views\EditableLists\StudentListVm.cs" />
     <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurListVm.cs" />
     <Compile Include="Views\templateselector.cs" />
     <Page Include="Views\EditableLists\CreateContactWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditableLists\Formations\CreateFormationWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml">
       <SubType>Designer</SubType>
@@ -314,7 +314,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Historiques\HistoriqueWindow.xaml">
+    <Page Include="Views\Admins\History\HistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -326,7 +326,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\CreateConventionWindow.xaml">
+    <Page Include="Views\Seats\CreateAgreementWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -334,7 +334,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sessions\ClotureWindow.xaml">
+    <Page Include="Views\Sessions\CloseSessionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -366,23 +366,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\EventReplayerWindow.xaml">
+    <Page Include="Views\Admins\Replayers\EventReplayerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\GestionConventionWindow.xaml">
+    <Page Include="Views\Seats\ManageAgreementWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\PlacesWindow.xaml">
+    <Page Include="Views\Seats\SeatsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\RaisonWindow.xaml">
+    <Page Include="Views\Seats\ReasonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sessions\DeroulementWindow.xaml">
+    <Page Include="Views\Sessions\TrainingFlowWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -487,6 +487,9 @@
   <ItemGroup>
     <Resource Include="Images\Apply_32x32.png" />
     <Resource Include="Images\Cancel_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="presentation_UKl_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

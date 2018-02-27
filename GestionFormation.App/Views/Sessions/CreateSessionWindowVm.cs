@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.App.Views.EditableLists.Formations;
 using GestionFormation.Applications.Locations;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.Applications.Trainers;
@@ -23,15 +22,15 @@ namespace GestionFormation.App.Views.Sessions
         private readonly ILocationQueries _locationQueries;
         private readonly ITrainerQueries _trainerQueries;
         private readonly ITrainingQueries _trainingQueries;
-        private ObservableCollection<FormationItem> _formations;
-        private FormationItem _selectedFormation;
-        private ObservableCollection<FormateurItem> _formateurs;
-        private FormateurItem _selectedFormateur;
-        private ObservableCollection<LieuItem> _lieux;
-        private LieuItem _selectedLieu;
-        private DateTime? _dateDebut;
-        private int _durée;
-        private int _places;
+        private ObservableCollection<TrainingItem> _trainings;
+        private TrainingItem _selectedTraining;
+        private ObservableCollection<TrainerItem> _trainers;
+        private TrainerItem _selectedTrainer;
+        private ObservableCollection<Location> _locations;
+        private Location _selectedLocation;
+        private DateTime? _startSession;
+        private int _duration;
+        private int _seats;
         private Guid? _sessionId;        
 
         public override string Title => "Planifier une nouvelle session";
@@ -44,86 +43,86 @@ namespace GestionFormation.App.Views.Sessions
             _trainerQueries = trainerQueries ?? throw new ArgumentNullException(nameof(trainerQueries));
             _trainingQueries = trainingQueries ?? throw new ArgumentNullException(nameof(trainingQueries));
 
-            AddFormationCommand = new RelayCommandAsync(ExecuteAddFormationAsync);
-            AddLieuCommand = new RelayCommandAsync(ExecuteAddLieuAsync);
-            AddFormateurCommand = new RelayCommandAsync(ExecuteAddFormateurAsync);
+            AddTrainingCommand = new RelayCommandAsync(ExecuteAddTrainingAsync);
+            AddLocationCommand = new RelayCommandAsync(ExecuteAddLocationAsync);
+            AddTrainerCommand = new RelayCommandAsync(ExecuteAddTrainerAsync);
         }        
 
-        public ObservableCollection<FormationItem> Formations
+        public ObservableCollection<TrainingItem> Trainings
         {
-            get => _formations;
-            set{Set(() => Formations, ref _formations, value);                }
+            get => _trainings;
+            set{Set(() => Trainings, ref _trainings, value);}
         }
 
-        public FormationItem SelectedFormation
+        public TrainingItem SelectedTraining
         {
-            get => _selectedFormation;
+            get => _selectedTraining;
             set
             {
-                Set(() => SelectedFormation, ref _selectedFormation, value);
+                Set(() => SelectedTraining, ref _selectedTraining, value);
 
                 if(value == null) return;
-                if (Places == 0 || value.Places < Places)
-                    Places = value.Places;
+                if (Seats == 0 || value.Seats < Seats)
+                    Seats = value.Seats;
             }
         }
 
-        public ObservableCollection<FormateurItem> Formateurs
+        public ObservableCollection<TrainerItem> Trainers
         {
-            get => _formateurs;
-            set { Set(() => Formateurs, ref _formateurs, value); }
+            get => _trainers;
+            set { Set(() => Trainers, ref _trainers, value); }
         }
 
-        public FormateurItem SelectedFormateur
+        public TrainerItem SelectedTrainer
         {
-            get => _selectedFormateur;
-            set { Set(() => SelectedFormateur, ref _selectedFormateur, value); }
+            get => _selectedTrainer;
+            set { Set(() => SelectedTrainer, ref _selectedTrainer, value); }
         }
 
-        public ObservableCollection<LieuItem> Lieux
+        public ObservableCollection<Location> Locations
         {
-            get => _lieux;
-            set { Set(() => Lieux, ref _lieux, value); }
+            get => _locations;
+            set { Set(() => Locations, ref _locations, value); }
         }
 
-        public LieuItem SelectedLieu
+        public Location SelectedLocation
         {
-            get => _selectedLieu;
+            get => _selectedLocation;
             set
             {
-                Set(()=>SelectedLieu, ref _selectedLieu, value );
+                Set(()=>SelectedLocation, ref _selectedLocation, value );
 
                 if (value == null) return;
-                if (Places == 0 || value.Places < Places)
-                    Places = value.Places;
+                if (Seats == 0 || value.Seats < Seats)
+                    Seats = value.Seats;
             }
         }
 
         protected override async Task ExecuteValiderAsync()
         {
             var error = false;
-            if (SelectedFormation == null)
+            if (SelectedTraining == null)
             {
                 MessageBox.Show("Vous n'avez pas renseigné la formation", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 error = true;
             }
-            else if (SelectedFormateur == null)
+            else if (SelectedTrainer == null)
             {
                 MessageBox.Show("Vous n'avez pas renseigné le formateur", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 error = true;
             }
-            else if (SelectedLieu == null)
+            else if (SelectedLocation == null)
             {
                 MessageBox.Show("Vous n'avez pas renseigné le lieu", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 error = true;
             }
 
-            if (Places > SelectedFormation?.Places)
+            if (Seats > SelectedTraining?.Seats)
             {
                 if (MessageBox.Show("Vous avez défini plus de places que ne peut en accueillir la formation.\r\nEtes-vous sûr de vouloir valider ?", "ATTENTION", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
             }
-            if (Places > SelectedLieu?.Places)
+            if (Seats > SelectedLocation?.Seats)
             {
                 if (MessageBox.Show("Vous avez défini plus de places que ne peut en accueillir la lieu.\r\nEtes-vous sûr de vouloir valider ?", "ATTENTION", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                     return;
@@ -134,9 +133,9 @@ namespace GestionFormation.App.Views.Sessions
                 try
                 {
                     if (_sessionId.HasValue)
-                        await Task.Run(() => _applicationService.Command<UpdateSession>().Execute(_sessionId.Value, SelectedFormation.Id, DateDebut.Value, Durée, Places, SelectedLieu.Id, SelectedFormateur.Id));
+                        await Task.Run(() => _applicationService.Command<UpdateSession>().Execute(_sessionId.Value, SelectedTraining.Id, StartSession.Value, Duration, Seats, SelectedLocation.Id, SelectedTrainer.Id));
                     else
-                        await Task.Run(() => _applicationService.Command<PlanSession>().Execute(SelectedFormation.Id, DateDebut.Value, Durée, Places, SelectedLieu.Id, SelectedFormateur.Id));
+                        await Task.Run(() => _applicationService.Command<PlanSession>().Execute(SelectedTraining.Id, StartSession.Value, Duration, Seats, SelectedLocation.Id, SelectedTrainer.Id));
 
                     await base.ExecuteValiderAsync();
                 }
@@ -147,65 +146,65 @@ namespace GestionFormation.App.Views.Sessions
             }
         }
             
-        public DateTime? DateDebut
+        public DateTime? StartSession
         {
-            get => _dateDebut;
-            set { Set(() => DateDebut, ref _dateDebut, value); }
+            get => _startSession;
+            set { Set(() => StartSession, ref _startSession, value); }
         }
 
-        public int Durée
+        public int Duration
         {
-            get => _durée;
-            set { Set(()=>Durée, ref _durée, value); }
+            get => _duration;
+            set { Set(()=>Duration, ref _duration, value); }
         }
 
-        public int Places
+        public int Seats
         {
-            get => _places;
+            get => _seats;
             set
             {
-                Set(() => Places, ref _places, value);                
+                Set(() => Seats, ref _seats, value);                
             }
         }
 
-        public RelayCommandAsync AddFormationCommand { get; }
-        private async Task ExecuteAddFormationAsync()
+        public RelayCommandAsync AddTrainingCommand { get; }
+        private async Task ExecuteAddTrainingAsync()
         {
-            var vm = await _applicationService.OpenPopup<CreateFormationWindowVm>("Créer une formation", new EditableFormation());
+            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer une formation", new EditableTraining());
             if (vm.IsValidated)
             {
                 await HandleMessageBoxError.ExecuteAsync( async ()=>{
-                    var item = vm.Item as EditableFormation;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateTraining>().Execute(item.Nom, item.Places, ColorHelper.ToInt(item.Couleur)));
+                    var item = vm.Item as EditableTraining;
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateTraining>().Execute(item.Name, item.Seats, ColorHelper.ToInt(item.Color)));
                     await InitFormations(newItem.AggregateId);
                 });
             }
         }
 
-        public RelayCommandAsync AddLieuCommand { get; }
-        private async Task ExecuteAddLieuAsync()
+        public RelayCommandAsync AddLocationCommand { get; }
+        private async Task ExecuteAddLocationAsync()
         {
-            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un lieu", new EditableLieu());
+            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un lieu", new EditableLocation());
             if (vm.IsValidated)
             {
                 await HandleMessageBoxError.ExecuteAsync(async () => {                   
-                    var item = vm.Item as EditableLieu;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateLocation>().Execute(item.Nom, item.Addresse, item.Places));
+                    var item = vm.Item as EditableLocation;
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateLocation>().Execute(item.Name, item.Address, item.Seats));
                     await InitLieux(newItem.AggregateId);
                 });
             }
         }
 
-        public RelayCommandAsync AddFormateurCommand { get; }
-        private async Task ExecuteAddFormateurAsync()
+        public RelayCommandAsync AddTrainerCommand { get; }
+        private async Task ExecuteAddTrainerAsync()
         {
-            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un formateur", new EditableFormateur());
+            var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un formateur", new EditableTrainer());
             if (vm.IsValidated)
             {
                 await HandleMessageBoxError.ExecuteAsync(async () => {
-                    var item = vm.Item as EditableFormateur;
-                    var newItem = await Task.Run(() => _applicationService.Command<CreateTrainer>().Execute(item.Nom, item.Prenom, item.Email));
-                    await InitFormateurs(newItem.AggregateId);
+                    var item = vm.Item as EditableTrainer;
+                    var newItem = await Task.Run(() => _applicationService.Command<CreateTrainer>().Execute(item.Lastname, item.Firstname, item.Email));
+                    await InitTrainings(newItem.AggregateId);
                 });
             }
         }
@@ -213,45 +212,45 @@ namespace GestionFormation.App.Views.Sessions
         public override async Task Init()
         {
             var t1 = InitFormations(_appointmentItem.FormationId);
-            var t2 = InitFormateurs(_appointmentItem.FormateurId);
+            var t2 = InitTrainings(_appointmentItem.FormateurId);
             var t3 = InitLieux(_appointmentItem.LieuId);
 
-            DateDebut = _appointmentItem.Start;
-            Durée = _appointmentItem.Durée;
+            StartSession = _appointmentItem.Start;
+            Duration = _appointmentItem.Durée;
             _sessionId = _appointmentItem.SessionId;
 
             await Task.WhenAll(t1, t2, t3);
 
-            Places = _appointmentItem.Places;
+            Seats = _appointmentItem.Places;
         }
 
         private async Task InitFormations(Guid? selectedFormationId)
         {
-            var formationsTask = await Task.Run(() => _trainingQueries.GetAll().Select(a => new FormationItem(a)));
-            Formations = new ObservableCollection<FormationItem>(formationsTask);
-            SelectedFormation = Formations.FirstOrDefault(a => a.Id == selectedFormationId);
+            var formationsTask = await Task.Run(() => _trainingQueries.GetAll().Select(a => new TrainingItem(a)));
+            Trainings = new ObservableCollection<TrainingItem>(formationsTask);
+            SelectedTraining = Trainings.FirstOrDefault(a => a.Id == selectedFormationId);
         }
 
-        private async Task InitFormateurs(Guid? selectedFormateurId)
+        private async Task InitTrainings(Guid? selectedFormateurId)
         {
-            var formateursTask = await Task.Run(() => _trainerQueries.GetAll().Select(a => new FormateurItem(a)));
-            Formateurs = new ObservableCollection<FormateurItem>(formateursTask);
-            SelectedFormateur = Formateurs.FirstOrDefault(a => a.Id == selectedFormateurId);
+            var formateursTask = await Task.Run(() => _trainerQueries.GetAll().Select(a => new TrainerItem(a)));
+            Trainers = new ObservableCollection<TrainerItem>(formateursTask);
+            SelectedTrainer = Trainers.FirstOrDefault(a => a.Id == selectedFormateurId);
         }
 
         private async Task InitLieux(Guid? selectedLieuId)
         {
-            var lieuxTask = await Task.Run(() => _locationQueries.GetAll().Select(a => new LieuItem(a)));
-            Lieux = new ObservableCollection<LieuItem>(lieuxTask);
-            SelectedLieu = Lieux.FirstOrDefault(a => a.Id == selectedLieuId);
+            var lieuxTask = await Task.Run(() => _locationQueries.GetAll().Select(a => new Location(a)));
+            Locations = new ObservableCollection<Location>(lieuxTask);
+            SelectedLocation = Locations.FirstOrDefault(a => a.Id == selectedLieuId);
         }
     }
    
-    public class FormateurItem
+    public class TrainerItem
     {
         private readonly ITrainerResult _result;
 
-        public FormateurItem(ITrainerResult result)
+        public TrainerItem(ITrainerResult result)
         {
             _result = result;
         }
@@ -264,17 +263,17 @@ namespace GestionFormation.App.Views.Sessions
         }
     }
 
-    public class FormationItem
+    public class TrainingItem
     {
         private readonly ITrainingResult _result;
 
-        public FormationItem(ITrainingResult result)
+        public TrainingItem(ITrainingResult result)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
         }
 
         public Guid Id => _result.Id;
-        public int Places => _result.Seats;
+        public int Seats => _result.Seats;
 
         public override string ToString()
         {
@@ -282,17 +281,17 @@ namespace GestionFormation.App.Views.Sessions
         }
     }
 
-    public class LieuItem
+    public class Location
     {
         private readonly ILocationResult _result;
 
-        public LieuItem(ILocationResult result)
+        public Location(ILocationResult result)
         {
             _result = result ?? throw new ArgumentNullException(nameof(result));
         }
 
         public Guid Id => _result.LocationId;
-        public int Places => _result.Seats;
+        public int Seats => _result.Seats;
 
         public override string ToString()
         {

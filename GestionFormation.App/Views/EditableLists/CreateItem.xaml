@@ -6,6 +6,7 @@
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
         xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
         x:Class="GestionFormation.App.Views.EditableLists.CreateItem"
         mc:Ignorable="d"
         Title="{Binding Path=Title}" Height="300" Width="500">
@@ -23,7 +24,7 @@
         <dxlc:DataLayoutControl Grid.Row="0" CurrentItem="{Binding Path=Item}" AutoGeneratingItem="DataLayoutControl_OnAutoGeneratingItem">
             <dxlc:DataLayoutControl.Resources>
                 <DataTemplate x:Key="ColorEditor">
-                    <TextBlock Background="Red"></TextBlock>
+                    <dxe:PopupColorEdit Color="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:PopupColorEdit>
                 </DataTemplate>
             </dxlc:DataLayoutControl.Resources>
         </dxlc:DataLayoutControl>

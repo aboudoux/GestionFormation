@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using GestionFormation.App.Views.Places;
+using GestionFormation.App.Views.Seats;
 using GestionFormation.CoreDomain.Companies.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
@@ -10,12 +10,12 @@ namespace GestionFormation.App.Views.EditableLists
     public class CreateContactWindowVm : CreateItemVm
     {
         private readonly ICompanyQueries _companyQueries;
-        private string _nom;
-        private string _prenom;
+        private string _lastname;
+        private string _firstname;
         private string _email;
         private string _telephone;
-        private ObservableCollection<Item> _societes;
-        private Item _selectedSociete;
+        private ObservableCollection<Item> _companies;
+        private Item _selectedCompanie;
 
         public CreateContactWindowVm(string title, object item, ICompanyQueries companyQueries) : base(title, item)
         {
@@ -24,20 +24,20 @@ namespace GestionFormation.App.Views.EditableLists
 
         public override async Task Init()
         {
-            Societes = new ObservableCollection<Item>(await Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item(){ Id = a.CompanyId, Label = a.Name})));
+            Companies = new ObservableCollection<Item>(await Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item(){ Id = a.CompanyId, Label = a.Name})));
             _companyQueries.GetAll();
         }
 
-        public string Nom
+        public string Lastname
         {
-            get => _nom;
-            set { Set(() => Nom, ref _nom, value); }
+            get => _lastname;
+            set { Set(() => Lastname, ref _lastname, value); }
         }
 
-        public string Prenom
+        public string Firstname
         {
-            get => _prenom;
-            set { Set(()=>Prenom, ref _prenom, value); }
+            get => _firstname;
+            set { Set(()=>Firstname, ref _firstname, value); }
         }
 
         public string Email
@@ -52,30 +52,30 @@ namespace GestionFormation.App.Views.EditableLists
             set { Set(()=>Telephone, ref _telephone, value); }
         }
 
-        public ObservableCollection<Item> Societes
+        public ObservableCollection<Item> Companies
         {
-            get => _societes;
-            set { Set(()=>Societes, ref _societes, value); }
+            get => _companies;
+            set { Set(()=>Companies, ref _companies, value); }
         }
 
-        public Item SelectedSociete
+        public Item SelectedCompanie
         {
-            get => _selectedSociete;
-            set { Set(()=>SelectedSociete, ref _selectedSociete, value); }
+            get => _selectedCompanie;
+            set { Set(()=>SelectedCompanie, ref _selectedCompanie, value); }
         }
 
         protected override async Task ExecuteValiderAsync()
         {
-            if (SelectedSociete == null)
+            if (SelectedCompanie == null)
             {
                 MessageBox.Show("Veuillez sélectionner une société", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            Item = new EditableContact(SelectedSociete.Id)
+            Item = new EditableContact(SelectedCompanie.Id)
             { 
-                Nom = Nom,
-                Prenom = Prenom,
+                Lastname = Lastname,
+                Firstname = Firstname,
                 Email = Email,
                 Telephone = Telephone,                
             };

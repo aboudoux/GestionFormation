@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
@@ -24,12 +25,12 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task CreateAsync(EditableContact item)
         {
-            await Task.Run(() => ApplicationService.Command<CreateContact>().Execute(item.GetSocieteId(), item.Nom, item.Prenom, item.Email, item.Telephone) );
+            await Task.Run(() => ApplicationService.Command<CreateContact>().Execute(item.GetSocieteId(), item.Lastname, item.Firstname, item.Email, item.Telephone) );
         }
 
         protected override async Task UpdateAsync(EditableContact item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateContact>().Execute(item.GetId(), item.GetSocieteId(), item.Nom, item.Prenom, item.Email, item.Telephone));
+            await Task.Run(() => ApplicationService.Command<UpdateContact>().Execute(item.GetId(), item.GetSocieteId(), item.Lastname, item.Firstname, item.Email, item.Telephone));
         }
 
         protected override async Task DeleteAsync(EditableContact item)
@@ -56,16 +57,20 @@ namespace GestionFormation.App.Views.EditableLists
 
         public EditableContact(IContactResult result) : base(result.Id)
         {
-            Nom = result.Lastname;
-            Prenom = result.Firstname;
+            Lastname = result.Lastname;
+            Firstname = result.Firstname;
             Email = result.Email;
             Telephone = result.Telephone;
             _societeId = result.CompanyId;
         }
 
-        public string Nom { get; set; }
-        public string Prenom { get; set; }
+        [DisplayName("Nom")]
+        public string Lastname { get; set; }
+        [DisplayName("Prenom")]
+        public string Firstname { get; set; }
+        [DisplayName("Email")]
         public string Email { get; set; }
+        [DisplayName("Téléphone")]
         public string Telephone { get; set; }
         public Guid GetSocieteId() => _societeId;
     }

@@ -6,11 +6,11 @@ using System.Windows;
 using DevExpress.Xpf.Scheduling;
 using GalaSoft.MvvmLight;
 using GestionFormation.App.Core;
-using GestionFormation.App.Views.Places;
+using GestionFormation.App.Views.Seats;
 using GestionFormation.Applications.Sessions;
 using GestionFormation.CoreDomain.Sessions.Queries;
 using GestionFormation.CoreDomain.Users;
-using ColorHelper = GestionFormation.App.Views.EditableLists.Formations.ColorHelper;
+using ColorHelper = GestionFormation.App.Views.EditableLists.ColorHelper;
 
 namespace GestionFormation.App.Views.Sessions
 {
@@ -135,21 +135,21 @@ namespace GestionFormation.App.Views.Sessions
         private async Task ExecutePlacesAsync()
         {
             var selectedSession = SelectedSessions.First();
-            await _applicationService.OpenPopup<PlacesWindowVm>(selectedSession.Id, selectedSession.Places);
+            await _applicationService.OpenPopup<SeatsWindowVm>(selectedSession.Id, selectedSession.Places);
         }       
         
         public RelayCommandAsync OpenDeroulementCommand { get; }
         private async Task ExecuteOpenDeroulementAsync()
         {
             var selectedSession = SelectedSessions.First();
-            await _applicationService.OpenPopup<DeroulementWindowVm>(selectedSession.Id);
+            await _applicationService.OpenPopup<TrainingFlowWindowVm>(selectedSession.Id);
         }
 
         public RelayCommandAsync OpenClotureCommand { get; }
         private async Task ExecuteOpenClotureAsync()
         {
             var selectedSession = SelectedSessions.First();
-            await _applicationService.OpenPopup<ClotureWindowVm>(selectedSession.Id);
+            await _applicationService.OpenPopup<CloseSessionWindowVm>(selectedSession.Id);
         }
     }
 

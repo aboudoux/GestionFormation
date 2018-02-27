@@ -6,13 +6,13 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views;
+using GestionFormation.App.Views.Admins.History;
+using GestionFormation.App.Views.Admins.Replayers;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.App.Views.EditableLists.Formations;
 using GestionFormation.App.Views.EditableLists.Utilisateurs;
-using GestionFormation.App.Views.Historiques;
 using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
-using GestionFormation.App.Views.Places;
+using GestionFormation.App.Views.Seats;
 using GestionFormation.App.Views.Sessions;
 using GestionFormation.Applications.Notifications;
 using GestionFormation.CoreDomain.Notifications.Queries;
@@ -24,29 +24,29 @@ namespace GestionFormation.App
         private readonly IApplicationService _applicationService;
         private readonly INotificationQueries _notificationQueries;
         private string _title;
-        private ObservableCollection<RappelItem> _rappels;
-        private RappelItem _selectedRappel;
+        private ObservableCollection<NotificationItem> _notifications;
+        private NotificationItem _selectedNotification;
 
         public MainWindowsVm(IApplicationService applicationService, INotificationQueries notificationQueries)
         {
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
             _notificationQueries = notificationQueries;
 
-            OpenFormationList = new RelayCommandAsync(async ()=> await OpenDocument<FormationListVm>());
+            OpenTrainingList = new RelayCommandAsync(async ()=> await OpenDocument<TrainingListVm>());
             OpenScheduler = new RelayCommandAsync(async () => await OpenDocument<SessionSchedulerVm>());
-            OpenFormateurList = new RelayCommandAsync(async () => await OpenDocument<FormateurListVm>());
-            OpenLieuList = new RelayCommandAsync(async () => await OpenDocument<LieuListVm>());
-            OpenStagiaireList = new RelayCommandAsync(async () => await OpenDocument<StagiaireListVm>());
-            OpenSocieteList = new RelayCommandAsync(async () => await OpenDocument<SocieteListVm>());
+            OpenTrainerList = new RelayCommandAsync(async () => await OpenDocument<TrainerListVm>());
+            OpenLocationList = new RelayCommandAsync(async () => await OpenDocument<LocationListVm>());
+            OpenStudentList = new RelayCommandAsync(async () => await OpenDocument<StudentListVm>());
+            OpenCompanyList = new RelayCommandAsync(async () => await OpenDocument<CompanyListVm>());
             OpenContactList = new RelayCommandAsync(async () => await OpenDocument<ContactListVm>());
-            OpenUtilisateurList = new RelayCommandAsync(async () => await OpenDocument<UtilisateurListVm>());
+            OpenUserList = new RelayCommandAsync(async () => await OpenDocument<UtilisateurListVm>());
             OpenEventReplayer = new RelayCommandAsync(async ()=> await _applicationService.OpenPopup<EventReplayerWindowVm>());
             OpenLoginWindow = new RelayCommandAsync(ExecuteOpenLoginAsync);
-            RefreshRappels = new RelayCommandAsync(ExecuteRefreshRappelAsync);
-            OpenRappelCommand = new RelayCommandAsync(ExecuteOpenRappelAsync);
-            OpenHistorique = new RelayCommandAsync(async()=>await OpenDocument<HistoriqueWindowVm>());
-            OpenPlaceList = new RelayCommandAsync(async ()=> await OpenDocument<PlacesListerVm>());
-            DeleteSelectedNotification = new RelayCommandAsync(ExecuteDeleteSelectedNotificationAsync, ()=> SelectedRappel != null);
+            RefreshNotifications = new RelayCommandAsync(ExecuteRefreshNotificationsAsync);
+            OpenNotificationCommand = new RelayCommandAsync(ExecuteOpenNotificationAsync);
+            OpenHistory = new RelayCommandAsync(async()=>await OpenDocument<HistoryWindowVm>());
+            OpenSeatList = new RelayCommandAsync(async ()=> await OpenDocument<SeatsListerVm>());
+            DeleteSelectedNotification = new RelayCommandAsync(ExecuteDeleteSelectedNotificationAsync, ()=> SelectedNotification != null);
             
             Title = "Gestion formation - non connecté";
             Security = new Security(applicationService);
@@ -60,17 +60,17 @@ namespace GestionFormation.App
             set { Set(()=>Title, ref _title, value); }
         }
 
-        public RelayCommandAsync OpenPlaceList { get; }
-        public RelayCommandAsync OpenFormationList { get; }
+        public RelayCommandAsync OpenSeatList { get; }
+        public RelayCommandAsync OpenTrainingList { get; }
         public RelayCommandAsync OpenScheduler { get; }
-        public RelayCommandAsync OpenFormateurList { get; }
-        public RelayCommandAsync OpenLieuList { get; }
-        public RelayCommandAsync OpenStagiaireList { get; }
-        public RelayCommandAsync OpenSocieteList { get; }
+        public RelayCommandAsync OpenTrainerList { get; }
+        public RelayCommandAsync OpenLocationList { get; }
+        public RelayCommandAsync OpenStudentList { get; }
+        public RelayCommandAsync OpenCompanyList { get; }
         public RelayCommandAsync OpenContactList { get; }
-        public RelayCommandAsync OpenUtilisateurList { get; }
+        public RelayCommandAsync OpenUserList { get; }
         public RelayCommandAsync OpenEventReplayer { get; }
-        public RelayCommandAsync OpenHistorique { get; }
+        public RelayCommandAsync OpenHistory { get; }
         public RelayCommandAsync OpenLoginWindow { get; }
         private async Task ExecuteOpenLoginAsync()
         {
@@ -81,44 +81,44 @@ namespace GestionFormation.App
             Title = "Gestion formation - " + _applicationService.LoggedUser;
             RaisePropertyChanged(()=>Security);
 
-            var t1 = RefreshRappels.ExecuteAsync();
+            var t1 = RefreshNotifications.ExecuteAsync();
             var t2 = OpenScheduler.ExecuteAsync();
 
             await Task.WhenAll(t1, t2);
         }
 
-        public RelayCommandAsync RefreshRappels { get; }
-        private async Task ExecuteRefreshRappelAsync()
+        public RelayCommandAsync RefreshNotifications { get; }
+        private async Task ExecuteRefreshNotificationsAsync()
         {
-            var items = await Task.Run(()=>_notificationQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new RappelItem(a)));
-            Rappels = new ObservableCollection<RappelItem>(items);
+            var items = await Task.Run(()=>_notificationQueries.GetAll(_applicationService.LoggedUser.Role).Select(a=>new NotificationItem(a)));
+            Notifications = new ObservableCollection<NotificationItem>(items);
         }
 
-        public ObservableCollection<RappelItem> Rappels
+        public ObservableCollection<NotificationItem> Notifications
         {
-            get => _rappels;
-            set { Set(()=>Rappels, ref _rappels, value); }
+            get => _notifications;
+            set { Set(()=>Notifications, ref _notifications, value); }
         }
 
-        public RappelItem SelectedRappel
+        public NotificationItem SelectedNotification
         {
-            get => _selectedRappel;
+            get => _selectedNotification;
             set
             {
-                Set(()=>SelectedRappel, ref _selectedRappel, value);
+                Set(()=>SelectedNotification, ref _selectedNotification, value);
                 DeleteSelectedNotification.RaiseCanExecuteChanged();
             }
         }
 
-        public RelayCommandAsync OpenRappelCommand { get; }
-        private async Task ExecuteOpenRappelAsync()
+        public RelayCommandAsync OpenNotificationCommand { get; }
+        private async Task ExecuteOpenNotificationAsync()
         {
-            if(SelectedRappel.ConventionId.HasValue)
-                await _applicationService.OpenPopup<GestionConventionWindowVm>(SelectedRappel.ConventionId.Value);
+            if(SelectedNotification.AgreementId.HasValue)
+                await _applicationService.OpenPopup<ManageAgreementWindowVm>(SelectedNotification.AgreementId.Value);
             else
-                await _applicationService.OpenPopup<PlacesWindowVm>(SelectedRappel.SessionId, 10);
+                await _applicationService.OpenPopup<SeatsWindowVm>(SelectedNotification.SessionId, 10);
 
-            await RefreshRappels.ExecuteAsync();
+            await RefreshNotifications.ExecuteAsync();
         }
 
         public RelayCommandAsync DeleteSelectedNotification { get; }
@@ -127,8 +127,8 @@ namespace GestionFormation.App
             if( MessageBoxResult.No == MessageBox.Show("Vous êtes sur le point de retirer cette notification.\r\nEtes vous sûr de vouloir continuer ?", "Suppression", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No) )
                 return;
 
-            await Task.Run(()=>_applicationService.Command<RemoveNotification>().Execute(SelectedRappel.SessionId, SelectedRappel.NotificationId));
-            await RefreshRappels.ExecuteAsync();
+            await Task.Run(()=>_applicationService.Command<RemoveNotification>().Execute(SelectedNotification.SessionId, SelectedNotification.NotificationId));
+            await RefreshNotifications.ExecuteAsync();
         }
 
         private async Task OpenDocument<TVm>() 
@@ -139,20 +139,20 @@ namespace GestionFormation.App
         }
     }
 
-    public class RappelItem
+    public class NotificationItem
     {
         private readonly string _label;
 
-        public RappelItem(INotificationResult result)
+        public NotificationItem(INotificationResult result)
         {
             _label = result.Label;
             SessionId = result.SessionId;
-            ConventionId = result.AgreementId;
+            AgreementId = result.AgreementId;
             NotificationId = result.AggregateId;
         }
 
         public Guid SessionId { get; }
-        public Guid? ConventionId { get; }
+        public Guid? AgreementId { get; }
         public Guid NotificationId { get; }
 
         public override string ToString()

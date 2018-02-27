@@ -14,10 +14,10 @@
         <DockPanel Grid.Row="0" >
         <dxlc:LayoutControl Orientation="Vertical">
             <dxlc:LayoutItem Label="Nom : " >
-                <TextBox Text="{Binding Path=Nom}"></TextBox>
+                    <TextBox Text="{Binding Path=Lastname}"></TextBox>
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Prénom : " >
-                    <TextBox Text="{Binding Path=Prenom}"></TextBox>
+                    <TextBox Text="{Binding Path=Firstname}"></TextBox>
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Email : " >
                     <TextBox Text="{Binding Path=Email}"></TextBox>
@@ -26,7 +26,7 @@
                     <TextBox Text="{Binding Path=Telephone}"></TextBox>
             </dxlc:LayoutItem>
             <dxlc:LayoutItem Label="Société : " >
-                    <dxe:ComboBoxEdit ItemsSource="{Binding Path=Societes}" SelectedItem="{Binding Path=SelectedSociete}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains" />
+                    <dxe:ComboBoxEdit ItemsSource="{Binding Path=Companies}" SelectedItem="{Binding Path=SelectedCompanie}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains" />
             </dxlc:LayoutItem>
             </dxlc:LayoutControl>
             
