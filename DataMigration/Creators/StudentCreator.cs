@@ -11,12 +11,12 @@ namespace DataMigration.Creators
         public void Create(string name)
         {
             if(string.IsNullOrWhiteSpace(name)) return;
-            if(Mapper.Exists(name)) return;
-                      
-            var fullname = new NameResolver(name);
+            var fullname = new Name(name);
 
+            if (Mapper.Exists(fullname.ToString())) return;
+                                  
             var student = App.Command<CreateStudent>().Execute(fullname.Lastname, fullname.Firstname);
-            Mapper.Add(name, student.AggregateId);
+            Mapper.Add(fullname.ToString(), student.AggregateId);
         }
     }
 }

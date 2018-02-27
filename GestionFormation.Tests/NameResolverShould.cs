@@ -20,8 +20,8 @@ namespace GestionFormation.Tests
         [DataRow("DURADE Fabien", "Fabien", "DURADE")]
         [DataRow("ROMEO VALENTE", "ROMEO", "VALENTE")]
         [DataRow("MARATZU Didier", "Didier", "MARATZU")]
-        [DataRow("BASTIE", "M.", "BASTIE")]                
-        [DataRow("BOISSET", "M.", "BOISSET")]
+        [DataRow("BASTIE", "NC", "BASTIE")]                
+        [DataRow("BOISSET", "NC", "BOISSET")]
         [DataRow("EL BACHAOUI Mohammed", "Mohammed", "EL BACHAOUI")]
         [DataRow("DI RIENZO Lydie", "Lydie", "DI RIENZO")]
         [DataRow("Christophe Rabaron", "Christophe", "Rabaron")]
@@ -30,9 +30,20 @@ namespace GestionFormation.Tests
         [DataRow("LILIAN LACROUTE", "LILIAN", "LACROUTE")]
         [DataRow("LAURENT GEOFFROY", "LAURENT", "GEOFFROY")]
         [DataRow("Mohammed EL BACHAOUI", "Mohammed", "EL BACHAOUI")]
+        [DataRow("F.Cordier", "F.", "Cordier")]
+        [DataRow("A.Coulon", "A.", "Coulon")]
+        [DataRow("Ortino", "NC", "ORTINO")]
+        [DataRow("Sébastien BARRERO / ABST", "Sébastien", "BARRERO")]
+        [DataRow("Georges GONAN / ABST", "Georges", "GONAN")]
+        [DataRow("Jordan DE LAULANIE DE SAINTE CROIX", "Jordan", "DE LAULANIE DE SAINTE CROIX")]
+        [DataRow("M. TERRIER Mathieu", "Mathieu", "TERRIER")]
+        [DataRow("M. Pascal ANDUZE", "Pascal", "ANDUZE")]
+        [DataRow("EN ATTENTE NOM", "NC", "EN ATTENTE NOM")]
+        [DataRow("Said El hich", "Said", "El hich")]
+        [DataRow("Jean Yves  Badole", "Jean", "Yves Badole")]
         public void TestNameResolution(string name, string expectedFirstname, string expectedLastname)
         {
-            var resolvedName = new NameResolver(name);
+            var resolvedName = new Name(name);
 
             resolvedName.Firstname.Should().Be(expectedFirstname);
             resolvedName.Lastname.Should().Be(expectedLastname);

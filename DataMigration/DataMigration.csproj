@@ -83,7 +83,7 @@
     <Compile Include="Creators\LocationCreator.cs" />
     <Compile Include="Creators\StudentCreator.cs" />
     <Compile Include="Creators\TrainerCreator.cs" />
-    <Compile Include="NameResolver.cs" />
+    <Compile Include="Name.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MsAccessReader.cs" />
     <Compile Include="Program.cs" />

@@ -13,29 +13,13 @@ namespace DataMigration.Creators
             if(string.IsNullOrWhiteSpace(trainerName))
                 return;
 
-            if(Mapper.Exists(trainerName))
-                return;
+            var tn = new Name(trainerName);
 
-            var nom = string.Empty;
-            var prenom = string.Empty;
+            if (Mapper.Exists(tn.ToString()))
+                return;            
 
-            var splitterName = trainerName.Split('.');
-            if (splitterName.Length != 2)
-                splitterName = trainerName.Split(' ');
-
-            if (splitterName.Length == 2)
-            {
-                prenom = splitterName[0];
-                nom = splitterName[1];
-            }
-            else
-            {
-                nom = trainerName;
-                prenom = "NC";
-            }
-
-            var trainer = App.Command<CreateTrainer>().Execute(nom, prenom, string.Empty);
-            Mapper.Add(trainerName, trainer.AggregateId);
+            var trainer = App.Command<CreateTrainer>().Execute(tn.Lastname, tn.Firstname, string.Empty);
+            Mapper.Add(tn.ToString(), trainer.AggregateId);
         }
     }
 }

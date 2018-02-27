@@ -15,6 +15,7 @@ namespace DataMigration
             var trainer = new TrainerCreator(app);
             var company = new CompanyCreator(app);
             var student = new StudentCreator(app);
+            var contact = new ContactCreator(app, company);
 
             var reader = new MsAccessReader("d:\\formation\\Gestion Formation_2014.mdb");
             var lineCount = 1;
@@ -27,9 +28,10 @@ namespace DataMigration
                 trainer.Create(row["Formateur"].ToString());
                 company.Create(row["Societe"].ToString(), row["Adresse"].ToString(), row["CP"].ToString(), row["Ville"].ToString());
                 student.Create(row["Stagiaire"].ToString());
+                contact.Create(row["Contact"].ToString(), row["Email"].ToString(), row["Telephone"].ToString(), row["Societe"].ToString());
             }
 
-            Console.WriteLine("Import terminé");
+            Console.WriteLine("\r\nImport terminé !");
             Console.ReadKey();
         }
     }

@@ -1,4 +1,5 @@
-﻿using GestionFormation.Applications.Companies;
+﻿using System;
+using GestionFormation.Applications.Companies;
 
 namespace DataMigration.Creators
 {
@@ -17,6 +18,11 @@ namespace DataMigration.Creators
 
             var company = App.Command<CreateCompany>().Execute(name, address, zipCode, city);
             Mapper.Add(name, company.AggregateId);
+        }
+
+        public Guid GetCompanyId(string name)
+        {
+            return Mapper.GetId(name);
         }
     }
 }
