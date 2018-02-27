@@ -188,7 +188,7 @@ namespace GestionFormation.App.Views.Sessions
             LieuId = result.LocationId;
             FormationId = result.TrainingId;
 
-            Couleur = ColorHelper.FromInt(result.Color);
+            Color = ColorHelper.FromInt(result.Color);
         }
 
         public Guid Id { get; }
@@ -200,6 +200,6 @@ namespace GestionFormation.App.Views.Sessions
         public Guid? FormateurId { get; }
         public Guid? LieuId { get; }    
         public Guid FormationId { get; }
-        public System.Windows.Media.Color Couleur { get; }
+        public System.Windows.Media.Color Color { get; }
     }
 }

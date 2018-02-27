@@ -2,11 +2,10 @@
 using System.Reflection;
 using DevExpress.Xpf.Docking;
 using GalaSoft.MvvmLight.Messaging;
-using GestionFormation.App.Views;
 using GestionFormation.App.Views.Admins.History;
 using GestionFormation.App.Views.Admins.Replayers;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.App.Views.EditableLists.Utilisateurs;
+using GestionFormation.App.Views.EditableLists.Users;
 using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Seats;
@@ -14,8 +13,8 @@ using GestionFormation.App.Views.Sessions;
 using GestionFormation.EventStore;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
-using ChangePasswordWindow = GestionFormation.App.Views.EditableLists.Utilisateurs.ChangePasswordWindow;
-
+using ChangePasswordWindow = GestionFormation.App.Views.EditableLists.Users.ChangePasswordWindow;
+using ChangeRoleWindow = GestionFormation.App.Views.EditableLists.Users.ChangeRoleWindow;
 using CreateItem = GestionFormation.App.Views.EditableLists.CreateItem;
 using CreateSessionWindow = GestionFormation.App.Views.Sessions.CreateSessionWindow;
 using EditableList = GestionFormation.App.Views.EditableLists.EditableList;
@@ -23,7 +22,7 @@ using EventReplayerWindow = GestionFormation.App.Views.Admins.Replayers.EventRep
 using HistoryWindow = GestionFormation.App.Views.Admins.History.HistoryWindow;
 using LoginWindow = GestionFormation.App.Views.Logins.LoginWindow;
 using SessionScheduler = GestionFormation.App.Views.Sessions.SessionScheduler;
-using UtilisateurList = GestionFormation.App.Views.EditableLists.Utilisateurs.UtilisateurList;
+using UserList = GestionFormation.App.Views.EditableLists.Users.UserList;
 
 namespace GestionFormation.App.Core
 {
@@ -51,7 +50,7 @@ namespace GestionFormation.App.Core
                 .Element<CreateAgreementWindowVm, CreateAgreementWindow>()                
                 .Element<ManageAgreementWindowVm, ManageAgreementWindow>()                
                 .Element<EventReplayerWindowVm, EventReplayerWindow>()                
-                .Element<UtilisateurListVm, UtilisateurList>()
+                .Element<UserListVm, UserList>()
                 .Element<ChangePasswordWindowVm, ChangePasswordWindow>()
                 .Element<LoginWindowsVm, LoginWindow>()
                 .Element<ChangeRoleWindowVm, ChangeRoleWindow>()

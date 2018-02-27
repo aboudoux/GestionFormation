@@ -6,12 +6,12 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
-    xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
     xmlns:conventions="clr-namespace:GestionFormation.CoreDomain.Agreements;assembly=GestionFormation"
+    xmlns:users="clr-namespace:GestionFormation.App.Views.EditableLists.Users"
     Title="Création d'une convention" Height="400" Width="483.112">
     <dx:DXWindow.Resources>
         <ResourceDictionary>
-            <utilisateurs:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
+            <users:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
         </ResourceDictionary>
     </dx:DXWindow.Resources>
     <Grid>

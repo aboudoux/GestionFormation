@@ -20,7 +20,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableContact>> LoadAsync()
         {
-            return await Task.Run(() => _contactQueries.GetAll().Select(a => new EditableContact(a)).ToList());
+            return await Task.Run(() => _contactQueries.GetAll().Select(a => new EditableContact(a, this)).ToList());
         }
 
         protected override async Task CreateAsync(EditableContact item)
@@ -55,7 +55,7 @@ namespace GestionFormation.App.Views.EditableLists
             _societeId = societeId;
         }
 
-        public EditableContact(IContactResult result) : base(result.Id)
+        public EditableContact(IContactResult result, ContactListVm parent) : base(result.Id, parent)
         {
             Lastname = result.Lastname;
             Firstname = result.Firstname;
@@ -72,6 +72,6 @@ namespace GestionFormation.App.Views.EditableLists
         public string Email { get; set; }
         [DisplayName("Téléphone")]
         public string Telephone { get; set; }
-        public Guid GetSocieteId() => _societeId;
+        public Guid GetSocieteId() => _societeId;      
     }
 }

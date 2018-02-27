@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace GestionFormation.App.Views.EditableLists.Utilisateurs
+namespace GestionFormation.App.Views.EditableLists.Users
 {
     public class  BoolToEnumConverter : IValueConverter
     {

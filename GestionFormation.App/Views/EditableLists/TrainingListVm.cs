@@ -10,7 +10,7 @@ using GestionFormation.CoreDomain.Trainings.Queries;
 
 namespace GestionFormation.App.Views.EditableLists
 {
-    public class TrainingListVm : EditableListVm<EditableTraining >
+    public class TrainingListVm : EditableListVm<EditableTraining>
     {
         private readonly ITrainingQueries _queries;
 
@@ -23,7 +23,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableTraining>> LoadAsync()
         {
-            return await Task.Run(() => _queries.GetAll().Select(a=>new EditableTraining(a)).ToList());
+            return await Task.Run(() => _queries.GetAll().Select(a=>new EditableTraining(a, this)).ToList());
         }
 
         protected override async Task CreateAsync(EditableTraining item)
@@ -55,7 +55,7 @@ namespace GestionFormation.App.Views.EditableLists
             
         }
 
-        public EditableTraining(ITrainingResult result) : base(result.Id)
+        public EditableTraining(ITrainingResult result, TrainingListVm parent) : base(result.Id, parent)
         {
             Name = result.Name;
             Seats = result.Seats;
@@ -80,6 +80,6 @@ namespace GestionFormation.App.Views.EditableLists
                     _color = value;
                 }
             }
-        }
+        }       
     }
 }

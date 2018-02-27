@@ -2,7 +2,7 @@
 using System.Windows;
 using GestionFormation.App.Core;
 
-namespace GestionFormation.App.Views.EditableLists.Utilisateurs
+namespace GestionFormation.App.Views.EditableLists.Users
 {
     public class ChangePasswordWindowVm : PopupWindowVm
     {

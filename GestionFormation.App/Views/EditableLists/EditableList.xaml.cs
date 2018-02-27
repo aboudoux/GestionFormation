@@ -22,5 +22,12 @@ namespace GestionFormation.App.Views.EditableLists
                 e.Column.EditFormTemplate = MyGrid.Resources["ColorTemplate"] as DataTemplate;
             }
         }
+
+        private async void TableView_OnEditFormShowing(object sender, EditFormShowingEventArgs e)
+        {
+            var vm = ((sender as TableView).GetRowElementByRowHandle(e.RowHandle).DataContext as RowData).Row as EditableItem;
+            e.Allow = false;
+            vm.Edit();            
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,35 +10,35 @@ using GestionFormation.Applications.Users;
 using GestionFormation.CoreDomain.Users;
 using GestionFormation.CoreDomain.Users.Queries;
 
-namespace GestionFormation.App.Views.EditableLists.Utilisateurs
+namespace GestionFormation.App.Views.EditableLists.Users
 {
-    public class UtilisateurListVm : EditableListVm<EditableUtilisateurCreate, EditableUtilisateurUpdate, CreateItemVm>
+    public class UserListVm : EditableListVm<EditableUserCreate, EditableUserUpdate, CreateItemVm>
     {
         private readonly IUserQueries _userQueries;
 
-        public UtilisateurListVm(IApplicationService applicationService, IUserQueries userQueries) : base(applicationService)
+        public UserListVm(IApplicationService applicationService, IUserQueries userQueries) : base(applicationService)
         {
             _userQueries = userQueries ?? throw new ArgumentNullException(nameof(userQueries));
             ChangePasswordCommand = new RelayCommandAsync(ExecuteChangePasswordAsync, () => SelectedItem != null);
             ChangeRoleCommand = new RelayCommandAsync(ExecuteChangeRoleAsync, () => SelectedItem != null);
         }
         
-        protected override async Task<IReadOnlyList<EditableUtilisateurUpdate>> LoadAsync()
+        protected override async Task<IReadOnlyList<EditableUserUpdate>> LoadAsync()
         {
-            return await Task.Run(()=> _userQueries.GetAll().Select(a=>new EditableUtilisateurUpdate(a)).ToList());
+            return await Task.Run(()=> _userQueries.GetAll().Select(a=>new EditableUserUpdate(a, this)).ToList());
         }
 
-        protected override async Task CreateAsync(EditableUtilisateurCreate item)
+        protected override async Task CreateAsync(EditableUserCreate item)
         {
-            await Task.Run(()=>ApplicationService.Command<CreateUser>().Execute(item.Login, item.Password, item.Nom, item.Prenom, item.Email, UserRole.Guest));
+            await Task.Run(()=>ApplicationService.Command<CreateUser>().Execute(item.Login, item.Password, item.Lastname, item.Firstname, item.Email, UserRole.Guest));
         }
 
-        protected override async Task UpdateAsync(EditableUtilisateurUpdate item)
+        protected override async Task UpdateAsync(EditableUserUpdate item)
         {
             await Task.Run(() => ApplicationService.Command<UpdateUser>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email, item.IsEnabled));
         }
 
-        protected override async Task DeleteAsync(EditableUtilisateurUpdate item)
+        protected override async Task DeleteAsync(EditableUserUpdate item)
         {
             await Task.Run(()=>ApplicationService.Command<DeleteUser>().Execute(item.GetId()));
         }
@@ -78,27 +79,31 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
         public override string Title => "Liste des utilisateurs";
     }
 
-    public class EditableUtilisateurCreate
+    public class EditableUserCreate
     {
+        [DisplayName("Login")]
         public string Login { get; set; }
-        public string Nom { get; set; }
-        public string Prenom { get; set; }
+        [DisplayName("Nom")]
+        public string Lastname { get; set; }
+        [DisplayName("Prénom")]
+        public string Firstname { get; set; }
         [DataType(DataType.Password)]
-        public string Password { get; set; }     
-        public string Email { get; set; }
-                
+        [DisplayName("Mot de passe")]
+        public string Password { get; set; }
+        [DisplayName("Email")]
+        public string Email { get; set; }                
     }
 
-    public class EditableUtilisateurUpdate : EditableItem
+    public class EditableUserUpdate : EditableItem
     {
         private UserRole _role;
 
-        public EditableUtilisateurUpdate()
+        public EditableUserUpdate()
         {
             
         }
 
-        public EditableUtilisateurUpdate(IUserResult result) : base(result.Id)
+        public EditableUserUpdate(IUserResult result, UserListVm parent) : base(result.Id, parent)
         {
             Login = result.Login;
             Nom = result.Lastname;
@@ -140,6 +145,6 @@ namespace GestionFormation.App.Views.EditableLists.Utilisateurs
         public UserRole GetRole()
         {
             return _role;
-        }
+        }      
     }
 }

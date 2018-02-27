@@ -23,7 +23,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableCompany>> LoadAsync()
         {
-            return await Task.Run(() => _companyQueries.GetAll().Select(a => new EditableCompany(a)).ToList());
+            return await Task.Run(() => _companyQueries.GetAll().Select(a => new EditableCompany(a, this)).ToList());
         }
 
         protected override async Task CreateAsync(EditableCompany item)
@@ -49,7 +49,7 @@ namespace GestionFormation.App.Views.EditableLists
             
         }
 
-        public EditableCompany(ICompanyResult result) : base(result.CompanyId)
+        public EditableCompany(ICompanyResult result, CompanyListVm parent) : base(result.CompanyId, parent)
         {
             Name = result.Name;
             Address = result.Address;
@@ -65,6 +65,6 @@ namespace GestionFormation.App.Views.EditableLists
         [DisplayName("Code postal")]
         public string ZipCode { get; set; }
         [DisplayName("Ville")]
-        public string City { get; set; }
+        public string City { get; set; }        
     }
 }

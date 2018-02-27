@@ -10,6 +10,7 @@
       xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
       xmlns:views="clr-namespace:GestionFormation.App.Views"
       xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+      xmlns:editableLists="clr-namespace:GestionFormation.App.Views.EditableLists"
       mc:Ignorable="d" 
       Caption="{Binding Path=Title}">
     <Grid>
@@ -32,22 +33,22 @@
                          AutoGenerateColumns="AddNew" ShowLoadingPanel="{Binding Path=IsLoading}" 
                          SelectedItem="{Binding Path=SelectedItem}" AllowLiveDataShaping="True" AutoGeneratingColumn="DataControlBase_OnAutoGeneratingColumn">
             <dxg:GridControl.Resources>
-                    <views:templateselector x:Key="templateselector">
-                        <views:templateselector.ColorPickerTemplate >
+                    <editableLists:CustomEditFormCellTemplateSelector x:Key="templateselector">
+                        <editableLists:CustomEditFormCellTemplateSelector.ColorPickerTemplate >
                             <DataTemplate>
-                                <dxe:PopupColorEdit Color="{Binding RowData.Row.Couleur, Mode=OneWay}" IsReadOnly="True" ShowMoreColorsButton="False" ShowNoColorButton="False" ShowEditorButtons="False"></dxe:PopupColorEdit>
+                            <dxe:PopupColorEdit Color="{Binding RowData.Row.Color, Mode=OneWay}" IsReadOnly="True" ShowMoreColorsButton="False" ShowNoColorButton="False" ShowEditorButtons="False"></dxe:PopupColorEdit>
                             </DataTemplate>
-                        </views:templateselector.ColorPickerTemplate>
-                    </views:templateselector>
+                        </editableLists:CustomEditFormCellTemplateSelector.ColorPickerTemplate>
+                    </editableLists:CustomEditFormCellTemplateSelector>
                 <DataTemplate x:Key="ColorTemplate">
 
-                    <dxe:PopupColorEdit Color="{Binding RowData.Source.Row.Couleur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:PopupColorEdit>
+                    <dxe:PopupColorEdit Color="{Binding RowData.Source.Row.Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:PopupColorEdit>
                 </DataTemplate>
             </dxg:GridControl.Resources>
             
             <dxg:GridControl.View>
                 <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False" EditFormShowMode="Inline" EnableImmediatePosting="True"
-                               EditFormPostMode="Immediate" AutoWidth="True" AllowEditing="True" CellTemplateSelector="{StaticResource templateselector}">
+                               EditFormPostMode="Cached" AutoWidth="True" AllowEditing="True" CellTemplateSelector="{StaticResource templateselector}" EditFormShowing="TableView_OnEditFormShowing">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="RowUpdated" Command="{Binding Path=UpdateCommand}"/>
                     </dxmvvm:Interaction.Behaviors>

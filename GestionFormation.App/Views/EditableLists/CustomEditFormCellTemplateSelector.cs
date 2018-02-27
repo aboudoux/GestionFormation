@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Media;
 using DevExpress.Xpf.Grid;
-using DevExpress.Xpf.Grid.GroupRowLayout;
 
-namespace GestionFormation.App.Views
+namespace GestionFormation.App.Views.EditableLists
 {
-    class templateselector:  EditFormCellTemplateSelector
+    class CustomEditFormCellTemplateSelector:  EditFormCellTemplateSelector
     {
         public DataTemplate  ColorPickerTemplate { get; set;}
 

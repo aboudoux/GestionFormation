@@ -8,7 +8,7 @@ using GestionFormation.App.Core;
 
 namespace GestionFormation.App.Views.EditableLists
 {
-    public abstract class EditableListVm<TCreateItem, TUpdateItem, TCreateItemVm> : ViewModelBase, ILoadableVm        
+    public abstract class EditableListVm<TCreateItem, TUpdateItem, TCreateItemVm> : ViewModelBase, ILoadableVm, IUpdatableListVm
      where TCreateItem : new()
     where TCreateItemVm : ViewModelBase, IPopupVm
     {
@@ -84,7 +84,11 @@ namespace GestionFormation.App.Views.EditableLists
         {
             try
             {
-                await UpdateAsync(SelectedItem);
+                var vm = await ApplicationService.OpenPopup<TCreateItemVm>("Modifier un element", SelectedItem);
+                if (vm.IsValidated)
+                {
+                    await UpdateAsync(SelectedItem);
+                }
             }
             catch (Exception e)
             {
@@ -143,5 +147,10 @@ namespace GestionFormation.App.Views.EditableLists
         protected EditableListVm(IApplicationService applicationService) : base(applicationService)
         {
         }
+    }
+
+    public interface IUpdatableListVm
+    {
+        RelayCommandAsync UpdateCommand { get; }
     }
 }

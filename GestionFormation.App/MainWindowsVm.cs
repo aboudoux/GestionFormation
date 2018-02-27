@@ -9,7 +9,7 @@ using GestionFormation.App.Views;
 using GestionFormation.App.Views.Admins.History;
 using GestionFormation.App.Views.Admins.Replayers;
 using GestionFormation.App.Views.EditableLists;
-using GestionFormation.App.Views.EditableLists.Utilisateurs;
+using GestionFormation.App.Views.EditableLists.Users;
 using GestionFormation.App.Views.Listers;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Seats;
@@ -39,7 +39,7 @@ namespace GestionFormation.App
             OpenStudentList = new RelayCommandAsync(async () => await OpenDocument<StudentListVm>());
             OpenCompanyList = new RelayCommandAsync(async () => await OpenDocument<CompanyListVm>());
             OpenContactList = new RelayCommandAsync(async () => await OpenDocument<ContactListVm>());
-            OpenUserList = new RelayCommandAsync(async () => await OpenDocument<UtilisateurListVm>());
+            OpenUserList = new RelayCommandAsync(async () => await OpenDocument<UserListVm>());
             OpenEventReplayer = new RelayCommandAsync(async ()=> await _applicationService.OpenPopup<EventReplayerWindowVm>());
             OpenLoginWindow = new RelayCommandAsync(ExecuteOpenLoginAsync);
             RefreshNotifications = new RelayCommandAsync(ExecuteRefreshNotificationsAsync);

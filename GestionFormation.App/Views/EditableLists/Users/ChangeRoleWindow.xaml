@@ -1,15 +1,15 @@
 ﻿<dx:DXWindow
-    x:Class="GestionFormation.App.Views.EditableLists.Utilisateurs.ChangeRoleWindow"
+    x:Class="GestionFormation.App.Views.EditableLists.Users.ChangeRoleWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
-    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    xmlns:utilisateurs="clr-namespace:GestionFormation.App.Views.EditableLists.Utilisateurs"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"    
     xmlns:utilisateurs1="clr-namespace:GestionFormation.CoreDomain.Users;assembly=GestionFormation"
+    xmlns:users="clr-namespace:GestionFormation.App.Views.EditableLists.Users"
     Title="Définition du role de l'utilisateur" Height="250" Width="400">
     <dx:DXWindow.Resources>
         <ResourceDictionary>
-            <utilisateurs:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
+            <users:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
         </ResourceDictionary>
     </dx:DXWindow.Resources>
     <Grid>

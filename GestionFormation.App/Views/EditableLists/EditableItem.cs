@@ -1,19 +1,23 @@
 using System;
+using System.Threading.Tasks;
 
 namespace GestionFormation.App.Views.EditableLists
 {
     /// <summary>
     /// Clase utilisée par devexpress en reflexion pour faire de l'édition
     /// </summary>
-    public abstract class EditableItem
+    public abstract class EditableItem    
     {
+        private readonly IUpdatableListVm _parent;
+
         protected EditableItem()
         {
             
         }
 
-        public EditableItem(Guid id)
+        protected EditableItem(Guid id, IUpdatableListVm parent)
         {
+            _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             Id = id;
         }
         protected Guid Id { get; }
@@ -21,5 +25,11 @@ namespace GestionFormation.App.Views.EditableLists
         {
             return Id;
         }
+
+        public virtual async Task Edit()
+        {
+            await _parent.UpdateCommand.ExecuteAsync();
+        }
+
     }
 }

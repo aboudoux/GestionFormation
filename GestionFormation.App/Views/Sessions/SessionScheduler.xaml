@@ -88,7 +88,7 @@
                     <dxsch:DataSource.AppointmentLabelMappings>
                         <dxsch:AppointmentLabelMappings 
                             Id="Id"
-                            Color="Couleur">
+                            Color="Color">
                         </dxsch:AppointmentLabelMappings>
                     </dxsch:DataSource.AppointmentLabelMappings>
 

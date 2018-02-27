@@ -205,16 +205,17 @@
       <DependentUpon>CreateContactWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\CreateContactWindowVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\BoolToEnumConverter.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml.cs">
+    <Compile Include="Views\EditableLists\EditableStudent.cs" />
+    <Compile Include="Views\EditableLists\Users\BoolToEnumConverter.cs" />
+    <Compile Include="Views\EditableLists\Users\ChangePasswordWindow.xaml.cs">
       <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindowVm.cs" />
+    <Compile Include="Views\EditableLists\Users\ChangePasswordWindowVm.cs" />
     <Compile Include="Views\EditableLists\ContactListVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindow.xaml.cs">
+    <Compile Include="Views\EditableLists\Users\ChangeRoleWindow.xaml.cs">
       <DependentUpon>ChangeRoleWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindowVm.cs" />
+    <Compile Include="Views\EditableLists\Users\ChangeRoleWindowVm.cs" />
     <Compile Include="Views\Admins\History\HistoryWindow.xaml.cs">
       <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
@@ -255,8 +256,8 @@
     </Compile>
     <Compile Include="Views\Logins\LoginWindowsVm.cs" />
     <Compile Include="Core\PopupWindowVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurList.xaml.cs">
-      <DependentUpon>UtilisateurList.xaml</DependentUpon>
+    <Compile Include="Views\EditableLists\Users\UserList.xaml.cs">
+      <DependentUpon>UserList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\EditableList.xaml.cs">
       <DependentUpon>EditableList.xaml</DependentUpon>
@@ -300,17 +301,17 @@
     <Compile Include="Views\Sessions\SessionSchedulerVm.cs" />
     <Compile Include="Views\EditableLists\CompanyListVm.cs" />
     <Compile Include="Views\EditableLists\StudentListVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurListVm.cs" />
-    <Compile Include="Views\templateselector.cs" />
+    <Compile Include="Views\EditableLists\Users\UserListVm.cs" />
+    <Compile Include="Views\EditableLists\CustomEditFormCellTemplateSelector.cs" />
     <Page Include="Views\EditableLists\CreateContactWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml">
+    <Page Include="Views\EditableLists\Users\ChangePasswordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditableLists\Utilisateurs\ChangeRoleWindow.xaml">
+    <Page Include="Views\EditableLists\Users\ChangeRoleWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -346,7 +347,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditableLists\Utilisateurs\UtilisateurList.xaml">
+    <Page Include="Views\EditableLists\Users\UserList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

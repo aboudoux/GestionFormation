@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
@@ -21,7 +20,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableTrainer>> LoadAsync()
         {
-            return await Task.Run(() => _trainerQueries.GetAll().Select(a=>new EditableTrainer(a)).ToList());
+            return await Task.Run(() => _trainerQueries.GetAll().Select(a=>new EditableTrainer(a, this)).ToList());
         }
 
         protected override async Task CreateAsync(EditableTrainer item)
@@ -48,7 +47,7 @@ namespace GestionFormation.App.Views.EditableLists
         {
             
         }
-        public EditableTrainer(ITrainerResult result) : base(result.Id)
+        public EditableTrainer(ITrainerResult result, TrainerListVm parent) : base(result.Id, parent)
         {
             Lastname = result.Lastname;
             Firstname = result.Firstname;
@@ -60,6 +59,6 @@ namespace GestionFormation.App.Views.EditableLists
         [DisplayName("Prénom")]
         public string Firstname { get; set; }
         [DisplayName("Email")]
-        public string Email { get; set; }
+        public string Email { get; set; }       
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using GestionFormation.App.Core;
@@ -22,7 +21,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableStudent>> LoadAsync()
         {
-            return await Task.Run(()=>_studentQueries.GetAll().Select(a=>new EditableStudent(a)).ToList());
+            return await Task.Run(()=>_studentQueries.GetAll().Select(a=>new EditableStudent(a, this)).ToList());
         }
 
         protected override async Task CreateAsync(EditableStudent item)
@@ -39,24 +38,5 @@ namespace GestionFormation.App.Views.EditableLists
         {
             await Task.Run(() => ApplicationService.Command<DeleteStudent>().Execute(item.GetId()));
         }        
-    }
-
-    public class EditableStudent : EditableItem
-    {
-        public EditableStudent()
-        {
-            
-        }
-        public EditableStudent(IStudentResult result) : base(result.Id)
-        {
-            Lastname = result.Lastname;
-            Firstname = result.Firstname;
-        }
-
-
-        [DisplayName("Nom")]
-        public string Lastname { get; set; }
-        [DisplayName("Prénom")]
-        public string Firstname { get; set; }
     }
 }

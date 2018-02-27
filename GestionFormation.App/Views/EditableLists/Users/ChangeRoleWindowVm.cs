@@ -1,7 +1,7 @@
 using GestionFormation.App.Core;
 using GestionFormation.CoreDomain.Users;
 
-namespace GestionFormation.App.Views.EditableLists.Utilisateurs
+namespace GestionFormation.App.Views.EditableLists.Users
 {
     public class ChangeRoleWindowVm : PopupWindowVm
     {

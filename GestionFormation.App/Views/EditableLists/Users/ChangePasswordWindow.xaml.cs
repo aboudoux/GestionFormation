@@ -1,6 +1,6 @@
 ﻿using DevExpress.Xpf.Core;
 
-namespace GestionFormation.App.Views.EditableLists.Utilisateurs
+namespace GestionFormation.App.Views.EditableLists.Users
 {
     /// <summary>
     /// Interaction logic for ChangePasswordWindow.xaml
