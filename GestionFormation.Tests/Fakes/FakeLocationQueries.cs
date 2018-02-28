@@ -9,9 +9,9 @@ namespace GestionFormation.Tests.Fakes
     {
         private readonly List<ILocationResult> _locations = new List<ILocationResult>();
 
-        public void Add(string nom, string addresse, int places)
+        public void Add(string name, string address, int seats)
         {
-            _locations.Add(new Result(Guid.NewGuid(), nom, addresse, places));
+            _locations.Add(new Result(Guid.NewGuid(), name, address, seats));
         }
         
         public IReadOnlyList<ILocationResult> GetAll()
@@ -19,19 +19,19 @@ namespace GestionFormation.Tests.Fakes
             return _locations;
         }
 
-        public Guid? GetLocation(string nom)
+        public Guid? GetLocation(string name)
         {
-            return _locations.FirstOrDefault(a => a.Name == nom)?.LocationId;
+            return _locations.FirstOrDefault(a => a.Name == name)?.LocationId;
         }
 
         private class Result : ILocationResult
         {
-            public Result(Guid lieuId, string nom, string addresse, int places)
+            public Result(Guid locationId, string name, string address, int seats)
             {
-                LocationId = lieuId;
-                Name = nom;
-                Address = addresse;
-                Seats = places;
+                LocationId = locationId;
+                Name = name;
+                Address = address;
+                Seats = seats;
             }
             public Guid LocationId { get;  }
             public string Name { get; }

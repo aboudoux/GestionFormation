@@ -5,7 +5,7 @@ namespace GestionFormation.Tests.Fakes
 {
     public abstract class FakeDomainEvent : IDomainEvent
     {
-        public FakeDomainEvent()
+        protected FakeDomainEvent()
         {
             AggregateId = Guid.Empty;
             Sequence = 0;

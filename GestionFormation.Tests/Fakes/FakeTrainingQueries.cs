@@ -7,35 +7,35 @@ namespace GestionFormation.Tests.Fakes
 {
     public class FakeTrainingQueries : ITrainingQueries
     {
-        private readonly List<ITrainingResult> _formations = new List<ITrainingResult>();
+        private readonly List<ITrainingResult> _trainings = new List<ITrainingResult>();
 
-        public void AddFormation(string formation, int places)
+        public void AddTraining(string training, int seats)
         {
-            _formations.Add(new Training(Guid.NewGuid(), formation, places ));
+            _trainings.Add(new Training(Guid.NewGuid(), training, seats ));
         }
 
-        public void AddFormation(Guid id, string formation, int places)
+        public void AddTraining(Guid id, string training, int seats)
         {
-            _formations.Add(new Training(id, formation, places));
+            _trainings.Add(new Training(id, training, seats));
         }
 
         public IReadOnlyList<ITrainingResult> GetAll()
         {
-            return _formations;
+            return _trainings;
         }
 
         public Guid? GetTrainingId(string trainingName)
         {
-            return _formations.FirstOrDefault(a=>a.Name.ToLower() == trainingName.ToLower())?.Id;
+            return _trainings.FirstOrDefault(a=>a.Name.ToLower() == trainingName.ToLower())?.Id;
         }
 
         private class  Training : ITrainingResult
         {
-            public Training(Guid id, string nom, int places)
+            public Training(Guid id, string name, int seats)
             {
                 Id = id;
-                Name = nom;
-                Seats = places;
+                Name = name;
+                Seats = seats;
             }
 
             public Guid Id { get; }

@@ -56,7 +56,7 @@ namespace GestionFormation.Infrastructure
                 .Generate();
         }
 
-        public string CreateTimesheet(string training, DateTime startSession, int duration, string location, FullName trainer, IReadOnlyList<Participant> participants)
+        public string CreateTimesheet(string training, DateTime startSession, int duration, string location, FullName trainer, IReadOnlyList<Attendee> participants)
         {
             if(participants == null)
                 throw new ArgumentNullException(nameof(participants));
@@ -94,13 +94,13 @@ namespace GestionFormation.Infrastructure
 
         public string CreateFreeAgreement(string agreementNumber, string company, string address, string zipCode, string city,
             FullName contact, string training, DateTime startSession, int duration, string location,
-            IReadOnlyList<Participant> participants)
+            IReadOnlyList<Attendee> attendees)
         {
-            if (participants == null)
-                throw new ArgumentNullException(nameof(participants));
-            if (!participants.Any())
+            if (attendees == null)
+                throw new ArgumentNullException(nameof(attendees));
+            if (!attendees.Any())
                 throw new Exception("Impossible de générer votre document car il n'y a aucun participant.");
-            if (participants.Count() > 8)
+            if (attendees.Count() > 8)
                 throw new Exception("Impossible de générer une convention avec plus de 8 participants");
 
             var document = MakeDocument(FreeAgreement)
@@ -119,8 +119,8 @@ namespace GestionFormation.Infrastructure
 
             for (var i = 1; i <= 8; i++)
             {
-                if (participants.Count >= i)
-                    document.Merge($"$stagiaire{i}$", participants[i - 1].Student.ToString());
+                if (attendees.Count >= i)
+                    document.Merge($"$stagiaire{i}$", attendees[i - 1].Student.ToString());
                 else
                     document.Merge($"$stagiaire{i}$", string.Empty);
             }
@@ -130,7 +130,7 @@ namespace GestionFormation.Infrastructure
 
         public string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city,
             FullName contact, string training, DateTime startSession, int duration, string location,
-            IReadOnlyList<Participant> participants)
+            IReadOnlyList<Attendee> participants)
         {
             if (participants == null)
                 throw new ArgumentNullException(nameof(participants));

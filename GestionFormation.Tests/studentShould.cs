@@ -16,8 +16,8 @@ namespace GestionFormation.Tests
         [TestMethod]
         public void raise_stagiaireCreated_on_create_new_stagiaire()
         {
-            var stagiaire = Student.Create("BOUDOUX", "Aurelien");
-            stagiaire.UncommitedEvents.GetStream().Should().Contain(new StudentCreated(Guid.Empty, 0, "BOUDOUX", "Aurelien"));
+            var student = Student.Create("BOUDOUX", "Aurelien");
+            student.UncommitedEvents.GetStream().Should().Contain(new StudentCreated(Guid.Empty, 0, "BOUDOUX", "Aurelien"));
         }
 
         [TestMethod]
@@ -26,9 +26,9 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurélien"));
             
-            var stagiaire = new Student(history);
-            stagiaire.Update("BOUDOUX", "Aurélien");
-            stagiaire.UncommitedEvents.GetStream().Should().Contain(new StudentUpdated(Guid.Empty, 0, "BOUDOUX", "Aurélien"));
+            var student = new Student(history);
+            student.Update("BOUDOUX", "Aurélien");
+            student.UncommitedEvents.GetStream().Should().Contain(new StudentUpdated(Guid.Empty, 0, "BOUDOUX", "Aurélien"));
         }        
 
         [TestMethod]
@@ -37,9 +37,9 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurélien"));
 
-            var stagiaire = new Student(history);
-            stagiaire.Delete();
-            stagiaire.UncommitedEvents.GetStream().Should().Contain(new StudentDeleted(Guid.Empty, 0));
+            var student = new Student(history);
+            student.Delete();
+            student.UncommitedEvents.GetStream().Should().Contain(new StudentDeleted(Guid.Empty, 0));
         }
 
         [TestMethod]
@@ -49,9 +49,9 @@ namespace GestionFormation.Tests
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurélien"));
             history.Add(new StudentDeleted(Guid.Empty, 1));
 
-            var stagiaire = new Student(history);
-            stagiaire.Delete();
-            stagiaire.UncommitedEvents.GetStream().Should().BeEmpty();
+            var student = new Student(history);
+            student.Delete();
+            student.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
@@ -61,9 +61,9 @@ namespace GestionFormation.Tests
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurélien"));
             history.Add(new StudentUpdated(Guid.NewGuid(), 2, "BOUDOUX", "Aurelien"));
 
-            var stagiaire = new Student(history);
-            stagiaire.Update("BOUDOUX", "Aurelien");
-            stagiaire.UncommitedEvents.GetStream().Should().BeEmpty();
+            var student = new Student(history);
+            student.Update("BOUDOUX", "Aurelien");
+            student.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
@@ -72,10 +72,10 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurélien"));            
 
-            var stagiaire = new Student(history);
-            stagiaire.Update("BOUDOUX", "Aurelien");
-            stagiaire.Update("BOUDOUX", "Aurelien");
-            stagiaire.UncommitedEvents.GetStream().Should().HaveCount(1);
+            var student = new Student(history);
+            student.Update("BOUDOUX", "Aurelien");
+            student.Update("BOUDOUX", "Aurelien");
+            student.UncommitedEvents.GetStream().Should().HaveCount(1);
 
         }
 
@@ -85,12 +85,12 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new StudentCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien"));
 
-            var stagiaire = new Student(history);
-            stagiaire.Update("BOUDOUX", "Aurelien1");
-            stagiaire.Update("BOUDOUX", "Aurelien1");
-            stagiaire.Update("BOUDOUX", "Aurelien2");
-            stagiaire.Update("BOUDOUX", "Aurelien3");            
-            stagiaire.UncommitedEvents.GetStream().Should().HaveCount(3);
+            var student = new Student(history);
+            student.Update("BOUDOUX", "Aurelien1");
+            student.Update("BOUDOUX", "Aurelien1");
+            student.Update("BOUDOUX", "Aurelien2");
+            student.Update("BOUDOUX", "Aurelien3");            
+            student.UncommitedEvents.GetStream().Should().HaveCount(3);
         }
 
         [TestMethod]
@@ -102,8 +102,8 @@ namespace GestionFormation.Tests
             
             var eventBus = new EventBus(dispatcher, new FakeEventStore());
 
-            var stagiaire = Student.Create("BOUDOUX", "Aurelien");
-             eventBus.Publish(stagiaire.UncommitedEvents);
+            var student = Student.Create("BOUDOUX", "Aurelien");
+             eventBus.Publish(student.UncommitedEvents);
 
             projection.Tables.Should().HaveCount(1);
         }
@@ -114,7 +114,7 @@ namespace GestionFormation.Tests
 
             public void Handle(StudentCreated @event)
             {
-                Tables.Add(new StagiaireTable(){ Nom = @event.Lastname, Prenom = @event.Firstname});
+                Tables.Add(new StagiaireTable(){ Lastname = @event.Lastname, Firstname = @event.Firstname});
             }
 
             public void Handle(StudentUpdated @event)
@@ -128,29 +128,11 @@ namespace GestionFormation.Tests
             }
         }
 
-       /* public class FakeEventStore : IEventStore
-        {
-            public void Save(IDomainEvent @event)
-            {
-                
-            }
-
-            public int GetLastSequence(Guid aggregateId)
-            {
-                return 0;
-            }
-
-            public IReadOnlyList<IDomainEvent> GetEvents(Guid aggregateId)
-            {
-                throw new NotImplementedException();
-            }
-        }*/
-
         public class StagiaireTable
         {
-            public string Nom { get; set; }
-            public string Prenom { get; set; }
-            public string Societe { get; set; }
+            public string Lastname { get; set; }
+            public string Firstname { get; set; }
+            public string Company { get; set; }
         }
     }
 }

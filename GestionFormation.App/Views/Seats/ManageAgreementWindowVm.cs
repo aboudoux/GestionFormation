@@ -208,9 +208,9 @@ namespace GestionFormation.App.Views.Seats
             var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
 
             if (conv.AgreementType == AgreementType.Free)
-                return _documentCreator.CreateFreeAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Participant(a.Student, a.Company)).ToList());
+                return _documentCreator.CreateFreeAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Attendee(a.Student, a.Company)).ToList());
 
-            return _documentCreator.CreatePaidAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Participant(a.Student, a.Company)).ToList());
+            return _documentCreator.CreatePaidAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Attendee(a.Student, a.Company)).ToList());
         }
 
         protected override async Task ExecuteValiderAsync()

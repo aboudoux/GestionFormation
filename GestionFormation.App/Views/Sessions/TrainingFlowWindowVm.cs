@@ -104,7 +104,7 @@ namespace GestionFormation.App.Views.Sessions
         private void ExecutePrintFeuillePresence()
         {
             HandleMessageBoxError.Execute(()=>{ 
-                var document = _documentCreator.CreateTimesheet(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Seats.Select(a=>new Participant(a.Student, a.Company)).ToList());
+                var document = _documentCreator.CreateTimesheet(_sessionInfos.Training, _sessionInfos.SessionStart, _sessionInfos.Duration, _sessionInfos.Location, _sessionInfos.Trainer, Seats.Select(a=>new Attendee(a.Student, a.Company)).ToList());
                 Process.Start(document);
             });
         }

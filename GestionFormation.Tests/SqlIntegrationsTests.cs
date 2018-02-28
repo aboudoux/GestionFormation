@@ -31,11 +31,11 @@ namespace GestionFormation.Tests
         {
             var service = new SqlTestApplicationService();
 
-            var formateur = service.Command<CreateTrainer>().Execute("TEST", DateTime.Now.ToString("G"), "test@test.com");
-            var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G"), "test", 5);
+            var trainer = service.Command<CreateTrainer>().Execute("TEST", DateTime.Now.ToString("G"), "test@test.com");
+            var location = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G"), "test", 5);
 
             var createdFormation = service.Command<CreateTraining>().Execute("Essai " + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
-            service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018,1,8), 3, 5, lieu.AggregateId, formateur.AggregateId);
+            service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018,1,8), 3, 5, location.AggregateId, trainer.AggregateId);
         }
 
         [TestMethod]
@@ -44,38 +44,38 @@ namespace GestionFormation.Tests
             // given
             var service = new SqlTestApplicationService();
             
-            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
-            var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
-            var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
+            var trainer = service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
+            var location = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
+            var student = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
 
             var sname1 = "SOCIETE1 " + Guid.NewGuid();
             var sname2 = "SOCIETE2 " + Guid.NewGuid();
             var sname3 = "SOCIETE3 " + Guid.NewGuid();
 
-            var societe1 = service.Command<CreateCompany>().Execute(sname1, "CONVENTION TEST", "", "");
-            var societe2 = service.Command<CreateCompany>().Execute(sname2, "CONVENTION TEST", "", "");
-            var societe3 = service.Command<CreateCompany>().Execute(sname3, "CONVENTION TEST", "", "");
+            var company1 = service.Command<CreateCompany>().Execute(sname1, "CONVENTION TEST", "", "");
+            var company2 = service.Command<CreateCompany>().Execute(sname2, "CONVENTION TEST", "", "");
+            var company3 = service.Command<CreateCompany>().Execute(sname3, "CONVENTION TEST", "", "");
 
-            var createdFormation = service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
-            var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);
+            var createdTraining = service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
+            var session = service.Command<PlanSession>().Execute(createdTraining.AggregateId, new DateTime(2018, 1, 15), 3, 5, location.AggregateId, trainer.AggregateId);
 
-            var place1 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
-            var place2 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
-            var place3 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe2.AggregateId, true);
-            var place4 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe2.AggregateId, true);
-            var place5 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe3.AggregateId, true);
+            var seat1 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat2 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat3 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
+            var seat4 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
+            var seat5 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company3.AggregateId, true);
 
-            service.Command<ValidateSeat>().Execute(place1.AggregateId);
-            service.Command<ValidateSeat>().Execute(place2.AggregateId);
-            service.Command<ValidateSeat>().Execute(place3.AggregateId);
-            service.Command<ValidateSeat>().Execute(place4.AggregateId);
-            service.Command<ValidateSeat>().Execute(place5.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat2.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat3.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat4.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat5.AggregateId);
             
-            var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST","","");
+            var contact = service.Command<CreateContact>().Execute(seat1.CompanyId,"CONTACT", "CONVENTION TEST","","");
 
-            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place1.AggregateId, place2.AggregateId}, AgreementType.Free);
-            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place3.AggregateId, place4.AggregateId}, AgreementType.Free);
-            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ place5.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ seat1.AggregateId, seat2.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ seat3.AggregateId, seat4.AggregateId}, AgreementType.Free);
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>(){ seat5.AggregateId}, AgreementType.Free);
 
             // when
             var conventionQueries = new AgreementQueries();
@@ -95,45 +95,45 @@ namespace GestionFormation.Tests
         {
             var service = new SqlTestApplicationService();
 
-            var formateur = service.Command<CreateTrainer>().Execute("TEST CONVENTION " + Guid.NewGuid(), DateTime.Now.ToString("G"), "test@test.com");
-            var lieu = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
-            var stagiaire = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
-            var societe1 = service.Command<CreateCompany>().Execute("SOCIETE1 " + Guid.NewGuid(), "CONVENTION TEST", "", "");
+            var trainer = service.Command<CreateTrainer>().Execute("TEST CONVENTION " + Guid.NewGuid(), DateTime.Now.ToString("G"), "test@test.com");
+            var location = service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);
+            var student = service.Command<CreateStudent>().Execute("STAGIAIRE", "CONVENTION TEST");
+            var company1 = service.Command<CreateCompany>().Execute("SOCIETE1 " + Guid.NewGuid(), "CONVENTION TEST", "", "");
 
-            var createdFormation = service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
-            var session = service.Command<PlanSession>().Execute(createdFormation.AggregateId, new DateTime(2018, 1, 15), 3, 5, lieu.AggregateId, formateur.AggregateId);
+            var createdTraining = service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
+            var session = service.Command<PlanSession>().Execute(createdTraining.AggregateId, new DateTime(2018, 1, 15), 3, 5, location.AggregateId, trainer.AggregateId);
 
-            var place1 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
-            var place2 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
-            var place3 = service.Command<ReserveSeat>().Execute(session.AggregateId, stagiaire.AggregateId, societe1.AggregateId, true);
+            var seat1 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat2 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat3 = service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
 
-            service.Command<ValidateSeat>().Execute(place2.AggregateId);
-            service.Command<ValidateSeat>().Execute(place3.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat2.AggregateId);
+            service.Command<ValidateSeat>().Execute(seat3.AggregateId);
 
-            var contact = service.Command<CreateContact>().Execute(place1.CompanyId,"CONTACT", "CONVENTION TEST", "", "");
-            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
-            var convention2 = service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place3.AggregateId }, AgreementType.Free);
-            service.Command<SignAgreement>().Execute(convention2.AggregateId, Guid.NewGuid());
+            var contact = service.Command<CreateContact>().Execute(seat1.CompanyId,"CONTACT", "CONVENTION TEST", "", "");
+            service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat2.AggregateId }, AgreementType.Free);
+            var agreement = service.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat3.AggregateId }, AgreementType.Free);
+            service.Command<SignAgreement>().Execute(agreement.AggregateId, Guid.NewGuid());
 
             var query = new SeatQueries();
-            var places = query.GetAll(session.AggregateId);
+            var seats = query.GetAll(session.AggregateId);
 
-            places.Should().HaveCount(3);
+            seats.Should().HaveCount(3);
             
-            var place_1 = places.First(a => a.SeatId == place1.AggregateId);
-            place_1.AgreementId.Should().BeNull();
-            place_1.Agreementnumber.Should().BeNullOrEmpty();
-            place_1.AgreementSigned.Should().BeFalse();
+            var seat_1 = seats.First(a => a.SeatId == seat1.AggregateId);
+            seat_1.AgreementId.Should().BeNull();
+            seat_1.Agreementnumber.Should().BeNullOrEmpty();
+            seat_1.AgreementSigned.Should().BeFalse();
 
-            var place_2 = places.First(a => a.SeatId == place2.AggregateId);
-            place_2.AgreementId.Should().NotBeNull();
-            place_2.Agreementnumber.Should().NotBeNullOrWhiteSpace();
-            place_2.AgreementSigned.Should().BeFalse();
+            var seat_2 = seats.First(a => a.SeatId == seat2.AggregateId);
+            seat_2.AgreementId.Should().NotBeNull();
+            seat_2.Agreementnumber.Should().NotBeNullOrWhiteSpace();
+            seat_2.AgreementSigned.Should().BeFalse();
 
-            var place_3 = places.First(a => a.SeatId == place3.AggregateId);
-            place_3.AgreementId.Should().NotBeNull();
-            place_3.Agreementnumber.Should().NotBeNullOrWhiteSpace();
-            place_3.AgreementSigned.Should().BeTrue();
+            var seat_3 = seats.First(a => a.SeatId == seat3.AggregateId);
+            seat_3.AgreementId.Should().NotBeNull();
+            seat_3.Agreementnumber.Should().NotBeNullOrWhiteSpace();
+            seat_3.AgreementSigned.Should().BeTrue();
         }      
     }
 }

@@ -13,9 +13,9 @@ namespace GestionFormation.Tests
         [DataRow("", "aurelien", "Aurelien")]
         [DataRow("boudoux", "", "BOUDOUX")]
         [DataRow("boudoux", "a", "A BOUDOUX")]
-        public void GeneratePrenomNom(string nom, string prenom, string expected)
+        public void GenerateFirstnameAndLastname(string lastname, string firstname, string expected)
         {
-            var nomComplet = new FullName(nom, prenom);
+            var nomComplet = new FullName(lastname, firstname);
             nomComplet.ToString().Should().Be(expected);
         }
     }

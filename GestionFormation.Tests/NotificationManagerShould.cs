@@ -15,7 +15,7 @@ namespace GestionFormation.Tests
     public class NotificationManagerShould
     {
         [TestMethod]
-        public void raise_sessionNotificationCrearted_when_create_session_notification()
+        public void raise_sessionNotificationCreated_when_create_session_notification()
         {
             var sessionId = Guid.NewGuid();
 
@@ -280,7 +280,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void remove_rappel_when_convention_created_on_revoked_convention()
+        public void remove_notification_when_agreement_created_on_revoked_agreement()
         {
             var context = TestSessionNotification.Create();
             var notif = context.Builder.Create();
@@ -309,7 +309,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void create_2_agreementToSignNotification_for_different_convention_at_same_company()
+        public void create_2_agreementToSignNotification_for_different_agreement_at_same_company()
         {
             var context = TestSessionNotification.Create();
             var notif = context.Builder.Create();
@@ -336,7 +336,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void raise_remove_AgreementToSignNotificationSent_when_signal_agreement_signed_for_secon_convention()
+        public void raise_remove_AgreementToSignNotificationSent_when_signal_agreement_signed_for_secon_agreement()
         {
             var context = TestSessionNotification.Create();
             var notif = context.Builder.Create();

@@ -18,44 +18,44 @@ namespace GestionFormation.Tests
     public class LocationShould
     {
         [TestMethod]
-        public void raise_LieuCreated_on_create_new_lieu()
+        public void raise_LocationCreated_on_create_new_location()
         {
-            var lieu = Location.Create("Saint Priest", "allée du toscan", 1);
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationCreated(Guid.Empty, 0, "Saint Priest", "allée du toscan", 1));
+            var location = Location.Create("Saint Priest", "allée du toscan", 1);
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationCreated(Guid.Empty, 0, "Saint Priest", "allée du toscan", 1));
         }
 
         [TestMethod]
-        public void raise_LieuUpdated_on_update_lieu()
-        {
-            var history = new History();
-            history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
-
-            var lieu = new Location(history);
-            lieu.Update("Saint Priest", "tata",2);
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationUpdated(Guid.Empty, 0, "Saint Priest", "tata",2));
-        }
-
-        [TestMethod]
-        public void raise_LieuDeleted_on_delete_lieu()
+        public void raise_LocationUpdated_on_update_location()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
 
-            var lieu = new Location(history);
-            lieu.Delete();
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationDeleted(Guid.Empty, 0));
+            var location = new Location(history);
+            location.Update("Saint Priest", "tata",2);
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationUpdated(Guid.Empty, 0, "Saint Priest", "tata",2));
         }
 
         [TestMethod]
-        public void dont_raise_LieuDeleted_if_lieu_already_deleted()
+        public void raise_LocationDeleted_on_delete_location()
+        {
+            var history = new History();
+            history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
+
+            var location = new Location(history);
+            location.Delete();
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationDeleted(Guid.Empty, 0));
+        }
+
+        [TestMethod]
+        public void dont_raise_LocationDeleted_if_location_already_deleted()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
             history.Add(new LocationDeleted(Guid.Empty, 2));
 
-            var lieu = new Location(history);
-            lieu.Delete();
-            lieu.UncommitedEvents.GetStream().Should().BeEmpty();
+            var location = new Location(history);
+            location.Delete();
+            location.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
@@ -65,9 +65,9 @@ namespace GestionFormation.Tests
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
             history.Add(new LocationUpdated(Guid.Empty, 2, "Saint Priest", "test",1));
 
-            var lieu = new Location(history);
-            lieu.Update("Saint Priest", "test",1);
-            lieu.UncommitedEvents.GetStream().Should().BeEmpty();
+            var location = new Location(history);
+            location.Update("Saint Priest", "test",1);
+            location.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]        
@@ -76,10 +76,10 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));            
 
-            var lieu = new Location(history);
-            lieu.Update("Saint Priest", "TEST",1);
-            lieu.Update("Saint Priest", "TEST",1);
-            lieu.UncommitedEvents.GetStream().Should().HaveCount(1);
+            var location = new Location(history);
+            location.Update("Saint Priest", "TEST",1);
+            location.Update("Saint Priest", "TEST",1);
+            location.UncommitedEvents.GetStream().Should().HaveCount(1);
         }
 
         [TestMethod]
@@ -88,15 +88,15 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
 
-            var lieu = new Location(history);
-            lieu.Update("Saint Priest", "TEST",1);
-            lieu.Update("Saint Priest", "TEST2",1);
-            lieu.Update("Saint Priest", "TEST3",1);
-            lieu.UncommitedEvents.GetStream().Should().HaveCount(3);
+            var location = new Location(history);
+            location.Update("Saint Priest", "TEST",1);
+            location.Update("Saint Priest", "TEST2",1);
+            location.Update("Saint Priest", "TEST3",1);
+            location.UncommitedEvents.GetStream().Should().HaveCount(3);
         }
 
         [TestMethod]
-        public void throw_error_if_creating_lieu_with_same_name()
+        public void throw_error_if_creating_location_with_same_name()
         {
             var queries = new FakeLocationQueries();
             queries.Add("lulu", "test",1);
@@ -152,20 +152,20 @@ namespace GestionFormation.Tests
             var history = new History();
             history.Add(new LocationCreated(Guid.Empty, 1, "Saint Priest", "yolo",1));
 
-            var lieu = new Location(history);
-            Action action =  () => lieu.Update(null, "TEST",1);
+            var location = new Location(history);
+            Action action =  () => location.Update(null, "TEST",1);
             action.ShouldThrow<LocationWithEmptyNameException>();
         }
 
         [TestMethod]
-        public void raise_lieuAssigned_when_lieu_is_assigned_to_a_new_session()
+        public void raise_locationAssigned_when_location_is_assigned_to_a_new_session()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            lieu.Assign(new DateTime(2017, 12, 20), 3);
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationAssigned(Guid.Empty, 0, new DateTime(2017, 12, 20), 3));
+            location.Assign(new DateTime(2017, 12, 20), 3);
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationAssigned(Guid.Empty, 0, new DateTime(2017, 12, 20), 3));
         }
 
         [TestMethod]
@@ -175,41 +175,41 @@ namespace GestionFormation.Tests
         [DataRow("17/01/2017", 1)]
         [DataRow("10/01/2017", 10)]
         [DataRow("20/01/2017", 10)]
-        public void throw_error_if_lieu_already_assigned_to_a_session(string startDate, int durée)
+        public void throw_error_if_location_already_assigned_to_a_session(string startDate, int durée)
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
             history.Add(new LocationAssigned(Guid.NewGuid(), 2 , new DateTime(2017, 01, 15), 10));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
             var start = DateTime.ParseExact(startDate, "dd/MM/yyyy", new DateTimeFormatInfo());
-            Action action = () => lieu.Assign(start, durée);
+            Action action = () => location.Assign(start, durée);
             action.ShouldThrow<LocationAlreadyAssignedException>();
         }
 
         [TestMethod]
-        public void raise_lieuReasigned_when_change_lieu_assignation()
+        public void raise_locationReasigned_when_change_location_assignation()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
             history.Add(new LocationAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            lieu.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10);
+            location.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10);
 
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationReassigned(Guid.Empty, 0, new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10));
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationReassigned(Guid.Empty, 0, new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10));
         }
 
         [TestMethod]
-        public void throw_error_if_trying_to_reassign_lieu_to_an_already_assigned_session()
+        public void throw_error_if_trying_to_reassign_location_to_an_already_assigned_session()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
             history.Add(new LocationAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new LocationAssigned(Guid.NewGuid(), 3, new DateTime(2017, 02, 15), 10));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            Action action = () => lieu.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
+            Action action = () => location.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
             action.ShouldThrow<LocationAlreadyAssignedException>();
         }
 
@@ -218,23 +218,23 @@ namespace GestionFormation.Tests
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            Action action = () => lieu.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
+            Action action = () => location.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
             action.ShouldThrow<PeriodDoNotExistsException>();
         }
 
         [TestMethod]
-        public void raise_lieuUnassigned_if_lieu_no_longer_assigned_to_a_session()
+        public void raise_locationUnassigned_if_lieu_no_longer_assigned_to_a_session()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
             history.Add(new LocationAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new LocationAssigned(Guid.NewGuid(), 3, new DateTime(2017, 02, 15), 10));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            lieu.UnAssign(new DateTime(2017, 02, 15), 10);
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationUnassigned(Guid.Empty, 0, new DateTime(2017, 02, 15), 10));
+            location.UnAssign(new DateTime(2017, 02, 15), 10);
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationUnassigned(Guid.Empty, 0, new DateTime(2017, 02, 15), 10));
         }
 
         [TestMethod]
@@ -242,10 +242,10 @@ namespace GestionFormation.Tests
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Paris", "test", 5));
-            var lieu = new Location(history);
-            lieu.Assign(new DateTime(2017, 01, 15), 10);
-            lieu.UnAssign(new DateTime(2017, 01, 15), 10);
-            lieu.Assign(new DateTime(2017, 01, 13), 10);
+            var location = new Location(history);
+            location.Assign(new DateTime(2017, 01, 15), 10);
+            location.UnAssign(new DateTime(2017, 01, 15), 10);
+            location.Assign(new DateTime(2017, 01, 13), 10);
         }
 
         [TestMethod]
@@ -256,33 +256,33 @@ namespace GestionFormation.Tests
             history.Add(new LocationAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new LocationUnassigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
 
-            var lieu = new Location(history);
-            lieu.Assign(new DateTime(2017, 01, 13), 10);
+            var location = new Location(history);
+            location.Assign(new DateTime(2017, 01, 13), 10);
 
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationAssigned(Guid.Empty, 1, new DateTime(2017, 01, 13), 10));
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationAssigned(Guid.Empty, 1, new DateTime(2017, 01, 13), 10));
         }
 
         [TestMethod]
-        public void throw_error_if_trying_to_delete_assigned_lieu()
+        public void throw_error_if_trying_to_delete_assigned_location()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Paris", "test", 5));
             history.Add(new LocationAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            Action action = () => lieu.Delete();
+            Action action = () => location.Delete();
             action.ShouldThrow<ForbiddenDeleteLocationException>();
         }
 
         [TestMethod]
-        public void raise_lieudeleted_if_call_delete_and_lieu_not_assigned()
+        public void raise_locationdeleted_if_call_delete_and_location_not_assigned()
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Paris", "test", 5));
-            var lieu = new Location(history);
+            var location = new Location(history);
 
-            lieu.Delete();
-            lieu.UncommitedEvents.GetStream().Should().Contain(new LocationDeleted(Guid.Empty, 0));
+            location.Delete();
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationDeleted(Guid.Empty, 0));
         }
     }
 }

@@ -14,70 +14,70 @@ namespace GestionFormation.Tests
     public class TrainingShould
     {
         [TestMethod]
-        public void raise_formationCreated_on_create_new_formation()
+        public void raise_trainingCreated_on_create_new_training()
         {
-            var formation = Training.Create("TED",1, Color.Empty.ToArgb());
-            formation.UncommitedEvents.GetStream().Should().Contain(new TrainingCreated(Guid.Empty, 1, "TED",1, Color.Empty.ToArgb()));
+            var training = Training.Create("TED",1, Color.Empty.ToArgb());
+            training.UncommitedEvents.GetStream().Should().Contain(new TrainingCreated(Guid.Empty, 1, "TED",1, Color.Empty.ToArgb()));
         }
 
         [TestMethod]
-        public void raise_formationUpdated_on_update_formation()
+        public void raise_trainingUpdated_on_update_training()
         {
             var history = new History();
             history.Add(new TrainingCreated(Guid.NewGuid(), 1, "TEST",2, Color.Empty.ToArgb()));
 
-            var formation = new Training(history);
-            formation.Update("ESSAI",3, Color.Empty.ToArgb());
-            formation.UncommitedEvents.GetStream().Should().Contain(new TrainingUpdated(Guid.NewGuid(), 1, "ESSAI",3, Color.Empty.ToArgb()));
+            var training = new Training(history);
+            training.Update("ESSAI",3, Color.Empty.ToArgb());
+            training.UncommitedEvents.GetStream().Should().Contain(new TrainingUpdated(Guid.NewGuid(), 1, "ESSAI",3, Color.Empty.ToArgb()));
         }
 
         [TestMethod]
         public void dont_raise_update_if_last_update_equal()
         {
             var history = new History();
-            var formationId = Guid.NewGuid();
-            history.Add(new TrainingCreated(formationId, 1, "TED",1, Color.Empty.ToArgb()));
-            history.Add(new TrainingUpdated(formationId, 2, "WELL",1, Color.Empty.ToArgb()));
+            var trainingId = Guid.NewGuid();
+            history.Add(new TrainingCreated(trainingId, 1, "TED",1, Color.Empty.ToArgb()));
+            history.Add(new TrainingUpdated(trainingId, 2, "WELL",1, Color.Empty.ToArgb()));
 
-            var formation = new Training(history);
-            formation.Update("WELL",1, Color.Empty.ToArgb());
+            var training = new Training(history);
+            training.Update("WELL",1, Color.Empty.ToArgb());
 
-            formation.UncommitedEvents.GetStream().Should().BeEmpty();
+            training.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
-        public void raise_forationDeleted_on_delete_formation()
+        public void raise_trainingDeleted_on_delete_training()
         {
             var history = new History();
-            var formationId = Guid.NewGuid();
-            history.Add(new TrainingCreated(formationId, 1, "TED",1, Color.Empty.ToArgb()));
+            var trainingId = Guid.NewGuid();
+            history.Add(new TrainingCreated(trainingId, 1, "TED",1, Color.Empty.ToArgb()));
 
-            var formation = new Training(history);
-            formation.Delete();
+            var training = new Training(history);
+            training.Delete();
 
-            formation.UncommitedEvents.GetStream().Should().Contain(new TrainingDeleted(Guid.Empty, 0));
+            training.UncommitedEvents.GetStream().Should().Contain(new TrainingDeleted(Guid.Empty, 0));
         }
 
         [TestMethod]
-        public void dont_raise_formationDeleted_if_formation_already_deleted()
+        public void dont_raise_trainingDeleted_if_training_already_deleted()
         {
             var history = new History();
-            var formationId = Guid.NewGuid();
-            history.Add(new TrainingCreated(formationId, 1, "TED",1, Color.Empty.ToArgb()));
-            history.Add(new TrainingDeleted(formationId, 2));
+            var trainingId = Guid.NewGuid();
+            history.Add(new TrainingCreated(trainingId, 1, "TED",1, Color.Empty.ToArgb()));
+            history.Add(new TrainingDeleted(trainingId, 2));
 
-            var formation = new Training(history);
-            formation.Delete();
+            var training = new Training(history);
+            training.Delete();
 
-            formation.UncommitedEvents.GetStream().Should().BeEmpty();
+            training.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [DataTestMethod]
         [DataRow("")]
         [DataRow(null)]
-        public void throw_error_if_formation_name_null_or_empty(string formationName)
+        public void throw_error_if_training_name_null_or_empty(string trainingName)
         {
-            Action action = () => Training.Create(formationName,1, Color.Empty.ToArgb());
+            Action action = () => Training.Create(trainingName,1, Color.Empty.ToArgb());
             action.ShouldThrow<TrainingEmptyNameException>();
         }        
     }

@@ -45,21 +45,21 @@ namespace GestionFormation.Tests
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            Action action = () => formateur.Update(nom, prenom,"");
+            Action action = () => trainer.Update(nom, prenom,"");
             action.ShouldThrow<TrainerNameException>();
         }
 
         [TestMethod]
-        public void raise_formateurAssigned_when_formateur_is_assigned_to_a_session()
+        public void raise_TrainerAssigned_when_trainer_is_assigned_to_a_session()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            formateur.Assign(new DateTime(2017,12,20),3);
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerAssigned(Guid.Empty, 0, new DateTime(2017, 12, 20), 3));
+            trainer.Assign(new DateTime(2017,12,20),3);
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerAssigned(Guid.Empty, 0, new DateTime(2017, 12, 20), 3));
         }
 
         [DataTestMethod]
@@ -68,40 +68,40 @@ namespace GestionFormation.Tests
         [DataRow("17/01/2017", 1)]
         [DataRow("10/01/2017", 10)]
         [DataRow("20/01/2017", 10)]
-        public void throw_error_if_formateur_already_assigned_to_a_session(string startDate, int durée)
+        public void throw_error_if_formateur_already_assigned_to_a_session(string startDate, int duration)
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017,01,15), 10));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
             var start = DateTime.ParseExact(startDate, "dd/MM/yyyy", new DateTimeFormatInfo());
-            Action action = () => formateur.Assign(start, durée);
+            Action action = () => trainer.Assign(start, duration);
             action.ShouldThrow<TrainerAlreadyAssignedException>();
         }
 
         [TestMethod]
-        public void raise_assignationChanged_when_change_formateur_assignation()
+        public void raise_assignationChanged_when_change_trainer_assignation()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
-            var formateur = new Trainer(history);
-            formateur.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017,01,10), 10);
+            var trainer = new Trainer(history);
+            trainer.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017,01,10), 10);
 
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerReassigned(Guid.Empty, 0, new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10));
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerReassigned(Guid.Empty, 0, new DateTime(2017, 01, 15), 10, new DateTime(2017, 01, 10), 10));
         }
 
         [TestMethod]
-        public void throw_error_if_trying_to_reassign_formateur_to_an_already_assigned_session()
+        public void throw_error_if_trying_to_reassign_trainer_to_an_already_assigned_session()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 02, 15), 10));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            Action action = () => formateur.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
+            Action action = () => trainer.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
             action.ShouldThrow<TrainerAlreadyAssignedException>();
         }
 
@@ -110,22 +110,22 @@ namespace GestionFormation.Tests
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            Action action = () => formateur.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
+            Action action = () => trainer.ChangeAssignation(new DateTime(2017, 01, 15), 10, new DateTime(2017, 02, 10), 10);
             action.ShouldThrow<PeriodDoNotExistsException>();
         }
 
         [TestMethod]
-        public void raise_formationUnassigned_if_formateur_no_longer_assigned_to_a_session()
+        public void raise_trainerUnassigned_if_trainer_no_longer_assigned_to_a_session()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 02, 15), 10));
-            var formateur = new Trainer(history);
-            formateur.UnAssign(new DateTime(2017, 02, 15), 10);
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2017, 02, 15), 10));
+            var trainer = new Trainer(history);
+            trainer.UnAssign(new DateTime(2017, 02, 15), 10);
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerUnassigned(Guid.Empty, 0, new DateTime(2017, 02, 15), 10));
         }
 
         [TestMethod]
@@ -133,10 +133,10 @@ namespace GestionFormation.Tests
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            var formateur = new Trainer(history);
-            formateur.Assign(new DateTime(2017, 01, 15), 10);
-            formateur.UnAssign(new DateTime(2017, 01, 15), 10);
-            formateur.Assign(new DateTime(2017, 01, 13), 10);
+            var trainer = new Trainer(history);
+            trainer.Assign(new DateTime(2017, 01, 15), 10);
+            trainer.UnAssign(new DateTime(2017, 01, 15), 10);
+            trainer.Assign(new DateTime(2017, 01, 13), 10);
         }
 
         [TestMethod]
@@ -147,10 +147,10 @@ namespace GestionFormation.Tests
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
             history.Add(new TrainerUnassigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
 
-            var formateur = new Trainer(history);
-            formateur.Assign(new DateTime(2017, 01, 13), 10);
+            var trainer = new Trainer(history);
+            trainer.Assign(new DateTime(2017, 01, 13), 10);
 
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerAssigned(Guid.Empty, 1, new DateTime(2017, 01, 13), 10));
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerAssigned(Guid.Empty, 1, new DateTime(2017, 01, 13), 10));
 
         }
 
@@ -167,59 +167,59 @@ namespace GestionFormation.Tests
         [DataRow("10/01/2017", 30, false)]
         [DataRow("24/01/2017", 1, false)]
         [DataRow("30/01/2017",5, true)]
-        public void test_assigned_session(string startDate, int durée, bool expectedResult)
+        public void test_assigned_session(string startDate, int duration, bool expectedResult)
         {
             var start = DateTime.ParseExact(startDate, "dd/MM/yyyy", new DateTimeFormatInfo());
             var assignedSession = new AssignedSession();
 
             assignedSession.Add(new DateTime(2017, 01, 15), 10);
-            assignedSession.IsFreeFor(start, durée).Should().Be(expectedResult);
+            assignedSession.IsFreeFor(start, duration).Should().Be(expectedResult);
         }
 
         [TestMethod]
-        public void throw_error_if_trying_to_delete_assigned_formateur()
+        public void throw_error_if_trying_to_delete_assigned_trainer()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerAssigned(Guid.NewGuid(), 2, new DateTime(2017, 01, 15), 10));
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            Action action = () => formateur.Delete();
+            Action action = () => trainer.Delete();
             action.ShouldThrow<ForbiddenDeleteTrainerException>();
         }
 
         [TestMethod]
-        public void raise_formateurdeleted_if_call_delete_and_formateur_not_assigned()
+        public void raise_trainerDeleted_if_call_delete_and_trainer_not_assigned()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));            
-            var formateur = new Trainer(history);
+            var trainer = new Trainer(history);
 
-            formateur.Delete();
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerDeleted(Guid.Empty, 0));
+            trainer.Delete();
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerDeleted(Guid.Empty, 0));
         }
 
         [TestMethod]
-        public void raise_formateurDisabled()
+        public void raise_trainerDisabled()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
-            var formateur = new Trainer(history);
-            formateur.Disable();
+            var trainer = new Trainer(history);
+            trainer.Disable();
 
-            formateur.UncommitedEvents.GetStream().Should().Contain(new TrainerDisabled(Guid.Empty, 0));
+            trainer.UncommitedEvents.GetStream().Should().Contain(new TrainerDisabled(Guid.Empty, 0));
         }
 
         [TestMethod]
-        public void dont_raise_formateurDisabled_if_already_disabled()
+        public void dont_raise_trainerDisabled_if_already_disabled()
         {
             var history = new History();
             history.Add(new TrainerCreated(Guid.NewGuid(), 1, "BOUDOUX", "Aurelien", "test@test.com"));
             history.Add(new TrainerDisabled(Guid.NewGuid(), 2));
-            var formateur = new Trainer(history);
-            formateur.Disable();
+            var trainer = new Trainer(history);
+            trainer.Disable();
 
-            formateur.UncommitedEvents.GetStream().Should().BeEmpty();
+            trainer.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
@@ -257,7 +257,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void dont_throw_exception_if_updateing_current_trainer()
+        public void dont_throw_exception_if_updating_current_trainer()
         {
             var query = new FakeTrainerQueries();
             query.AddTrainer("Cordier", "Fabrice");

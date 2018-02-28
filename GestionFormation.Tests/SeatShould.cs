@@ -16,7 +16,7 @@ namespace GestionFormation.Tests
     public class SeatShould
     {
         [TestMethod]
-        public void be_created_when_reserve_place_in_session()
+        public void be_created_when_reserve_seat_in_session()
         {
             var sessiondId = Guid.NewGuid();
 
@@ -25,110 +25,110 @@ namespace GestionFormation.Tests
 
             var session = builder.Create();
 
-            var stagiaireId = Guid.NewGuid();
-            var societeId = Guid.NewGuid();
+            var studentId = Guid.NewGuid();
+            var companyId = Guid.NewGuid();
             
-            var place = session.BookSeat(stagiaireId, societeId);
+            var seat = session.BookSeat(studentId, companyId);
 
-            place.Should().NotBeNull();
-            place.AggregateId.Should().NotBeEmpty();
-            place.UncommitedEvents.GetStream().Should().Contain(new SeatCreated(Guid.Empty, 1, sessiondId, stagiaireId, societeId));
+            seat.Should().NotBeNull();
+            seat.AggregateId.Should().NotBeEmpty();
+            seat.UncommitedEvents.GetStream().Should().Contain(new SeatCreated(Guid.Empty, 1, sessiondId, studentId, companyId));
         }
        
         [TestMethod]
-        public void raise_place_canceled_when_cancel_place()
+        public void raise_seat_canceled_when_cancel_seat()
         {
-            var context = CreateTestPlace();
-            var place = context.Builder.Create();
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
             
-            place.Cancel("TEST");
-            place.UncommitedEvents.GetStream().Should().Contain(new SeatCanceled(Guid.Empty, 1, "TEST"));
+            seat.Cancel("TEST");
+            seat.UncommitedEvents.GetStream().Should().Contain(new SeatCanceled(Guid.Empty, 1, "TEST"));
         }
 
         [TestMethod]
-        public void raise_place_refused_when_refuse_place()
+        public void raise_seat_refused_when_refuse_seat()
         {
-            var context = CreateTestPlace();
-            var place = context.Builder.Create();
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
 
-            place.Refuse("TEST");
-            place.UncommitedEvents.GetStream().Should().Contain(new SeatRefused(Guid.Empty, 1, "TEST"));
+            seat.Refuse("TEST");
+            seat.UncommitedEvents.GetStream().Should().Contain(new SeatRefused(Guid.Empty, 1, "TEST"));
         }
 
         [TestMethod]
-        public void dont_raise_place_canceled_if_already_canceled()
+        public void dont_raise_seat_canceled_if_already_canceled()
         {
-            var context = CreateTestPlace();            
+            var context = CreateTestSeat();            
             context.Builder.AddEvent((new SeatCanceled(Guid.NewGuid(), 2, "TEST")));
 
-            var place = context.Builder.Create();
-            place.Cancel("TEST");
-            place.UncommitedEvents.GetStream().Should().BeEmpty();
+            var seat = context.Builder.Create();
+            seat.Cancel("TEST");
+            seat.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
-        public void dont_raise_place_refused_if_already_refused()
+        public void dont_raise_seat_refused_if_already_refused()
         {
-            var context = CreateTestPlace();
+            var context = CreateTestSeat();
             context.Builder.AddEvent((new SeatRefused(Guid.NewGuid(), 2, "TEST")));
 
-            var place = context.Builder.Create();
-            place.Refuse("TEST");
-            place.UncommitedEvents.GetStream().Should().BeEmpty();
+            var seat = context.Builder.Create();
+            seat.Refuse("TEST");
+            seat.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
         [TestMethod]
         public void not_be_validated_if_not_previously_waiting_for_validation()
         {
-            var context = CreateTestPlace();
+            var context = CreateTestSeat();
             context.Builder.AddEvent((new SeatRefused(Guid.NewGuid(), 2, "TEST")));
 
-            var place = context.Builder.Create();
-            Action action = () => place.Validate();
+            var seat = context.Builder.Create();
+            Action action = () => seat.Validate();
             action.ShouldThrow<ValidateSeatException>();
         }
 
         [TestMethod]
-        public void raise_conventionAssociated_when_associate_convention_on_validate_place()
+        public void raise_AgreementAssociated_when_associate_agreement_on_validate_seat()
         {
-            var context = CreateTestPlace();
-            var place = context.Builder.Create();
-            place.Validate();
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
+            seat.Validate();
 
             var conventionId = Guid.NewGuid();
-            place.AssociateAgreement(conventionId);
+            seat.AssociateAgreement(conventionId);
 
-            place.UncommitedEvents.GetStream().Should().Contain(new AgreementAssociated(Guid.Empty, 0, conventionId));
+            seat.UncommitedEvents.GetStream().Should().Contain(new AgreementAssociated(Guid.Empty, 0, conventionId));
         }
 
         [TestMethod]
-        public void throw_error_when_associate_convention_that_is_not_validated()
+        public void throw_error_when_associate_agreement_that_is_not_validated()
         {
-            var context = CreateTestPlace();
-            var place = context.Builder.Create();
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
 
             var conventionId = Guid.NewGuid();
-            Action action = () => place.AssociateAgreement(conventionId);
+            Action action = () => seat.AssociateAgreement(conventionId);
 
             action.ShouldThrow<AssignAgreementException>();
         }
 
         [TestMethod]
-        public void throw_error_if_assign_convention_to_unvalided_place()
+        public void throw_error_if_assign_agreement_to_unvalided_seat()
         {
-            var context = CreateTestPlace();
-            var place = context.Builder.Create();
-            place.Refuse("test");
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
+            seat.Refuse("test");
 
             var conventionId = Guid.NewGuid();
-            Action action = () => place.AssociateAgreement(conventionId);
+            Action action = () => seat.AssociateAgreement(conventionId);
 
             action.ShouldThrow<AssignAgreementException>();
         }
 
-        private class TestPlaceContext
+        private class TestSeatContext
         {
-            public TestPlaceContext(Aggregate.AggregateBuilder<Seat> builder, Guid sessionid, Guid societeId, Guid stagiaireId)
+            public TestSeatContext(Aggregate.AggregateBuilder<Seat> builder, Guid sessionid, Guid societeId, Guid stagiaireId)
             {
                 Builder = builder;
                 Sessionid = sessionid;
@@ -142,14 +142,14 @@ namespace GestionFormation.Tests
             public Aggregate.AggregateBuilder<Seat> Builder { get; }
         }
 
-        private TestPlaceContext CreateTestPlace()
+        private TestSeatContext CreateTestSeat()
         {
             var stagiaireId = Guid.NewGuid();
             var societeId = Guid.NewGuid();
             var sessionId = Guid.NewGuid();
             var builder = Aggregate.Make<Seat>().AddEvent(new SeatCreated(Guid.Empty, 1, sessionId, stagiaireId, societeId));
 
-            return new TestPlaceContext(builder, sessionId, societeId, stagiaireId);
+            return new TestSeatContext(builder, sessionId, societeId, stagiaireId);
         }
     }
 }

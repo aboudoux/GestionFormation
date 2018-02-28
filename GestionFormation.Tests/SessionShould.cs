@@ -19,35 +19,35 @@ namespace GestionFormation.Tests
     public class SessionShould
     {
         [TestMethod]
-        public void raise_sessionPlanned_when_add_session_to_formation()
+        public void raise_sessionPlanned_when_add_session_to_training()
         {
-            var formationId = Guid.NewGuid();
-            var formateurId = Guid.NewGuid();
-            var lieuId = Guid.NewGuid();
-            var session = Session.Plan(formationId, new DateTime(2018, 1, 1), 2, 5, lieuId, formateurId);
-            session.UncommitedEvents.GetStream().Should().Contain(new SessionPlanned(Guid.Empty, 0,formationId, new DateTime(2018, 1, 1), 2, 5, lieuId, formateurId));
+            var trainingId = Guid.NewGuid();
+            var trainerId = Guid.NewGuid();
+            var locationId = Guid.NewGuid();
+            var session = Session.Plan(trainingId, new DateTime(2018, 1, 1), 2, 5, locationId, trainerId);
+            session.UncommitedEvents.GetStream().Should().Contain(new SessionPlanned(Guid.Empty, 0,trainingId, new DateTime(2018, 1, 1), 2, 5, locationId, trainerId));
         }
 
         [TestMethod]
         public void raise_session_updated_on_update_session()
         {
-            var formationId = Guid.NewGuid();
-            var formateurId = Guid.NewGuid();
-            var lieuId = Guid.NewGuid();
+            var trainingId = Guid.NewGuid();
+            var trainerId = Guid.NewGuid();
+            var locationId = Guid.NewGuid();
 
-            var session = Session.Plan(formationId, new DateTime(2018, 1, 1), 2, 5, Guid.NewGuid(), formateurId);
-            session.Update(formationId,new DateTime(2018, 1, 2), 4, 3, lieuId, formateurId);
-            session.UncommitedEvents.GetStream().Should().Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 2), 4, 3, lieuId, formateurId, formationId));
+            var session = Session.Plan(trainingId, new DateTime(2018, 1, 1), 2, 5, Guid.NewGuid(), trainerId);
+            session.Update(trainingId,new DateTime(2018, 1, 2), 4, 3, locationId, trainerId);
+            session.UncommitedEvents.GetStream().Should().Contain(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 2), 4, 3, locationId, trainerId, trainingId));
         }
 
         [TestMethod]
         public void not_raise_sessionUpdated_if_session_alrady_updated_with_same_data()
         {
             var context = TestSession.Create();
-            context.Builder.AddEvent(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 4, 3, context.LieuId, context.FormateurId, context.FormationId));
+            context.Builder.AddEvent(new SessionUpdated(Guid.Empty, 0, new DateTime(2018, 1, 1), 4, 3, context.LocationId, context.TrainerId, context.TrainingId));
             var session = context.Builder.Create();
 
-            session.Update(context.FormationId, new DateTime(2018, 1, 1), 4, 3, context.LieuId, context.FormateurId);
+            session.Update(context.TrainingId, new DateTime(2018, 1, 1), 4, 3, context.LocationId, context.TrainerId);
             session.UncommitedEvents.GetStream().Should().BeEmpty();
         }
 
@@ -95,7 +95,7 @@ namespace GestionFormation.Tests
 
         
         [TestMethod]
-        public void raise_placeReserved_if_place_available()
+        public void raise_seatReserved_if_seat_available()
         {
             var context = TestSession.Create();
             var session = context.Builder.Create();
@@ -111,7 +111,7 @@ namespace GestionFormation.Tests
 
         
         [TestMethod]
-        public void throw_exception_if_trying_to_reserve_a_place_when_no_places_are_available()
+        public void throw_exception_if_trying_to_reserve_a_seat_when_no_seats_are_available()
         {
             var context = TestSession.Create();
             var session = context.Builder.Create();
@@ -127,7 +127,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void throw_error_if_update_nbrplaces_lower_than_places_already_reserved()
+        public void throw_error_if_update_nbrSeats_lower_than_seats_already_reserved()
         {
             var context = TestSession.Create();
             var session = context.Builder.Create();
@@ -136,7 +136,7 @@ namespace GestionFormation.Tests
             session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
             session.BookSeat(Guid.NewGuid(), Guid.NewGuid());
 
-            Action action = () => session.Update(context.FormationId, DateTime.Now, 0, 3, context.LieuId, context.FormateurId);
+            Action action = () => session.Update(context.TrainingId, DateTime.Now, 0, 3, context.LocationId, context.TrainerId);
             action.ShouldThrow<TooManySeatsAlreadyReservedException>();
         }
 
@@ -155,12 +155,12 @@ namespace GestionFormation.Tests
         {
             var context = TestSession.Create();
             var session = context.Builder.Create();
-            Action action = () => session.Update(context.FormationId, new DateTime(2018,1,4), 5, 5, context.LieuId, context.FormateurId);
+            Action action = () => session.Update(context.TrainingId, new DateTime(2018,1,4), 5, 5, context.LocationId, context.TrainerId);
             action.ShouldThrow<SessionWeekEndException>();
         }
 
         [TestMethod]
-        public void release_session_place_on_releasePlace_command()
+        public void release_session_seat_on_releaseSeat_command()
         {
             var sessionId = Guid.NewGuid();
             var seatId = Guid.NewGuid();
@@ -217,16 +217,16 @@ namespace GestionFormation.Tests
         {
             private TestSession()
             {                
-                FormationId = Guid.NewGuid();
-                FormateurId = Guid.NewGuid();
-                LieuId = Guid.NewGuid();
-                Builder = Aggregate.Make<Session>().AddEvent(new SessionPlanned(Guid.NewGuid(), 1, FormationId, new DateTime(2018, 1, 1), 0, 5, LieuId, FormateurId));
+                TrainingId = Guid.NewGuid();
+                TrainerId = Guid.NewGuid();
+                LocationId = Guid.NewGuid();
+                Builder = Aggregate.Make<Session>().AddEvent(new SessionPlanned(Guid.NewGuid(), 1, TrainingId, new DateTime(2018, 1, 1), 0, 5, LocationId, TrainerId));
             }
 
             public Aggregate.AggregateBuilder<Session> Builder { get; }
-            public Guid FormationId { get; }
-            public Guid FormateurId { get; }
-            public Guid LieuId { get; }
+            public Guid TrainingId { get; }
+            public Guid TrainerId { get; }
+            public Guid LocationId { get; }
 
             public static TestSession Create()
             {

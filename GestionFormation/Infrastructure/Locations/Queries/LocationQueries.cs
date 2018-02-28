@@ -17,11 +17,11 @@ namespace GestionFormation.Infrastructure.Locations.Queries
             }
         }
 
-        public Guid? GetLocation(string nom)
+        public Guid? GetLocation(string name)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Locations.FirstOrDefault(a => a.Name == nom)?.Id;
+                return context.Locations.FirstOrDefault(a => a.Name == name)?.Id;
             }
         }
     }

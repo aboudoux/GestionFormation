@@ -28,7 +28,7 @@ namespace GestionFormation.Tests
     [TestCategory("IntegrationTests")]
     public class NotificationSqlProjectionsShould
     {
-        private RappelTestContext _context;
+        private NotificationTestContext _context;
         private static SqlTestApplicationService _service;
 
         [ClassInitialize]
@@ -40,37 +40,36 @@ namespace GestionFormation.Tests
         [TestInitialize]
         public void TestInitialize()
         {            
-            var formation = _service.Command<CreateTraining>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20, Color.Empty.ToArgb());
-            var formateur = _service.Command<CreateTrainer>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
-            var lieu = _service.Command<CreateLocation>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);
-            var session = _service.Command<PlanSession>().Execute(formation.AggregateId, DateTime.Now, 1, 20, lieu.AggregateId, formateur.AggregateId);
+            var training = _service.Command<CreateTraining>().Execute("TEST RAPPEL " + Guid.NewGuid(), 20, Color.Empty.ToArgb());
+            var trainer = _service.Command<CreateTrainer>().Execute("TEST RAPPEL " + Guid.NewGuid(), Guid.NewGuid().ToString(), "");
+            var location = _service.Command<CreateLocation>().Execute("TEST LIEU " + Guid.NewGuid(), "", 20);
+            var session = _service.Command<PlanSession>().Execute(training.AggregateId, DateTime.Now, 1, 20, location.AggregateId, trainer.AggregateId);
 
-            _context = new RappelTestContext(_service, session, new NotificationQueries());
+            _context = new NotificationTestContext(_service, session, new NotificationQueries());
         }
 
         [TestMethod]
-        public void create_rappel_on_session_when_create_new_place()
+        public void create_notification_on_session_when_create_new_seat()
         {
-            var place = _context.CreateSeat();
+            var seat = _context.CreateSeat();
 
-            // then            
             var result = _context.Queries.GetAll(UserRole.Manager).ToList();
 
-            result.Should().Contain(a =>a.SessionId == place.SessionId && a.NotificationType == NotificationType.SeatToValidate);
+            result.Should().Contain(a =>a.SessionId == seat.SessionId && a.NotificationType == NotificationType.SeatToValidate);
         }
 
         [TestMethod]
-        public void remove_rappel_on_session_when_place_refused()
+        public void remove_notification_on_session_when_seat_refused()
         {
-            var place = _context.CreateSeat();
-            _context.App.Command<RefuseSeat>().Execute(place.AggregateId, "test");
+            var seat = _context.CreateSeat();
+            _context.App.Command<RefuseSeat>().Execute(seat.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UserRole.Manager).ToList();
-            result.Should().NotContain(a => a.SessionId == place.SessionId);
+            result.Should().NotContain(a => a.SessionId == seat.SessionId);
         }
 
         [TestMethod]
-        public void remove_rappel_on_session_when_place_canceled()
+        public void remove_notification_on_session_when_seat_canceled()
         {
             var seat = _context.CreateSeat();
             _context.App.Command<CancelSeat>().Execute(seat.AggregateId, "test");
@@ -80,7 +79,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void create_rappel_for_convention_when_place_validated()
+        public void create_notification_for_agreement_when_seat_validated()
         {
             var seat = _context.CreateSeat();
             _context.App.Command<ValidateSeat>().Execute(seat.AggregateId);
@@ -90,7 +89,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void create_just_one_rappel_of_create_convention_if_validate_places_for_same_societe()
+        public void create_just_one_notification_of_create_agreement_if_validate_seat_for_same_company()
         {
             var seat1 = _context.CreateSeat();
             var seat2 = _context.CreateSeat(seat1.CompanyId);
@@ -100,95 +99,94 @@ namespace GestionFormation.Tests
             _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
             _context.App.Command<ValidateSeat>().Execute(seat3.AggregateId);
 
-
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Where(a => a.SessionId == seat1.SessionId).Should().HaveCount(1);
         }
 
         [TestMethod]
-        public void create_distinct_rappel_convention_if_validate_place_of_different_societe()
+        public void create_distinct_notification_agreement_if_validate_seat_of_different_company()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId);
-            var place3 = _context.CreateSeat();
-            var place4 = _context.CreateSeat(place3.CompanyId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId);
+            var seat3 = _context.CreateSeat();
+            var seat4 = _context.CreateSeat(seat3.CompanyId);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place3.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place4.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat3.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat4.AggregateId);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Where(a => a.SessionId == place1.SessionId).Should().HaveCount(2);
+            result.Where(a => a.SessionId == seat1.SessionId).Should().HaveCount(2);
         }
 
         [TestMethod]
-        public void create_rappel_sign_convention_when_convention_created()
+        public void create_notification_sign_agreement_when_agreement_created()
         {
-            var place1 = _context.CreateSeat();            
-            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
+            var seat1 = _context.CreateSeat();            
+            var contact = _context.App.Command<CreateContact>().Execute(seat1.CompanyId,"TEST RAPPEL", "test", "", "");
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
 
-            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId}, AgreementType.Free);
+            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat1.AggregateId}, AgreementType.Free);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Where(a=>a.AgreementId == agreement.AggregateId && a.NotificationType == NotificationType.AgreementToSign ).Should().HaveCount(1);
         }
 
         [TestMethod]
-        public void create_rappel_convention_if_revoke_convention_with_validated_place()
+        public void create_notification_agreement_if_revoke_agreement_with_validated_seat()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
 
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
-            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId , place2.AggregateId}, CoreDomain.Agreements.AgreementType.Free);
+            var contact = _context.App.Command<CreateContact>().Execute(seat1.CompanyId,"TEST RAPPEL", "test", "", "");
+            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat1.AggregateId , seat2.AggregateId}, CoreDomain.Agreements.AgreementType.Free);
 
-            _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
+            _context.App.Command<CancelSeat>().Execute(seat1.AggregateId, "test");
             
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().Contain(a => a.SessionId == place2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
+            result.Should().Contain(a => a.SessionId == seat2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
-        public void remove_rappel_convention_if_all_place_canceled_or_refused()
+        public void remove_notification_agreement_if_all_Seat_canceled_or_refused()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);    
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);    
             
-            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
-            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, CoreDomain.Agreements.AgreementType.Free);
+            var contact = _context.App.Command<CreateContact>().Execute(seat1.CompanyId, "TEST RAPPEL", "test", "", "");
+            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat1.AggregateId, seat2.AggregateId }, CoreDomain.Agreements.AgreementType.Free);
 
-            _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
+            _context.App.Command<CancelSeat>().Execute(seat1.AggregateId, "test");
 
-            _context.App.Command<CancelSeat>().Execute(place2.AggregateId, "test");
+            _context.App.Command<CancelSeat>().Execute(seat2.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().NotContain(a => a.SessionId == place2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
+            result.Should().NotContain(a => a.SessionId == seat2.SessionId && a.NotificationType == NotificationType.AgreementToCreate);
         }
 
         [TestMethod]
-        public void remove_rappel_when_convention_created_on_revoked_convention()
+        public void remove_notification_when_agreemenet_created_on_revoked_agreement()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId,"TEST RAPPEL", "test", "", "");
-            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
+            var contact = _context.App.Command<CreateContact>().Execute(seat1.CompanyId,"TEST RAPPEL", "test", "", "");
+            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat1.AggregateId, seat2.AggregateId }, AgreementType.Free);
 
-            _context.App.Command<CancelSeat>().Execute(place1.AggregateId, "test");
+            _context.App.Command<CancelSeat>().Execute(seat1.AggregateId, "test");
 
-            var convention = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place2.AggregateId }, AgreementType.Free);
+            var convention = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat2.AggregateId }, AgreementType.Free);
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
             result.Should().NotContain(a => a.AgreementId == convention.AggregateId && a.NotificationType == NotificationType.AgreementToCreate);
@@ -198,25 +196,25 @@ namespace GestionFormation.Tests
         [TestMethod]
         public void dont_remove_create_agreement_reminder_if_exists_non_validated_seat()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<RefuseSeat>().Execute(place2.AggregateId, "test");
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<RefuseSeat>().Execute(seat2.AggregateId, "test");
 
             var result = _context.Queries.GetAll(UserRole.Operator).ToList();
-            result.Should().Contain(a=> a.NotificationType == NotificationType.AgreementToCreate && a.SessionId == place1.SessionId && a.CompanyId == place1.CompanyId);
+            result.Should().Contain(a=> a.NotificationType == NotificationType.AgreementToCreate && a.SessionId == seat1.SessionId && a.CompanyId == seat1.CompanyId);
         }
 
         [TestMethod]
         public void create_distinct_notification_when_adding_prevalided_seat()
         {
-            var place1 = _context.CreateSeat();
-            var place2 = _context.CreateSeat(place1.CompanyId, false);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
+            var seat1 = _context.CreateSeat();
+            var seat2 = _context.CreateSeat(seat1.CompanyId, false);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
 
-            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
-            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
+            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == seat1.SessionId);
+            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == seat1.SessionId);
 
             operatorNotif.Should().HaveCount(1).And.Contain(a=>a.NotificationType == NotificationType.AgreementToCreate);
             managerNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.SeatToValidate);
@@ -225,14 +223,14 @@ namespace GestionFormation.Tests
         [TestMethod]
         public void not_create_agreementToCreate_notification_twice_when_validating_seat()
         {
-            var place1 = _context.CreateSeat(sendValidationNotification: true);
-            var place2 = _context.CreateSeat(place1.CompanyId, false);
+            var seat1 = _context.CreateSeat(sendValidationNotification: true);
+            var seat2 = _context.CreateSeat(seat1.CompanyId, false);
 
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
 
-            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
-            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
+            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == seat1.SessionId);
+            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == seat1.SessionId);
 
             operatorNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.AgreementToCreate);
             managerNotif.Should().BeEmpty();
@@ -241,35 +239,35 @@ namespace GestionFormation.Tests
         [TestMethod]
         public void not_remove_agreement_to_sign_when_removing_valided_seat_where_agreement_not_created()
         {
-            var place1 = _context.CreateSeat(sendValidationNotification:false);
-            var place2 = _context.CreateSeat(place1.CompanyId, sendValidationNotification: false);
+            var seat1 = _context.CreateSeat(sendValidationNotification:false);
+            var seat2 = _context.CreateSeat(seat1.CompanyId, sendValidationNotification: false);
 
-            _context.App.Command<ValidateSeat>().Execute(place1.AggregateId);
-            _context.App.Command<ValidateSeat>().Execute(place2.AggregateId);            
+            _context.App.Command<ValidateSeat>().Execute(seat1.AggregateId);
+            _context.App.Command<ValidateSeat>().Execute(seat2.AggregateId);            
 
-            var contact = _context.App.Command<CreateContact>().Execute(place1.CompanyId, "TEST RAPPEL", "test", "", "");
-            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { place1.AggregateId, place2.AggregateId }, AgreementType.Free);
+            var contact = _context.App.Command<CreateContact>().Execute(seat1.CompanyId, "TEST RAPPEL", "test", "", "");
+            var agreement = _context.App.Command<CreateAgreement>().Execute(contact.AggregateId, new List<Guid>() { seat1.AggregateId, seat2.AggregateId }, AgreementType.Free);
 
-            var place3 = _context.CreateSeat(place1.CompanyId, sendValidationNotification:false);
+            var place3 = _context.CreateSeat(seat1.CompanyId, sendValidationNotification:false);
             _context.App.Command<ValidateSeat>().Execute(place3.AggregateId);
 
             _context.App.Command<RefuseSeat>().Execute(place3.AggregateId, "test");
 
-            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == place1.SessionId);
-            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == place1.SessionId);
+            var operatorNotif = _context.Queries.GetAll(UserRole.Operator).Where(a => a.SessionId == seat1.SessionId);
+            var managerNotif = _context.Queries.GetAll(UserRole.Manager).Where(a => a.SessionId == seat1.SessionId);
 
             operatorNotif.Should().HaveCount(1).And.Contain(a => a.NotificationType == NotificationType.AgreementToSign);
             managerNotif.Should().BeEmpty();
         }
     }
 
-    public class RappelTestContext
+    public class NotificationTestContext
     {
         private readonly SqlTestApplicationService _service;
         private readonly Session _session;
         private readonly INotificationQueries _queries;
 
-        public RappelTestContext(SqlTestApplicationService service, Session session, INotificationQueries queries)
+        public NotificationTestContext(SqlTestApplicationService service, Session session, INotificationQueries queries)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _session = session ?? throw new ArgumentNullException(nameof(session));

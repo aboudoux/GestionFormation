@@ -16,10 +16,10 @@ namespace GestionFormation.Tests
     public class CreateTrainingShould
     {
         [TestMethod]
-        public void throw_error_if_formation_name_already_exists()
+        public void throw_error_if_training_name_already_exists()
         {
             var fakeQuery = new FakeTrainingQueries();
-            fakeQuery.AddFormation("TEST",1);
+            fakeQuery.AddTraining("TEST",1);
             var create = new CreateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery );
 
             Action action = () =>create.Execute("TEST",1, Color.Empty.ToArgb());
@@ -31,11 +31,11 @@ namespace GestionFormation.Tests
         {
             var fakeQuery = new FakeTrainingQueries();            
             var create = new CreateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery);
-            var formation = create.Execute("TEST",1, Color.Empty.ToArgb());
+            var training = create.Execute("TEST",1, Color.Empty.ToArgb());
 
-            var firstEvent = formation.UncommitedEvents.GetStream().First();
+            var firstEvent = training.UncommitedEvents.GetStream().First();
             firstEvent.Should().BeAssignableTo<TrainingCreated>();
-            firstEvent.AggregateId.Should().Be(formation.AggregateId);
+            firstEvent.AggregateId.Should().Be(training.AggregateId);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace GestionFormation.Kernel
                 Register(Activator.CreateInstance(type) as IEventHandler);            
         }
 
-        public void AutoRegisterProjectionEventHandler()
+        public void AutoRegisterProjectionEventHandlerOnly()
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetAllConcretTypeThatImplementInterface<IEventHandler>().Where(a=>a.GetInterface(typeof(IProjectionHandler).Name) != null))
                 Register(Activator.CreateInstance(type) as IEventHandler);

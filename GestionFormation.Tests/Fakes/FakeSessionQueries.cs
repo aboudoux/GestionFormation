@@ -8,15 +8,15 @@ namespace GestionFormation.Tests.Fakes
     {
         private List<ISessionResult> _session = new List<ISessionResult>();
 
-        public void AddSession(Guid formationId, Guid sessionId, DateTime dateDebut, int durée, Guid? lieuId, Guid? FormateurId)
+        public void AddSession(Guid trainingId, Guid sessionId, DateTime startSessuib, int duration, Guid? locationId, Guid? trainerId)
         {
             var sessionResult = new FakeSessionResult();
-            sessionResult.TrainingId = formationId;
+            sessionResult.TrainingId = trainingId;
             sessionResult.SessionId = sessionId;
-            sessionResult.SessionStart = dateDebut;
-            sessionResult.Duration = durée;
-            sessionResult.TrainerId = FormateurId;
-            sessionResult.LocationId = lieuId;
+            sessionResult.SessionStart = startSessuib;
+            sessionResult.Duration = duration;
+            sessionResult.TrainerId = trainerId;
+            sessionResult.LocationId = locationId;
             _session.Add(sessionResult);
         }
 

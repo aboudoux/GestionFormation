@@ -7,6 +7,6 @@ namespace GestionFormation.CoreDomain.Locations.Queries
     {
         IReadOnlyList<ILocationResult> GetAll();
 
-        Guid? GetLocation(string nom);
+        Guid? GetLocation(string name);
     }
 }

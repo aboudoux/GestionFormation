@@ -14,7 +14,7 @@ namespace GestionFormation.Applications
             _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
 
             _dispatcher = new EventDispatcher();
-            _dispatcher.AutoRegisterProjectionEventHandler();
+            _dispatcher.AutoRegisterProjectionEventHandlerOnly();
         }
 
         public void Execute(Action<int, int> progession = null)

@@ -9,20 +9,20 @@ namespace GestionFormation.CoreDomain
 
         string CreateDegree(FullName student, string company, DateTime startSession, DateTime endSession, FullName trainer);
 
-        string CreateTimesheet(string training, DateTime startSession, int duration, string location, FullName trainer, IReadOnlyList<Participant> participants);
+        string CreateTimesheet(string training, DateTime startSession, int duration, string location, FullName trainer, IReadOnlyList<Attendee> participants);
 
         string CreateSurvey(FullName trainer, string training);
 
-        string CreateFreeAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession, int duration, string location, IReadOnlyList<Participant> participants);
+        string CreateFreeAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession, int duration, string location, IReadOnlyList<Attendee> attendees);
 
-        string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession,  int duration, string location, IReadOnlyList<Participant> participants);
+        string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession,  int duration, string location, IReadOnlyList<Attendee> attendees);
 
         string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city);
     }
 
-    public class Participant
+    public class Attendee
     {
-        public Participant(FullName student, string company)
+        public Attendee(FullName student, string company)
         {
             Student = student;
             Company = company;

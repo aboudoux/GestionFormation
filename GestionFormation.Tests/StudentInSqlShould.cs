@@ -21,15 +21,15 @@ namespace GestionFormation.Tests
             var createdStagiaire = Student.Create("BOUDOUX", "Aurelien");
             eventBus.Publish(createdStagiaire.UncommitedEvents);
 
-            var stagiaireId = createdStagiaire.AggregateId;
-            var events = eventStore.GetEvents(stagiaireId);
-            var stagiaire = new Student(new History(events));
-            stagiaire.Update("BOUDOUX", "Aurélien");
-            eventBus.Publish(stagiaire.UncommitedEvents);
+            var studentId = createdStagiaire.AggregateId;
+            var events = eventStore.GetEvents(studentId);
+            var student = new Student(new History(events));
+            student.Update("BOUDOUX", "Aurélien");
+            eventBus.Publish(student.UncommitedEvents);
 
-            var stagiaire2 = new Student(new History(eventStore.GetEvents(stagiaireId)));
-            stagiaire2.Update("BOUDOUX", "Aurélien");
-            stagiaire2.UncommitedEvents.GetStream().Should().BeEmpty();            
+            var student1 = new Student(new History(eventStore.GetEvents(studentId)));
+            student1.Update("BOUDOUX", "Aurélien");
+            student1.UncommitedEvents.GetStream().Should().BeEmpty();            
         }
 
         [TestMethod]
@@ -41,8 +41,8 @@ namespace GestionFormation.Tests
 
             var eventBus = new EventBus(dispatcher, eventStore);
 
-            var stagiaire = Student.Create("BOUDOUX", "Aurelien");
-            eventBus.Publish(stagiaire.UncommitedEvents);
+            var student = Student.Create("BOUDOUX", "Aurelien");
+            eventBus.Publish(student.UncommitedEvents);
         }
     }
 }

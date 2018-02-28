@@ -14,16 +14,16 @@ namespace GestionFormation.Tests
     public class DocumentRepositoryShould
     {
         [TestMethod]
-        public void GenerateCertificatAssiduite()
+        public void GenerateCertificatOfAttendance()
         {
-             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-             var doc = repo.CreateCertificateOfAttendance(new FullName("boudoux", "aurelien"), "DOT SHARK", "SET Niveau I", "Saint PRIEST", 5, new FullName("cordier", "fabrice"), DateTime.Now);
+            var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
+            var doc = repo.CreateCertificateOfAttendance(new FullName("boudoux", "aurelien"), "DOT SHARK", "SET Niveau I", "Saint PRIEST", 5, new FullName("cordier", "fabrice"), DateTime.Now);
             File.Exists(doc).Should().BeTrue();
             //Process.Start(doc);
         }
 
         [TestMethod]
-        public void GenerateDiplome()
+        public void GenerateDegree()
         {
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
             var doc = repo.CreateDegree(new FullName("boudoux", "aurelien"), "DOT SHARK", new DateTime(2018, 01, 23), new DateTime(2018, 01, 25), new FullName("cordier", "fabrice"));
@@ -32,21 +32,21 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void GenerateFeuillepresence()
+        public void GenerateTimesheet()
         {
-            var participants = new List<Participant>();
-            participants.Add(new Participant(new FullName("boudoux", "aurelien"), "DOT SHARK"));
-            participants.Add(new Participant(new FullName("revel", "alexandre"), "TREND"));
-            participants.Add(new Participant(new FullName("Aldebert", "Gregory"), "TREND"));
+            var attendees = new List<Attendee>();
+            attendees.Add(new Attendee(new FullName("boudoux", "aurelien"), "DOT SHARK"));
+            attendees.Add(new Attendee(new FullName("revel", "alexandre"), "TREND"));
+            attendees.Add(new Attendee(new FullName("Aldebert", "Gregory"), "TREND"));
             
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-            var doc = repo.CreateTimesheet("SET Niveau I", new DateTime(2018,1,23),3,"Saint PRIEST", new FullName("cordier", "fabrice"), participants);
+            var doc = repo.CreateTimesheet("SET Niveau I", new DateTime(2018,1,23),3,"Saint PRIEST", new FullName("cordier", "fabrice"), attendees);
             File.Exists(doc).Should().BeTrue();
             //Process.Start(doc);
         }
 
         [TestMethod]
-        public void GenerateQuestionnaire()
+        public void GenerateSurvey()
         {
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
             var doc = repo.CreateSurvey(new FullName("cordier", "fabrice"), "SET Niveau II");
@@ -55,28 +55,28 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void GenerateConventionGratuite()
+        public void GenerateFreeAgreement()
         {
-            var participants = new List<Participant>();
-            participants.Add(new Participant(new FullName("boudoux", "aurelien"), "DOT SHARK"));
-            participants.Add(new Participant(new FullName("revel", "alexandre"), "TREND"));
-            participants.Add(new Participant(new FullName("Aldebert", "Gregory"), "TREND"));
+            var attendees = new List<Attendee>();
+            attendees.Add(new Attendee(new FullName("boudoux", "aurelien"), "DOT SHARK"));
+            attendees.Add(new Attendee(new FullName("revel", "alexandre"), "TREND"));
+            attendees.Add(new Attendee(new FullName("Aldebert", "Gregory"), "TREND"));
 
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-            var doc = repo.CreateFreeAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018,1,23), 3, "Saint PRIEST", participants   );
+            var doc = repo.CreateFreeAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018,1,23), 3, "Saint PRIEST", attendees   );
             //Process.Start(doc);
         }
 
         [TestMethod]
-        public void GenerateConventionPayante()
+        public void GeneratePaidAgreement()
         {
-            var participants = new List<Participant>();
-            participants.Add(new Participant(new FullName("boudoux", "aurelien"), "DOT SHARK"));
-            participants.Add(new Participant(new FullName("revel", "alexandre"), "TREND"));
-            participants.Add(new Participant(new FullName("Aldebert", "Gregory"), "TREND"));
+            var attendees = new List<Attendee>();
+            attendees.Add(new Attendee(new FullName("boudoux", "aurelien"), "DOT SHARK"));
+            attendees.Add(new Attendee(new FullName("revel", "alexandre"), "TREND"));
+            attendees.Add(new Attendee(new FullName("Aldebert", "Gregory"), "TREND"));
 
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-            var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", participants);
+            var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", attendees);
             //Process.Start(doc);
         }
 

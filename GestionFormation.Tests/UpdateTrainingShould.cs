@@ -14,12 +14,12 @@ namespace GestionFormation.Tests
     public class UpdateTrainingShould
     {
         [TestMethod]        
-        public void throw_error_if_formation_name_already_exists()
+        public void throw_error_if_training_name_already_exists()
         {
             var fakeQuery = new FakeTrainingQueries();
             var idTest1 = Guid.NewGuid();
-            fakeQuery.AddFormation(idTest1, "TEST1", 1);
-            fakeQuery.AddFormation("TEST2", 1);
+            fakeQuery.AddTraining(idTest1, "TEST1", 1);
+            fakeQuery.AddTraining("TEST2", 1);
             
             var update = new UpdateTraining(new EventBus(new EventDispatcher(), new FakeEventStore()), fakeQuery );
             Action action = () => update.Execute(idTest1, "TEST2",1, Color.Empty.ToArgb());
