@@ -47,14 +47,11 @@ namespace GestionFormation.App.Views.EditableLists
                 try
                 {
                     await CreateAsync((TCreateItem) vm.Item);
+                    await ExecuteLoadCommandAsync();
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                finally
-                {
-                    await ExecuteLoadCommandAsync();
                 }
             }
         }
@@ -86,17 +83,14 @@ namespace GestionFormation.App.Views.EditableLists
             {
                 var vm = await ApplicationService.OpenPopup<TCreateItemVm>("Modifier un element", SelectedItem);
                 if (vm.IsValidated)
-                {
-                    await UpdateAsync(SelectedItem);
+                {                    
+                    await UpdateAsync((TUpdateItem) vm.Item);
+                    await ExecuteLoadCommandAsync();
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                await ExecuteLoadCommandAsync();
             }
         }      
 
@@ -132,7 +126,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected abstract Task CreateAsync(TCreateItem item);
         protected abstract Task UpdateAsync(TUpdateItem item);
-        protected abstract Task DeleteAsync(TUpdateItem item);
+        protected abstract Task DeleteAsync(TUpdateItem item);       
 
         public abstract string Title { get; }
 

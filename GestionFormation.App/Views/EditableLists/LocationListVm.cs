@@ -21,7 +21,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableLocation>> LoadAsync()
         {
-            return await Task.Run(() => _locationQueries.GetAll().Select(a=>new EditableLocation(a, this)).ToList());            
+            return await Task.Run(() => _locationQueries.GetAll().Select(a=>new EditableLocation(a)).ToList());            
         }
 
         protected override async Task CreateAsync(EditableLocation item)
@@ -49,7 +49,7 @@ namespace GestionFormation.App.Views.EditableLists
         {            
         }
 
-        public EditableLocation(ILocationResult result, LocationListVm parent) : base(result.LocationId, parent)
+        public EditableLocation(ILocationResult result) : base(result.LocationId)
         {
             Name = result.Name;
             Address = result.Address;

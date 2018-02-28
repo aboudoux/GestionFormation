@@ -25,7 +25,7 @@ namespace GestionFormation.App.Views.EditableLists.Users
         
         protected override async Task<IReadOnlyList<EditableUserUpdate>> LoadAsync()
         {
-            return await Task.Run(()=> _userQueries.GetAll().Select(a=>new EditableUserUpdate(a, this)).ToList());
+            return await Task.Run(()=> _userQueries.GetAll().Select(a=>new EditableUserUpdate(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableUserCreate item)
@@ -103,7 +103,7 @@ namespace GestionFormation.App.Views.EditableLists.Users
             
         }
 
-        public EditableUserUpdate(IUserResult result, UserListVm parent) : base(result.Id, parent)
+        public EditableUserUpdate(IUserResult result) : base(result.Id)
         {
             Login = result.Login;
             Nom = result.Lastname;

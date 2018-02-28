@@ -13,7 +13,12 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Contacts.Where(a=>a.CompanyId == companyId && a.Removed == false).ToList().Select(a => new ContactResult(a));
+                return (from c in context.Contacts
+                    where c.CompanyId == companyId && c.Removed == false
+                    join company in context.Companies on c.CompanyId equals company.CompanyId into cc
+                    from company in cc.DefaultIfEmpty()
+                    select new {Contact = c, CompanyName = company == null ? string.Empty : company.Name}
+                ).ToList().Select(a => new ContactResult(a.Contact, a.CompanyName));
             }
         }
 
@@ -21,7 +26,12 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Contacts.Where(a=>a.Removed == false).ToList().Select(a => new ContactResult(a));
+                return (from c in context.Contacts
+                    where c.Removed == false
+                    join company in context.Companies on c.CompanyId equals company.CompanyId into cc
+                    from company in cc.DefaultIfEmpty()
+                    select new { Contact = c, CompanyName = company == null ? string.Empty : company.Name }
+                ).ToList().Select(a => new ContactResult(a.Contact, a.CompanyName));
             }
         }
 
@@ -35,7 +45,7 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
                     select contact;
 
                 var result = querie.FirstOrDefault();
-                return result == null ? null : new ContactResult(result);
+                return result == null ? null : new ContactResult(result, string.Empty);
             }
         }
     }

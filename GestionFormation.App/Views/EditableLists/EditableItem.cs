@@ -8,28 +8,19 @@ namespace GestionFormation.App.Views.EditableLists
     /// </summary>
     public abstract class EditableItem    
     {
-        private readonly IUpdatableListVm _parent;
 
         protected EditableItem()
-        {
-            
+        {            
         }
 
-        protected EditableItem(Guid id, IUpdatableListVm parent)
+        protected EditableItem(Guid id)
         {
-            _parent = parent ?? throw new ArgumentNullException(nameof(parent));
             Id = id;
         }
         protected Guid Id { get; }
         public Guid GetId()
         {
             return Id;
-        }
-
-        public virtual async Task Edit()
-        {
-            await _parent.UpdateCommand.ExecuteAsync();
-        }
-
+        }       
     }
 }

@@ -11,7 +11,7 @@ namespace GestionFormation.App.Views.EditableLists
         {
             
         }
-        public EditableStudent(IStudentResult result, StudentListVm parent) : base(result.Id, parent)
+        public EditableStudent(IStudentResult result) : base(result.Id)
         {
             Lastname = result.Lastname;
             Firstname = result.Firstname;

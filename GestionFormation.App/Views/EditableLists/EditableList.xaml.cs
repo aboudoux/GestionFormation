@@ -23,11 +23,10 @@ namespace GestionFormation.App.Views.EditableLists
             }
         }
 
-        private async void TableView_OnEditFormShowing(object sender, EditFormShowingEventArgs e)
+        private async void TableView_OnRowDoubleClick(object sender, RowDoubleClickEventArgs e)
         {
-            var vm = ((sender as TableView).GetRowElementByRowHandle(e.RowHandle).DataContext as RowData).Row as EditableItem;
-            e.Allow = false;
-            vm.Edit();            
+            await ((sender as TableView).DataContext as IUpdatableListVm).UpdateCommand.ExecuteAsync();
+            e.Handled = true;
         }
     }
 }

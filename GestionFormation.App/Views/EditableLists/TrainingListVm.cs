@@ -23,7 +23,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableTraining>> LoadAsync()
         {
-            return await Task.Run(() => _queries.GetAll().Select(a=>new EditableTraining(a, this)).ToList());
+            return await Task.Run(() => _queries.GetAll().Select(a=>new EditableTraining(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableTraining item)
@@ -55,7 +55,7 @@ namespace GestionFormation.App.Views.EditableLists
             
         }
 
-        public EditableTraining(ITrainingResult result, TrainingListVm parent) : base(result.Id, parent)
+        public EditableTraining(ITrainingResult result) : base(result.Id)
         {
             Name = result.Name;
             Seats = result.Seats;

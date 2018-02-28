@@ -20,7 +20,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableContact>> LoadAsync()
         {
-            return await Task.Run(() => _contactQueries.GetAll().Select(a => new EditableContact(a, this)).ToList());
+            return await Task.Run(() => _contactQueries.GetAll().Select(a => new EditableContact(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableContact item)
@@ -38,7 +38,7 @@ namespace GestionFormation.App.Views.EditableLists
             await Task.Run(() => ApplicationService.Command<DeleteContact>().Execute(item.GetId()));
         }
 
-        public override string Title => "Liste des contacts";
+        public override string Title => "Liste des contacts";     
     }
 
     public class EditableContact : EditableItem
@@ -46,8 +46,7 @@ namespace GestionFormation.App.Views.EditableLists
         private readonly Guid _societeId;
 
         public EditableContact()
-        {
-            
+        {            
         }
 
         public EditableContact(Guid societeId)
@@ -55,13 +54,19 @@ namespace GestionFormation.App.Views.EditableLists
             _societeId = societeId;
         }
 
-        public EditableContact(IContactResult result, ContactListVm parent) : base(result.Id, parent)
+        public EditableContact(Guid societeId, Guid objectId) : base(objectId)
+        {
+            _societeId = societeId;
+        }
+
+        public EditableContact(IContactResult result) : base(result.Id)
         {
             Lastname = result.Lastname;
             Firstname = result.Firstname;
             Email = result.Email;
             Telephone = result.Telephone;
-            _societeId = result.CompanyId;
+            Company = result.CompanyName;
+            _societeId = result.CompanyId;            
         }
 
         [DisplayName("Nom")]
@@ -72,6 +77,8 @@ namespace GestionFormation.App.Views.EditableLists
         public string Email { get; set; }
         [DisplayName("Téléphone")]
         public string Telephone { get; set; }
+        [DisplayName("Société")]
+        public string Company { get; set; }
         public Guid GetSocieteId() => _societeId;      
     }
 }

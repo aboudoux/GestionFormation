@@ -6,7 +6,7 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
 {
     public class ContactResult : IContactResult
     {
-        public ContactResult(ContactSqlEntity entity)
+        public ContactResult(ContactSqlEntity entity, string companyName)
         {
             Id = entity.ContactId;
             Lastname = entity.Lastname;
@@ -14,6 +14,7 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
             Email = entity.Email;
             Telephone = entity.Telephone;
             CompanyId = entity.CompanyId;
+            CompanyName = companyName;
         }
         public Guid Id { get; }
         public string Lastname { get; }
@@ -21,5 +22,6 @@ namespace GestionFormation.Infrastructure.Contacts.Queries
         public string Email { get; }
         public string Telephone { get; }
         public Guid CompanyId { get; }
+        public string CompanyName { get; }
     }
 }

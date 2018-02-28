@@ -21,7 +21,7 @@ namespace GestionFormation.App.Views.EditableLists
 
         protected override async Task<IReadOnlyList<EditableStudent>> LoadAsync()
         {
-            return await Task.Run(()=>_studentQueries.GetAll().Select(a=>new EditableStudent(a, this)).ToList());
+            return await Task.Run(()=>_studentQueries.GetAll().Select(a=>new EditableStudent(a)).ToList());
         }
 
         protected override async Task CreateAsync(EditableStudent item)

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +11,7 @@ namespace GestionFormation.App.Views.EditableLists
     public class CreateContactWindowVm : CreateItemVm
     {
         private readonly ICompanyQueries _companyQueries;
+        private readonly EditableContact _source;
         private string _lastname;
         private string _firstname;
         private string _email;
@@ -17,15 +19,21 @@ namespace GestionFormation.App.Views.EditableLists
         private ObservableCollection<Item> _companies;
         private Item _selectedCompanie;
 
-        public CreateContactWindowVm(string title, object item, ICompanyQueries companyQueries) : base(title, item)
+        public CreateContactWindowVm(string title, ICompanyQueries companyQueries, EditableContact source) : base(title, source)
         {
-            _companyQueries = companyQueries;
+            _companyQueries = companyQueries ?? throw new ArgumentNullException(nameof(companyQueries));
+            _source = source ?? throw new ArgumentNullException(nameof(source));
         }
 
         public override async Task Init()
         {
+            Lastname = _source.Lastname;
+            Firstname = _source.Firstname;
+            Email = _source.Email;
+            Telephone = _source.Telephone;            
+
             Companies = new ObservableCollection<Item>(await Task.Run(()=>_companyQueries.GetAll().Select(a=>new Item(){ Id = a.CompanyId, Label = a.Name})));
-            _companyQueries.GetAll();
+            SelectedCompanie = Companies.FirstOrDefault(a => a.Id == _source.GetSocieteId());
         }
 
         public string Lastname
@@ -72,7 +80,7 @@ namespace GestionFormation.App.Views.EditableLists
                 return;
             }
 
-            Item = new EditableContact(SelectedCompanie.Id)
+            Item = new EditableContact(SelectedCompanie.Id, _source.GetId())
             { 
                 Lastname = Lastname,
                 Firstname = Firstname,

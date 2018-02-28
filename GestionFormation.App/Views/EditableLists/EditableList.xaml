@@ -47,8 +47,8 @@
             </dxg:GridControl.Resources>
             
             <dxg:GridControl.View>
-                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False" EditFormShowMode="Inline" EnableImmediatePosting="True"
-                               EditFormPostMode="Cached" AutoWidth="True" AllowEditing="True" CellTemplateSelector="{StaticResource templateselector}" EditFormShowing="TableView_OnEditFormShowing">
+                <dxg:TableView AllowGrouping="False" NavigationStyle="Row" ShowSearchPanelMode="Always" SearchDelay="300" ShowGroupPanel="False"
+                               AutoWidth="True" AllowEditing="False" CellTemplateSelector="{StaticResource templateselector}" RowDoubleClick="TableView_OnRowDoubleClick">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="RowUpdated" Command="{Binding Path=UpdateCommand}"/>
                     </dxmvvm:Interaction.Behaviors>
