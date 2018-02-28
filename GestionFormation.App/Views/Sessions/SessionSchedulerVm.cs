@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -188,7 +189,7 @@ namespace GestionFormation.App.Views.Sessions
             LieuId = result.LocationId;
             FormationId = result.TrainingId;
 
-            Color = ColorHelper.FromInt(result.Color);
+            Color = ColorHelper.FromInt(result.Color);            
         }
 
         public Guid Id { get; }

@@ -81,6 +81,7 @@
     <Compile Include="Creators\ContactCreator.cs" />
     <Compile Include="Creators\Creator.cs" />
     <Compile Include="Creators\LocationCreator.cs" />
+    <Compile Include="Creators\SessionCreator.cs" />
     <Compile Include="Creators\StudentCreator.cs" />
     <Compile Include="Creators\TrainerCreator.cs" />
     <Compile Include="Name.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Creators\TrainingCreator.cs" />
+    <Compile Include="StringExtention.cs" />
     <Compile Include="UnityIocContainer.cs" />
   </ItemGroup>
   <ItemGroup>

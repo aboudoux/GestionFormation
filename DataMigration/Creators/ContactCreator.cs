@@ -14,15 +14,21 @@ namespace DataMigration.Creators
 
         public void Create(string contact, string email, string telephone, string companyName)
         {
-            if(string.IsNullOrWhiteSpace(companyName)) return;
-            if(string.IsNullOrWhiteSpace(contact)) return;
+            if(companyName.IsEmpty()) return;
+            if(contact.IsEmpty()) return;
+            
+            if(Mapper.Exists(ConstructKey(contact))) return;
 
             var contactName = new Name(contact);
-            if(Mapper.Exists(contactName.ToString())) return;
-
             var createdContact = App.Command<CreateContact>().Execute(_companyCreator.GetCompanyId(companyName), contactName.Lastname, contactName.Firstname, email, telephone);
 
-            Mapper.Add(contactName.ToString(), createdContact.AggregateId);
+            Mapper.Add(ConstructKey(contact), createdContact.AggregateId);
+        }
+
+        public override string ConstructKey(string source)
+        {
+            var contactName = new Name(source);
+            return contactName.ToString();
         }
     }
 }

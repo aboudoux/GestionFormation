@@ -14,27 +14,27 @@ namespace GestionFormation.Applications.Sessions
         public PlanSession(EventBus eventBus) : base(eventBus)
         { 
         }
-        public Session Execute(Guid formationId, DateTime debut, int durée, int nombrePlace, Guid? lieuId, Guid? formateurId)
+        public Session Execute(Guid trainingId, DateTime start, int duration, int nbrSeats, Guid? locationId, Guid? trainerId)
         {
             Trainer trainer = null;
-            if (formateurId.HasValue)
+            if (trainerId.HasValue)
             {
-                trainer = GetAggregate<Trainer>(formateurId.Value);
+                trainer = GetAggregate<Trainer>(trainerId.Value);
                 if( trainer == null)
                     throw new TrainerNotExistsException();
-                trainer.Assign(debut, durée);
+                trainer.Assign(start, duration);
             }
 
             Location location = null;
-            if (lieuId.HasValue)
+            if (locationId.HasValue)
             {
-                location = GetAggregate<Location>(lieuId.Value);
+                location = GetAggregate<Location>(locationId.Value);
                 if (location == null)
                     throw new LocationNotExistsException();
-                location.Assign(debut, durée);
+                location.Assign(start, duration);
             }
             
-            var session = Session.Plan(formationId, debut, durée, nombrePlace, lieuId, formateurId);
+            var session = Session.Plan(trainingId, start, duration, nbrSeats, locationId, trainerId);
             var notification = NotificationManager.Create(session.AggregateId);
 
             PublishUncommitedEvents(trainer, location, session, notification);

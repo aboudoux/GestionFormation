@@ -10,6 +10,7 @@ namespace DataMigration.Creators
 
         public void Create(string locationName)
         {
+            if(locationName.IsEmpty()) return;            
             if (Mapper.Exists(locationName)) return;
 
             var location = App.Command<CreateLocation>().Execute(locationName, "", 8);

@@ -12,16 +12,16 @@ namespace GestionFormation.Applications.Sessions
         {
         }
 
-        public void Execute(Guid sessionId, Guid formationId, DateTime dateDebut, int durée, int nombrePlace, Guid? lieuId, Guid? formateurId)
+        public void Execute(Guid sessionId, Guid trainingId, DateTime start, int duration, int nbrSeats, Guid? locationId, Guid? trainerId)
         {
             var session = GetAggregate<Session>(sessionId);
             if (session == null)
                 throw new SessionNotExistsException(sessionId);           
 
-            var lieux = Update<Location>(lieuId, session, session.LocationId, dateDebut, durée);
-            var formateurs = Update<Trainer>(formateurId, session, session.TrainerId, dateDebut, durée);            
+            var lieux = Update<Location>(locationId, session, session.LocationId, start, duration);
+            var formateurs = Update<Trainer>(trainerId, session, session.TrainerId, start, duration);            
 
-            session.Update(formationId, dateDebut, durée, nombrePlace, lieuId, formateurId);
+            session.Update(trainingId, start, duration, nbrSeats, locationId, trainerId);
 
             PublishUncommitedEvents(lieux.Item1, lieux.Item2, formateurs.Item1, formateurs.Item2, session);
         }

@@ -11,8 +11,7 @@ namespace DataMigration.Creators
 
         public void Create(string name, string address, string zipCode, string city)
         {
-            if(string.IsNullOrWhiteSpace(name))
-                return;
+            if(name.IsEmpty()) return;
 
             if(Mapper.Exists(name)) return;
 

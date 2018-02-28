@@ -10,13 +10,20 @@ namespace DataMigration.Creators
 
         public void Create(string name)
         {
-            if(string.IsNullOrWhiteSpace(name)) return;
-            var fullname = new Name(name);
+            if(name.IsEmpty()) return;
+            
+            if (Mapper.Exists(ConstructKey(name))) return;
 
-            if (Mapper.Exists(fullname.ToString())) return;
-                                  
+            var fullname = new Name(name);
             var student = App.Command<CreateStudent>().Execute(fullname.Lastname, fullname.Firstname);
-            Mapper.Add(fullname.ToString(), student.AggregateId);
+
+            Mapper.Add(ConstructKey(name), student.AggregateId);
+        }
+
+        public override string ConstructKey(string source)
+        {
+            var fullname = new Name(source);
+            return fullname.ToString();
         }
     }
 }

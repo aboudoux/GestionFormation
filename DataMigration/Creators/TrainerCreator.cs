@@ -10,16 +10,22 @@ namespace DataMigration.Creators
 
         public void Create(string trainerName)
         {
-            if(string.IsNullOrWhiteSpace(trainerName))
+            if(trainerName.IsEmpty())
+                return;
+            
+            if (Mapper.Exists(ConstructKey(trainerName)))
                 return;
 
             var tn = new Name(trainerName);
 
-            if (Mapper.Exists(tn.ToString()))
-                return;            
-
             var trainer = App.Command<CreateTrainer>().Execute(tn.Lastname, tn.Firstname, string.Empty);
-            Mapper.Add(tn.ToString(), trainer.AggregateId);
+            Mapper.Add(ConstructKey(trainerName), trainer.AggregateId);
+        }
+
+        public override string ConstructKey(string source)
+        {
+            var tn = new Name(source);
+            return tn.ToString();
         }
     }
 }

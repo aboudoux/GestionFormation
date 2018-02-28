@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DataMigration.Creators
 {
@@ -10,6 +11,16 @@ namespace DataMigration.Creators
         protected Creator(ApplicationService applicationService)
         {
             App = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
+        }
+
+        public Guid GetId(string key)
+        {
+            return Mapper.GetId(key);
+        }
+
+        public virtual string ConstructKey(string source)
+        {
+            return source;
         }
     }
 }
