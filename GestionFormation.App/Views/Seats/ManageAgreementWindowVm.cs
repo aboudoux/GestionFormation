@@ -35,6 +35,7 @@ namespace GestionFormation.App.Views.Seats
         private ObservableCollection<IAgreementSeatResult> _seats;
         private string _documentPath;
         private bool _showSavedDocument;
+        private string _agreementType;
 
         public ManageAgreementWindowVm(Guid agreementId, ISeatQueries seatQueries, 
             IApplicationService applicationService, IContactQueries contactQueries, IAgreementQueries agreementQueries,
@@ -62,13 +63,16 @@ namespace GestionFormation.App.Views.Seats
         public override async Task Init()
         {
             var placesTask = Task.Run(()=>_seatQueries.GetSeatAgreements(_agreementId));
-            var documentTask = Task.Run(() => _agreementQueries.GetSignedAgreementDocumentId(_agreementId));
+            var documentTask = Task.Run(() => _agreementQueries.GetAgreementDocument(_agreementId));
             var contactTask = LoadContact(_agreementId);
 
             await Task.WhenAll(placesTask, contactTask, documentTask);
 
             Seats = new ObservableCollection<IAgreementSeatResult>(placesTask.Result);
-            SignedDocumentId = documentTask.Result;
+
+            SignedDocumentId = documentTask.Result.SignedDocumentId;
+            AAgreementType = documentTask.Result.Type == AgreementType.Free ? "Gratuite" : "Payante";
+
             if (SignedDocumentId.HasValue)
                 ShowSavedDocument = true;
         }
@@ -83,7 +87,7 @@ namespace GestionFormation.App.Views.Seats
                 Lastname = contact.Lastname;
                 Firstname = contact.Firstname;
                 Email = contact.Email;
-                Telephone = contact.Telephone;
+                Telephone = contact.Telephone;                
             }
         }
 
@@ -131,6 +135,12 @@ namespace GestionFormation.App.Views.Seats
                 Set(()=>DocumentPath, ref _documentPath, value);
                 ValiderCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        public string AAgreementType
+        {
+            get => _agreementType;
+            set { Set(()=>AAgreementType, ref _agreementType, value); }
         }
 
         public RelayCommand ChooseDocumentCommand { get; }

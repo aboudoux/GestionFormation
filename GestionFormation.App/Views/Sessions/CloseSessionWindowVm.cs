@@ -164,7 +164,7 @@ namespace GestionFormation.App.Views.Sessions
                 documents.Add(new MailAttachement(certificat, "Certificat assiduité " + item.Student));
             }
 
-            _computerService.OpenMailInOutlook("Stage TREND", 
+            _computerService.OpenMailInOutlook($"Stage TREND - {_trainingName} du {_sessionStart:D}", 
                 "Madame, Monsieur," + Environment.NewLine + Environment.NewLine +
                 $"Suite au stage dispensé pour la formation «{_trainingName}» du {_sessionStart:D}, veuillez trouver, ci-joint, les documents de fin de stage suivants:" + Environment.NewLine + Environment.NewLine +
                 "\t- La convention de formation dûment signée." + Environment.NewLine +

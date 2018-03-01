@@ -8,8 +8,7 @@ namespace GestionFormation.CoreDomain.Agreements.Queries
         IEnumerable<IAgreementResult> GetAll(Guid sessionId);
 
         IPrintableAgreementResult GetPrintableAgreement(Guid agreementId);
-
-        Guid? GetSignedAgreementDocumentId(Guid agreementId);
+        IAgreementDocumentResult GetAgreementDocument(Guid agreementId);
 
         long GetNextAgreementNumber();
     }

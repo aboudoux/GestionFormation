@@ -35,6 +35,12 @@
                     <TextBlock Text="{Binding Path=Telephone}"></TextBlock>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>
+            <dxlc:GroupSeparator></dxlc:GroupSeparator>
+            <dxlc:LayoutGroup>
+                <dxlc:LayoutItem Label="Type de convention :">
+                    <TextBlock Text="{Binding Path=AAgreementType}"></TextBlock>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
         </dxlc:LayoutControl>
 
         <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource InverseBooleanToVisibilityConverter}}">

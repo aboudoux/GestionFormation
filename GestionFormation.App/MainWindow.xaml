@@ -59,7 +59,7 @@
                                 <dxb:BarButtonItem Content="Rafraichir" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshNotifications}"/>
                             </dxb:ToolBarControl>
                         </dxb:BarContainerControl>
-                        <dxe:ListBoxEdit Grid.Row="1" ItemsSource="{Binding Path=Notifications}" SelectionMode="Single" SelectedItem="{Binding Path=SelectedNotification}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <dxe:ListBoxEdit Grid.Row="1" ItemsSource="{Binding Path=Notifications}" SelectionMode="Single" SelectedItem="{Binding Path=SelectedNotification}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IncrementalSearch="True">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="PreviewMouseDoubleClick" Command="{Binding OpenNotificationCommand}" />
                             </dxmvvm:Interaction.Behaviors>

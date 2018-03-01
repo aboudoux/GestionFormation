@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.CoreDomain.Agreements.Queries;
 using GestionFormation.EventStore;
+using GestionFormation.Infrastructure.Agreements.Projections;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Infrastructure.Agreements.Queries
@@ -54,11 +55,12 @@ namespace GestionFormation.Infrastructure.Agreements.Queries
             }
         }
 
-        public Guid? GetSignedAgreementDocumentId(Guid agreementId)
+        public IAgreementDocumentResult GetAgreementDocument(Guid agreementId)
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
-            {
-                return context.Agreements.Find(agreementId)?.DocumentId;
+            {                
+                var entity = context.GetEntity<AgreementSqlEntity>(agreementId);                
+                return new AgreementDocumentResult(entity.DocumentId, entity.AgreementTypeAgreement);
             }
         }
 

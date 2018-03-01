@@ -16,7 +16,7 @@ namespace GestionFormation.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public Guid? GetSignedAgreementDocumentId(Guid agreementId)
+        public Guid? GetAgreementDocument(Guid agreementId)
         {
             throw new NotImplementedException();
         }
