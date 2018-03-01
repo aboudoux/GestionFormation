@@ -28,7 +28,7 @@
         <dxlc:LayoutItem Label="Contact" Grid.Row="1">
             <dxe:ComboBoxEdit HorizontalAlignment="Stretch" IsTextEditable="False" ItemsSource="{Binding Path=Contacts}" SelectedItem="{Binding Path=SelectedContact}">
                 <dxe:ComboBoxEdit.Buttons>
-                    <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=AddContactCommand}"/>
+                    <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=AddContactCommand}"/>
                 </dxe:ComboBoxEdit.Buttons>
             </dxe:ComboBoxEdit>
         </dxlc:LayoutItem>

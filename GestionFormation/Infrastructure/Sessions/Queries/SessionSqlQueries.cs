@@ -75,6 +75,6 @@ namespace GestionFormation.Infrastructure.Sessions.Queries
                 var result = query.FirstOrDefault();
                 return result == null ? null : new ClosedSessionResultResult(result.TrainingName, result.SessionStart, result.SurveyId, result.TimesheetId);
             }
-        }
+        }       
     }
 }

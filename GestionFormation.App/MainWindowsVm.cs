@@ -46,6 +46,7 @@ namespace GestionFormation.App
             OpenNotificationCommand = new RelayCommandAsync(ExecuteOpenNotificationAsync);
             OpenHistory = new RelayCommandAsync(async()=>await OpenDocument<HistoryWindowVm>());
             OpenSeatList = new RelayCommandAsync(async ()=> await OpenDocument<SeatsListerVm>());
+            OpenSessionList = new RelayCommandAsync(async () => await OpenDocument<SessionListerVm>());
             DeleteSelectedNotification = new RelayCommandAsync(ExecuteDeleteSelectedNotificationAsync, ()=> SelectedNotification != null);
             
             Title = "Gestion formation - non connecté";
@@ -61,6 +62,7 @@ namespace GestionFormation.App
         }
 
         public RelayCommandAsync OpenSeatList { get; }
+        public RelayCommandAsync OpenSessionList { get; }
         public RelayCommandAsync OpenTrainingList { get; }
         public RelayCommandAsync OpenScheduler { get; }
         public RelayCommandAsync OpenTrainerList { get; }

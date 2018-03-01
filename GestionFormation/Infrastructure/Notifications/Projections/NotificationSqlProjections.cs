@@ -98,10 +98,7 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new NotificationSqlEntity(){ Id = @event.NotificationId };
-                context.Notifications.Attach(entity);
-                context.Notifications.Remove(entity);
-                context.SaveChanges();
+                context.Database.ExecuteSqlCommand($"DELETE FROM dbo.Notification WHERE Id = '{@event.NotificationId}'");
             }
         }
 

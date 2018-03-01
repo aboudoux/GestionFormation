@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using GestionFormation.App.Core;
+using GestionFormation.App.Views.Listers.Bases;
 using GestionFormation.CoreDomain;
+using GestionFormation.CoreDomain.Seats;
 using GestionFormation.CoreDomain.Seats.Queries;
 
 namespace GestionFormation.App.Views.Listers
@@ -13,7 +16,7 @@ namespace GestionFormation.App.Views.Listers
         private readonly ISeatQueries _seatQueries;
         public override string Title => "Liste des places";
 
-        public SeatsListerVm(ISeatQueries seatQueries)
+        public SeatsListerVm(ISeatQueries seatQueries, IApplicationService applicationService) : base(applicationService)
         {
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
         }
@@ -26,18 +29,31 @@ namespace GestionFormation.App.Views.Listers
 
     public class SeatListerItem
     {
-        public SeatListerItem(IListSeat place)
+        public SeatListerItem(IListSeat seat)
         {
-            Company = place.Company;
-            Student = new FullName(place.StudentLastname, place.StudentFirstname);
-            Trainer = new FullName(place.TrainerLastname, place.TrainerFirstname);
-            Training = place.Training;
-            StartSession = place.SessionStart;
-            Location = place.Duration;
-            AgreementNumber = place.AgreementNumber;
-            Contact = new FullName(place.ContactLastname, place.Contactfirstname);
-            Telephone = place.Telephone;
-            Email = place.Email;
+            Company = seat.Company;
+            Student = new FullName(seat.StudentLastname, seat.StudentFirstname);
+            Trainer = new FullName(seat.TrainerLastname, seat.TrainerFirstname);
+            Training = seat.Training;
+            StartSession = seat.SessionStart;
+            Location = seat.Duration;
+            AgreementNumber = seat.AgreementNumber;
+            Contact = new FullName(seat.ContactLastname, seat.Contactfirstname);
+            Telephone = seat.Telephone;
+            Email = seat.Email;
+            SeatState = GetSeatStatus(seat.SeatStatus);
+        }
+
+        private string GetSeatStatus(SeatStatus status)
+        {
+            switch (status)
+            {
+                case SeatStatus.Valid: return "Validé";
+                case SeatStatus.ToValidate: return "A valider";
+                case SeatStatus.Canceled: return "Annulé";
+                case SeatStatus.Refused: return "Refusé";
+                    default: return "Inconnu";
+            }
         }
 
         [DisplayName("Société")]

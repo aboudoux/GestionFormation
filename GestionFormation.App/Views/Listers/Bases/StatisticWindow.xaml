@@ -1,0 +1,90 @@
+﻿<dxdo:DocumentPanel x:Class="GestionFormation.App.Views.Listers.Bases.StatisticWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"       
+      xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
+      xmlns:dxpg="http://schemas.devexpress.com/winfx/2008/xaml/pivotgrid"
+      xmlns:dxdove="http://schemas.devexpress.com/winfx/2008/xaml/docking/visualelements"
+      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+      xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+      xmlns:system="clr-namespace:System;assembly=mscorlib"
+      xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+      mc:Ignorable="d"      
+      Caption="{Binding Path=Title}" Loaded="StatisticWindow_OnLoaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="0.4*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="69*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="31*"/>
+            </Grid.ColumnDefinitions>
+
+            <dxpg:PivotGridControl x:Name="pivotGrid" DataSource="{Binding Path=Items}" DataSourceChanged="PivotGrid_OnDataSourceChanged" 
+                                        CustomUnboundFieldData="PivotGrid_OnCustomUnboundFieldData"
+                                        ShowColumnHeaders="False" ShowFilterHeaders="False" ShowDataHeaders="False" ShowRowHeaders="False"/>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch">
+                <GridSplitter.Template>
+                    <ControlTemplate TargetType="{x:Type Control}">
+                        <dxdove:SplitterControl Orientation="Horizontal" />
+                    </ControlTemplate>
+                </GridSplitter.Template>
+            </GridSplitter>
+            <dxpg:PivotExcelFieldListControl Grid.Column="2" Owner="{Binding ElementName=pivotGrid}" HorizontalAlignment="Stretch" MinWidth="200"
+                                                 Margin="10,0,0,0" />
+        </Grid>
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="{x:Type Control}">
+                    <dxdove:SplitterControl Orientation="Vertical" />
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <dxc:ChartControl Name="chartControl" DataSource="{Binding ElementName=pivotGrid, Path=ChartDataSource}" BoundDataChanged="ChartControl_OnBoundDataChanged">
+                <dxc:ChartControl.CrosshairOptions>
+                    <dxc:CrosshairOptions ShowArgumentLine="False"/>
+                </dxc:ChartControl.CrosshairOptions>
+                <dxc:ChartControl.Legend>
+                    <dxc:Legend ReverseItems="True"  />
+                </dxc:ChartControl.Legend>
+            </dxc:ChartControl>
+
+            <dxlc:LayoutGroup  Grid.Column="1"  Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0" >
+                <dxlc:LayoutItem Label="Type de graphique : " LabelPosition="Top" LabelHorizontalAlignment="Left" >
+                    <dxe:ComboBoxEdit IsTextEditable="False" x:Name="cbChart" SelectedIndexChanged="CbChart_OnSelectedIndexChanged" 
+                                          NullValueButtonPlacement="None" />
+                </dxlc:LayoutItem>
+                <dxlc:LayoutItem Label="Afficher les valeurs" >
+                    <dxe:CheckEdit VerticalAlignment="Center" x:Name="ceChart" Checked="CeChart_OnChecked" Unchecked="CeChart_OnChecked"/>
+                </dxlc:LayoutItem>
+                <dxlc:LayoutItem  LabelHorizontalAlignment="Left">
+                    <dxe:ListBoxEdit x:Name="crChartDataVertical" ShowBorder="False" SelectedIndexChanged="CrChartDataVerticalSelectedIndexChanged"  
+                                         SelectedIndex="1" Background="{x:Null}" >
+                        <dxe:ListBoxEdit.StyleSettings>
+                            <dxe:RadioListBoxEditStyleSettings />
+                        </dxe:ListBoxEdit.StyleSettings>
+                        <dxe:ListBoxEdit.Items>
+                            <system:String>Séries en colonne</system:String>
+                            <system:String>Séries en ligne</system:String>
+                        </dxe:ListBoxEdit.Items>
+                    </dxe:ListBoxEdit>
+                </dxlc:LayoutItem>
+            </dxlc:LayoutGroup>
+        </Grid>
+    </Grid>
+
+
+</dxdo:DocumentPanel>
+

@@ -45,7 +45,7 @@ namespace DataMigration.Creators
                     _studentCreator.GetId(_studentCreator.ConstructKey(student)),
                     _companyCreator.GetCompanyId(_companyCreator.ConstructKey(company)), false);
 
-                App.Command<ValidateSeat>().Execute(seat.AggregateId);                
+                App.Command<ValidateSeat>().Execute(seat.AggregateId, false);
 
             }
             catch (DomainException e)

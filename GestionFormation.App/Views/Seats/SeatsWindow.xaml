@@ -59,12 +59,12 @@
                 <TextBlock Grid.Row="2" Grid.Column="0">société :</TextBlock>
                 <dxe:ComboBoxEdit Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Students}" EditValue="{Binding Path=SelectedStudent, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
                     <dxe:ComboBoxEdit.Buttons>
-                        <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=CreateStudentCommand}"/>
+                        <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=CreateStudentCommand}"/>
                     </dxe:ComboBoxEdit.Buttons>
                 </dxe:ComboBoxEdit>
                 <dxe:ComboBoxEdit Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Path=Companies}" EditValue="{Binding Path=SelectedCompany, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
                     <dxe:ComboBoxEdit.Buttons>
-                        <dxe:ButtonInfo GlyphKind="Right" Command="{Binding Path=CreateCompanyCommand}"/>
+                        <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=CreateCompanyCommand}"/>
                     </dxe:ComboBoxEdit.Buttons>
                 </dxe:ComboBoxEdit>
 

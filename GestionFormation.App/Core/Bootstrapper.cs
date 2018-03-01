@@ -7,6 +7,7 @@ using GestionFormation.App.Views.Admins.Replayers;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.App.Views.EditableLists.Users;
 using GestionFormation.App.Views.Listers;
+using GestionFormation.App.Views.Listers.Bases;
 using GestionFormation.App.Views.Logins;
 using GestionFormation.App.Views.Seats;
 using GestionFormation.App.Views.Sessions;
@@ -20,8 +21,10 @@ using CreateSessionWindow = GestionFormation.App.Views.Sessions.CreateSessionWin
 using EditableList = GestionFormation.App.Views.EditableLists.EditableList;
 using EventReplayerWindow = GestionFormation.App.Views.Admins.Replayers.EventReplayerWindow;
 using HistoryWindow = GestionFormation.App.Views.Admins.History.HistoryWindow;
+using ListerWindow = GestionFormation.App.Views.Listers.Bases.ListerWindow;
 using LoginWindow = GestionFormation.App.Views.Logins.LoginWindow;
 using SessionScheduler = GestionFormation.App.Views.Sessions.SessionScheduler;
+using StatisticWindow = GestionFormation.App.Views.Listers.Bases.StatisticWindow;
 using UserList = GestionFormation.App.Views.EditableLists.Users.UserList;
 
 namespace GestionFormation.App.Core
@@ -55,11 +58,13 @@ namespace GestionFormation.App.Core
                 .Element<LoginWindowsVm, LoginWindow>()
                 .Element<ChangeRoleWindowVm, ChangeRoleWindow>()
                 .Element<TrainingFlowWindowVm, TrainingFlowWindow>()
-                .Element<HistoryWindowVm, HistoryWindow>()
-                .Element<SeatsListerVm, ListerWindow>()
+                .Element<HistoryWindowVm, HistoryWindow>()                
                 .Element<CreateContactWindowVm, CreateContactWindow>()
                 .Element<CloseSessionWindowVm, CloseSessionWindow>()
                 .Element<TrainingListVm, EditableList>()
+                .Element<StatisticWindowVm, StatisticWindow>()
+                .Element<SeatsListerVm, ListerWindow>()
+                .Element<SessionListerVm, ListerWindow>()
                 .Build();
 
             var dispatcher = new EventDispatcher();
