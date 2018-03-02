@@ -13,5 +13,11 @@ namespace GestionFormation.CoreDomain.Notifications.Queries
         Guid SessionId { get; }
         Guid CompanyId { get; }
         Guid? AgreementId { get; }
+
+        string CompanyName { get; }
+        string TrainingName { get; }
+        FullName StudentName { get; }
+
+        DateTime SessionDate { get; }
     }
 }

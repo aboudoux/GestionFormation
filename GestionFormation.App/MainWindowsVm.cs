@@ -115,6 +115,8 @@ namespace GestionFormation.App
         public RelayCommandAsync OpenNotificationCommand { get; }
         private async Task ExecuteOpenNotificationAsync()
         {
+            if(SelectedNotification == null)return;
+
             if(SelectedNotification.AgreementId.HasValue)
                 await _applicationService.OpenPopup<ManageAgreementWindowVm>(SelectedNotification.AgreementId.Value);
             else
@@ -143,23 +145,23 @@ namespace GestionFormation.App
 
     public class NotificationItem
     {
-        private readonly string _label;
-
         public NotificationItem(INotificationResult result)
         {
-            _label = result.Label;
+            Label = result.Label;
             SessionId = result.SessionId;
             AgreementId = result.AgreementId;
             NotificationId = result.AggregateId;
+            Training = $"{result.TrainingName} ({result.SessionDate:d})";
+            Company = result.CompanyName;
+            Student = result.StudentName.ToString();
         }
 
         public Guid SessionId { get; }
         public Guid? AgreementId { get; }
         public Guid NotificationId { get; }
-
-        public override string ToString()
-        {
-            return _label;
-        }
+        public string Label { get; }        
+        public string Training { get; }
+        public string Student { get; }
+        public string Company { get; }
     }
 }

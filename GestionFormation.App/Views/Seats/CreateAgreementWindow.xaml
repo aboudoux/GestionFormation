@@ -24,6 +24,7 @@
         <dxg:GridControl Grid.Row="0" ItemsSource="{Binding Path=Seats}">
             <dxg:GridColumn Header="Société" FieldName="CompanyName"></dxg:GridColumn>
             <dxg:GridColumn Header="Stagiaire" FieldName="StudentName"></dxg:GridColumn>
+            <dxg:GridColumn Header="Statut" FieldName="SeatState.Label"></dxg:GridColumn>
         </dxg:GridControl>
         <dxlc:LayoutItem Label="Contact" Grid.Row="1">
             <dxe:ComboBoxEdit HorizontalAlignment="Stretch" IsTextEditable="False" ItemsSource="{Binding Path=Contacts}" SelectedItem="{Binding Path=SelectedContact}">

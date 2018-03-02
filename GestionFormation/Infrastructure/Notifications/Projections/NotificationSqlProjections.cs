@@ -2,9 +2,6 @@
 using GestionFormation.CoreDomain.Notifications;
 using GestionFormation.CoreDomain.Notifications.Events;
 using GestionFormation.CoreDomain.Users;
-using GestionFormation.EventStore;
-using GestionFormation.Infrastructure.Companies.Projections;
-using GestionFormation.Infrastructure.Students.Projections;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Infrastructure.Notifications.Projections
@@ -26,18 +23,12 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
                     entity = new NotificationSqlEntity();
                     context.Notifications.Add(entity);
                 }
-
-                var seat = context.Seats.Find(@event.SeatId);
-                if(seat == null)
-                    throw new EntityNotFoundException(@event.SeatId, "Seat");
-
-                var student = context.GetEntity<StudentSqlEntity>(seat.StudentId);
-
+              
                 entity.Id = @event.NotificationId;
                 entity.SeatId = @event.SeatId;
                 entity.SessionId = @event.SessionId;
                 entity.CompanyId = @event.CompanyId;
-                entity.Label = $"Place de {student.Lastname} {student.Firstname} à valider.";
+                entity.Label = "Place(s) à valider.";
                 entity.AffectedRole = UserRole.Manager;
                 entity.ReminderType = NotificationType.SeatToValidate;
 
@@ -56,14 +47,12 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
                     context.Notifications.Add(entity);
                 }
 
-                var company = context.GetEntity<CompanySqlEntity>(@event.CompanyId);
-
                 entity.Id = @event.NotificationId;
                 entity.SessionId = @event.SessionId;
                 entity.CompanyId = @event.CompanyId;
                 entity.ReminderType = NotificationType.AgreementToCreate;
                 entity.AffectedRole = UserRole.Operator;
-                entity.Label = $"{company.Name} - Convention à créer";
+                entity.Label = "Convention(s) à créer";
 
                 context.SaveChanges();
             }
@@ -80,15 +69,13 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
                     context.Notifications.Add(entity);
                 }
                 
-                var company = context.GetEntity<CompanySqlEntity>(@event.CompanyId);
-
                 entity.Id = @event.NotificationId;
                 entity.SessionId = @event.SessionId;
                 entity.CompanyId = @event.CompanyId;
                 entity.AgreementId = @event.AgreementId;
                 entity.ReminderType = NotificationType.AgreementToSign;
                 entity.AffectedRole = UserRole.Operator;
-                entity.Label = $"{company.Name} - Convention à retourner signée";
+                entity.Label = "Convention(s) à retourner signée(s)";
 
                 context.SaveChanges();
             }

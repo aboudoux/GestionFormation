@@ -7,6 +7,7 @@
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
         xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
         mc:Ignorable="d"
         Title="{Binding Path=Title}" Height="600" Width="1200">
     <dxmvvm:Interaction.Behaviors>
@@ -48,7 +49,7 @@
 
         <dxdo:DockLayoutManager  Name="dockManager1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <dxdo:LayoutGroup Orientation="Horizontal">
-                <dxdo:LayoutPanel x:Name="paneToolbox" Caption="Mes actions" ItemWidth="300">
+                <dxdo:LayoutPanel x:Name="paneToolbox" Caption="Mes actions" ItemWidth="430">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -59,16 +60,37 @@
                                 <dxb:BarButtonItem Content="Rafraichir" Glyph="{dx:DXImage Image=Refresh_16x16.png}" BarItemDisplayMode="ContentAndGlyph" Command="{Binding Path=RefreshNotifications}"/>
                             </dxb:ToolBarControl>
                         </dxb:BarContainerControl>
-                        <dxe:ListBoxEdit Grid.Row="1" ItemsSource="{Binding Path=Notifications}" SelectionMode="Single" SelectedItem="{Binding Path=SelectedNotification}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IncrementalSearch="True">
-                            <dxmvvm:Interaction.Behaviors>
+
+                        <dxg:GridControl Grid.Row="1" ItemsSource="{Binding Path=Notifications}" SelectionMode="Row" SelectedItem="{Binding Path=SelectedNotification}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoExpandAllGroups="True">
+                            <dxg:GridControl.View>
+                                <dxg:TableView>
+                                    <dxmvvm:Interaction.Behaviors>
+                                        <dxmvvm:EventToCommand EventName="RowDoubleClick" Command="{Binding OpenNotificationCommand}" />
+                            </dxmvvm:Interaction.Behaviors>
+                                    <dxg:TableView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Supprimer" Command="{Binding Path=DeleteSelectedNotification}"/>
+                                        </ContextMenu>
+                                    </dxg:TableView.ContextMenu>
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <dxg:GridColumn Header="Type" FieldName="Label" GroupIndex="1"></dxg:GridColumn>
+                            <dxg:GridColumn Header="Formation" FieldName="Training"></dxg:GridColumn>
+                            <dxg:GridColumn Header="Société" FieldName="Company"></dxg:GridColumn>
+                            <dxg:GridColumn Header="Stagiaire" FieldName="Student"></dxg:GridColumn>
+                                                        
+
+                            <!--<dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="PreviewMouseDoubleClick" Command="{Binding OpenNotificationCommand}" />
                             </dxmvvm:Interaction.Behaviors>
                             <dxe:ListBoxEdit.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Supprimer" Command="{Binding Path=DeleteSelectedNotification}"/>
                                 </ContextMenu>
-                            </dxe:ListBoxEdit.ContextMenu>
-                        </dxe:ListBoxEdit>
+                            </dxe:ListBoxEdit.ContextMenu>-->
+                        </dxg:GridControl>
+
+
                     </Grid>
                 </dxdo:LayoutPanel>
                 <dxdo:DocumentGroup x:Name="DocumentGroup"/>
