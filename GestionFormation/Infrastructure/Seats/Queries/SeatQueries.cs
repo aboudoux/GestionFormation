@@ -16,12 +16,13 @@ namespace GestionFormation.Infrastructure.Seats.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var querie = from seat in context.Seats
-                    where seat.SessionId == sessionId
-                    join student in context.Students on seat.StudentId equals student.StudentId
+                    where seat.SessionId == sessionId                    
                     join company in context.Companies on seat.CompanyId equals company.CompanyId
+                    join student in context.Students on seat.StudentId equals student.StudentId into s
+                    from student in s.DefaultIfEmpty()
                     join agreement in context.Agreements on seat.AssociatedAgreementId equals agreement.AgreementId into pc
                     from agreement in pc.DefaultIfEmpty()
-                    select new {Seat = seat, Agreement = agreement, student.Firstname, student.Lastname, company.Name};
+                    select new {Seat = seat, Agreement = agreement, Firstname = (student == null ? string.Empty : student.Firstname), Lastname = (student == null ? string.Empty : student.Lastname), company.Name};
 
                 return querie.ToList().Select(a => new SeatResult(a.Seat, a.Agreement, a.Lastname, a.Firstname, a.Name));
             }
@@ -32,12 +33,13 @@ namespace GestionFormation.Infrastructure.Seats.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
                 var querie = from seat in context.Seats
-                    where seat.SeatId == seatId
-                    join student in context.Students on seat.StudentId equals student.StudentId
+                    where seat.SeatId == seatId                    
                     join company in context.Companies on seat.CompanyId equals company.CompanyId
+                    join student in context.Students on seat.StudentId equals student.StudentId into s
+                    from student in s.DefaultIfEmpty()
                     join agreement in context.Agreements on seat.AssociatedAgreementId equals agreement.AgreementId into pc
                     from agreement in pc.DefaultIfEmpty()
-                    select new { Seat = seat, Agreement = agreement, student.Firstname, student.Lastname, company.Name };
+                    select new { Seat = seat, Agreement = agreement, Firstname = (student == null ? string.Empty : student.Firstname), Lastname = (student == null ? string.Empty : student.Lastname), company.Name };
 
                 var result = querie.FirstOrDefault();
                 return result == null ? null : new SeatResult(result.Seat, result.Agreement, result.Lastname, result.Firstname, result.Name);
@@ -72,16 +74,17 @@ namespace GestionFormation.Infrastructure.Seats.Queries
             {
                 var querie = from p in context.Seats
                     join agreement in context.Agreements on p.AssociatedAgreementId equals agreement.AgreementId
-                    join contact in context.Contacts on agreement.ContactId equals contact.ContactId             
-                    join student in context.Students on p.StudentId equals student.StudentId
+                    join contact in context.Contacts on agreement.ContactId equals contact.ContactId
+                    join student in context.Students on p.StudentId equals student.StudentId into s
+                    from student in s.DefaultIfEmpty()
                     join company in context.Companies on p.CompanyId equals company.CompanyId                                        
                     where p.SessionId == sessionId && p.Status == SeatStatus.Valid //&& agreement.DocumentId.HasValue                    
                     select new
                     {
                         p.SeatId,
-                        student.StudentId,
-                        StudentLastname = student.Lastname,
-                        StudentFirstname = student.Firstname,
+                        StudentId = student == null ? (Guid?)null : student.StudentId,
+                        StudentLastname = student == null ? string.Empty : student.Lastname,
+                        StudentFirstname = student == null ? string.Empty : student.Firstname,
                         CompanyName = company.Name,
                         company.Address,
                         company.ZipCode,
@@ -95,7 +98,7 @@ namespace GestionFormation.Infrastructure.Seats.Queries
                         agreement.DocumentId,
                     };
 
-                return querie.ToList().Select(a => new SeatValidatedResult(a.SeatId, a.StudentId, a.StudentLastname,  a.StudentFirstname, a.CompanyName, a.ContactLastname, a.ContactFirstname, a.Telephone, a.Email, a.Missing, a.CertificateOfAttendanceId, a.DocumentId, a.Address, a.ZipCode, a.City));
+                return querie.ToList().Select(a => new SeatValidatedResult(a.SeatId, a.StudentId.Value, a.StudentLastname,  a.StudentFirstname, a.CompanyName, a.ContactLastname, a.ContactFirstname, a.Telephone, a.Email, a.Missing, a.CertificateOfAttendanceId, a.DocumentId, a.Address, a.ZipCode, a.City));
             }
         }
 

@@ -17,5 +17,6 @@ namespace GestionFormation.Infrastructure.Users.Projections
         public string EncryptedPassword { get; set; }        
         public bool IsEnabled { get; set; }
         public UserRole Role { get; set; }
+        public string Signature { get; set; }
     }
 }

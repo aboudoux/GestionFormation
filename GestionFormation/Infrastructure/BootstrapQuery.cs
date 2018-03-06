@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using GestionFormation.EventStore;
+﻿using System.Threading.Tasks;
 
 namespace GestionFormation.Infrastructure
 {
@@ -16,7 +12,7 @@ namespace GestionFormation.Infrastructure
                 {
                     context.Database.ExecuteSqlCommand("IF NOT EXISTS(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CompteurConvention]') AND type = 'SO')\r\n" +
                                                        "BEGIN\r\n" +
-                                                       "CREATE SEQUENCE [dbo].[CompteurConvention] AS BIGINT START WITH 6000 INCREMENT BY 1 NO MAXVALUE NO CYCLE CACHE 10\r\n" +
+                                                       "CREATE SEQUENCE [dbo].[CompteurConvention] AS BIGINT START WITH 6001 INCREMENT BY 1 NO MAXVALUE NO CYCLE CACHE 10\r\n" +
                                                        "END"
                                                        );
                 }

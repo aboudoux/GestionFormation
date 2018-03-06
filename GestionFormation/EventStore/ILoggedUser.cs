@@ -10,5 +10,6 @@ namespace GestionFormation.EventStore
         string Nom { get; }
         string Prenom { get; }
         UserRole Role { get; }
+        string Signature { get; }
     }
 }

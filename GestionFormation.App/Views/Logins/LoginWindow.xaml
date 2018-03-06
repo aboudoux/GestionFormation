@@ -12,7 +12,7 @@
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:CurrentWindowService ClosingCommand="{Binding WindowClosingCommand}"/>
         <dxmvvm:KeyToCommand KeyGesture="Esc" EventName="KeyDown" MarkRoutedEventsAsHandled="True" Command="{DXCommand Execute='@e(window).Close()'}"/>
-        <dxmvvm:KeyToCommand KeyGesture="Enter" Command="{Binding Path=ValiderCommand}"/>
+        <dxmvvm:KeyToCommand KeyGesture="Enter" MarkRoutedEventsAsHandled="True" Command="{Binding Path=ValiderCommand}"/>
     </dxmvvm:Interaction.Behaviors>
     <StackPanel>
         <logins:LoginImage Connecting="{Binding Path=Connecting}"/>

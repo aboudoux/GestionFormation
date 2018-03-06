@@ -73,11 +73,11 @@ namespace GestionFormation.App.Views.Logins
                 await HandleMessageBoxError.ExecuteAsync(async () =>
                 {
                     if (! await  Task.Run(()=>_userQueries.Exists("admin")))
-                        await Task.Run(() => _applicationService.Command<CreateUser>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UserRole.Admin));
+                        await Task.Run(() => _applicationService.Command<CreateUser>().Execute("admin", "1234", "Administrateur", string.Empty, string.Empty, UserRole.Admin, string.Empty));
 
                     var command = new Logon(_userQueries);
 
-                    var loggedUser = await Task.Run(() => command.Execute(Username, Password));
+                    var loggedUser = await Task.Run(() => command.Execute(Username, Password));                    
                     Bootstrapper.SetLoggedUser(loggedUser);
                     await base.ExecuteValiderAsync();
                 });

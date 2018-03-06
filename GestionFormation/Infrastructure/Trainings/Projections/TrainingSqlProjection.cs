@@ -1,5 +1,5 @@
+using System;
 using GestionFormation.CoreDomain.Trainings.Events;
-using GestionFormation.EventStore;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Infrastructure.Trainings.Projections
@@ -7,7 +7,8 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
     public class TrainingSqlProjection : IProjectionHandler,
         IEventHandler<TrainingCreated>,
         IEventHandler<TrainingUpdated>,
-        IEventHandler<TrainingDeleted>
+        IEventHandler<TrainingDeleted>,
+        IEventHandler<TrainingDisabled>
     {
         public void Handle(TrainingCreated @event)
         {
@@ -33,9 +34,7 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = context.Trainings.Find(@event.AggregateId);
-                if (entity == null)
-                    throw new EntityNotFoundException(@event.AggregateId, "Stagiaires");
+                var entity = context.GetEntity<TrainingSqlEntity>(@event.AggregateId);
 
                 entity.Name = @event.Name;
                 entity.Seats = @event.Seats;
@@ -46,11 +45,20 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
 
         public void Handle(TrainingDeleted @event)
         {
+            DisableTraining(@event.AggregateId);
+        }
+
+        public void Handle(TrainingDisabled @event)
+        {
+            DisableTraining(@event.AggregateId);
+        }
+
+        private void DisableTraining(Guid trainingId)
+        {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new TrainingSqlEntity() { TrainingId = @event.AggregateId };
-                context.Trainings.Attach(entity);
-                context.Trainings.Remove(entity);
+                var entity = context.GetEntity<TrainingSqlEntity>(trainingId);
+                entity.Removed = true;
                 context.SaveChanges();
             }
         }

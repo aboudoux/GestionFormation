@@ -18,7 +18,7 @@ namespace GestionFormation.Applications.Users
             var loggedUser = _userQueries.GetLogin(login, password);
             if (loggedUser == null)
                 throw new BadLoginException();
-            return  new LoggedUser(loggedUser.Id, loggedUser.Login, loggedUser.Lastname, loggedUser.Firsname, loggedUser.Role);
+            return  new LoggedUser(loggedUser.Id, loggedUser.Login, loggedUser.Lastname, loggedUser.Firsname, loggedUser.Role, loggedUser.Signature);
         }
     }
 

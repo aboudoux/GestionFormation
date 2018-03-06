@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GestionFormation.App.Views.Seats;
 
 namespace GestionFormation.CoreDomain
 {
@@ -15,9 +16,9 @@ namespace GestionFormation.CoreDomain
 
         string CreateFreeAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession, int duration, string location, IReadOnlyList<Attendee> attendees);
 
-        string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession,  int duration, string location, IReadOnlyList<Attendee> attendees);
+        string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city, FullName contact, string training, DateTime startSession, int duration, string location, IReadOnlyList<Attendee> attendees, AgreementPriceType priceType, decimal price);
 
-        string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city);
+        string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city, string signature);
     }
 
     public class Attendee

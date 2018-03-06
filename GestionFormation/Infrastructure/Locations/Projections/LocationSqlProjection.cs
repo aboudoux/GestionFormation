@@ -1,4 +1,6 @@
-﻿using GestionFormation.CoreDomain.Locations.Events;
+﻿using System;
+using GestionFormation.CoreDomain.Locations;
+using GestionFormation.CoreDomain.Locations.Events;
 using GestionFormation.EventStore;
 using GestionFormation.Kernel;
 
@@ -7,7 +9,8 @@ namespace GestionFormation.Infrastructure.Locations.Projections
     public class LocationSqlProjection : IProjectionHandler,
         IEventHandler<LocationCreated>,
         IEventHandler<LocationUpdated>,
-        IEventHandler<LocationDeleted>
+        IEventHandler<LocationDeleted>,
+        IEventHandler<LocationDisabled>
     {
         public void Handle(LocationCreated @event)
         {
@@ -46,11 +49,21 @@ namespace GestionFormation.Infrastructure.Locations.Projections
 
         public void Handle(LocationDeleted @event)
         {
+            DisableLocation(@event.AggregateId);
+        }
+
+        public void Handle(LocationDisabled @event)
+        {
+            DisableLocation(@event.AggregateId);
+        }
+
+        private void DisableLocation(Guid locationId)
+        {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var lieu = context.Locations.Find(@event.AggregateId);
+                var lieu = context.Locations.Find(locationId);
                 if (lieu == null)
-                    throw new EntityNotFoundException(@event.AggregateId, "Lieu");
+                    throw new EntityNotFoundException(locationId, "Lieu");
 
                 lieu.Enabled = false;
                 context.SaveChanges();

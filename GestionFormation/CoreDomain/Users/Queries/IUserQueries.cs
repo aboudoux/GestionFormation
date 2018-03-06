@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GestionFormation.CoreDomain.Users.Queries
 {
@@ -9,5 +10,7 @@ namespace GestionFormation.CoreDomain.Users.Queries
         IUserResult GetLogin(string login, string password);
 
         bool Exists(string login);
+
+        IUserResult GetUser(Guid userId);
     }
 }

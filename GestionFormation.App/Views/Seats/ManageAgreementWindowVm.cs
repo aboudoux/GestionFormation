@@ -36,6 +36,11 @@ namespace GestionFormation.App.Views.Seats
         private string _documentPath;
         private bool _showSavedDocument;
         private string _agreementType;
+        private bool _showPrices;
+        private AgreementPriceType _agreementPriceType;
+        private decimal _pricePerDayAndPerStudent;
+        private decimal _packagePrice;
+        private bool _canSavePrices;
 
         public ManageAgreementWindowVm(Guid agreementId, ISeatQueries seatQueries, 
             IApplicationService applicationService, IContactQueries contactQueries, IAgreementQueries agreementQueries,
@@ -56,6 +61,7 @@ namespace GestionFormation.App.Views.Seats
             OpenSignedDocumentCommand = new RelayCommandAsync(ExecuteOpenSignedDocumentAsync);
             ReassignSignedDocumentCommand = new RelayCommand(ExecuteReassignSignedDocument);
             RemindAgreementCommand = new RelayCommandAsync(ExecuteRemingAgreementAsync);
+            SavePricesCommand = new RelayCommandAsync(ExecuteSavePricesAsync, () => CanSavePrices);
 
             SetValiderCommandCanExecute(()=>File.Exists(DocumentPath));
         }        
@@ -64,17 +70,38 @@ namespace GestionFormation.App.Views.Seats
         {
             var placesTask = Task.Run(()=>_seatQueries.GetSeatAgreements(_agreementId));
             var documentTask = Task.Run(() => _agreementQueries.GetAgreementDocument(_agreementId));
-            var contactTask = LoadContact(_agreementId);
+            var agreementTask = Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
+            var contactTask = LoadContact(_agreementId);                        
 
-            await Task.WhenAll(placesTask, contactTask, documentTask);
+            await Task.WhenAll(placesTask, contactTask, documentTask, agreementTask);
 
             Seats = new ObservableCollection<IAgreementSeatResult>(placesTask.Result);
 
             SignedDocumentId = documentTask.Result.SignedDocumentId;
             AAgreementType = documentTask.Result.Type == AgreementType.Free ? "Gratuite" : "Payante";
+            ShowPrices = documentTask.Result.Type == AgreementType.Paid;
 
             if (SignedDocumentId.HasValue)
                 ShowSavedDocument = true;
+
+            PricePerDayAndPerStudent = agreementTask.Result.PricePerDayAndPerStudent;            
+            PackagePrice = agreementTask.Result.PackagePrice;            
+            if (PricePerDayAndPerStudent == 0 && PackagePrice == 0)
+            {
+                AgreementPriceType = AgreementPriceType.DetailedPrice;
+                PricePerDayAndPerStudent = 450; 
+            }
+            else if(agreementTask.Result.PackagePrice > 0)
+            {
+                AgreementPriceType = AgreementPriceType.PackagePrice;
+                PackagePrice = agreementTask.Result.PackagePrice;
+            }
+            else
+            {
+                AgreementPriceType = AgreementPriceType.DetailedPrice;
+                PricePerDayAndPerStudent = agreementTask.Result.PricePerDayAndPerStudent;
+            }
+            CanSavePrices = false;
         }
 
         public Guid? SignedDocumentId { get; set; }
@@ -141,7 +168,7 @@ namespace GestionFormation.App.Views.Seats
         {
             get => _agreementType;
             set { Set(()=>AAgreementType, ref _agreementType, value); }
-        }
+        }        
 
         public RelayCommand ChooseDocumentCommand { get; }
         private void ExecuteChooseDocumentAsync()
@@ -220,7 +247,9 @@ namespace GestionFormation.App.Views.Seats
             if (conv.AgreementType == AgreementType.Free)
                 return _documentCreator.CreateFreeAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Attendee(a.Student, a.Company)).ToList());
 
-            return _documentCreator.CreatePaidAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Attendee(a.Student, a.Company)).ToList());
+            var type = AgreementPriceType;
+            var price = type == AgreementPriceType.DetailedPrice ? PricePerDayAndPerStudent : PackagePrice;
+            return _documentCreator.CreatePaidAgreement(conv.AgreementNumber, firstPlace.Company, firstPlace.Address, firstPlace.ZipCode, firstPlace.City, new FullName(Lastname, Firstname), conv.Training, conv.StartDate, conv.Duration, conv.Location, Seats.Select(a => new Attendee(a.Student, a.Company)).ToList(), type, price);
         }
 
         protected override async Task ExecuteValiderAsync()
@@ -239,6 +268,71 @@ namespace GestionFormation.App.Views.Seats
                 });
                 await base.ExecuteValiderAsync();
             });
+        }
+
+        public bool ShowPrices
+        {
+            get => _showPrices;
+            set { Set(()=>ShowPrices, ref _showPrices, value); }
+        }
+
+        public AgreementPriceType AgreementPriceType
+        {
+            get => _agreementPriceType;
+            set
+            {
+                Set(()=>AgreementPriceType, ref _agreementPriceType, value);
+                CanSavePrices = false;
+            }
+        }
+      
+
+        public decimal PricePerDayAndPerStudent
+        {
+            get => _pricePerDayAndPerStudent;
+            set
+            {
+                Set(()=>PricePerDayAndPerStudent, ref _pricePerDayAndPerStudent, value);
+                CanSavePrices = true;
+            }
+        }
+
+        public decimal PackagePrice
+        {
+            get => _packagePrice;
+            set
+            {
+                Set(()=>PackagePrice, ref _packagePrice, value);
+                CanSavePrices = true;
+            }
+        }
+
+        public bool CanSavePrices
+        {
+            get => _canSavePrices;
+            set
+            {
+                Set(()=>CanSavePrices, ref _canSavePrices, value);
+                SavePricesCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public RelayCommandAsync SavePricesCommand { get; }
+        private async Task ExecuteSavePricesAsync()
+        {
+            await HandleMessageBoxError.ExecuteAsync(async () =>
+            {
+                if (AgreementPriceType == AgreementPriceType.DetailedPrice)
+                {
+                    await Task.Run(() => _applicationService.Command<UpdateAgreement>().ByDetailedPrice(_agreementId, PricePerDayAndPerStudent));
+                }
+                else
+                {
+                    await Task.Run(() => _applicationService.Command<UpdateAgreement>().ByPackagePrice(_agreementId, PackagePrice));
+                }
+
+                CanSavePrices = false;
+            });            
         }
 
         public override string Title => "Gestion de convention";

@@ -35,7 +35,8 @@ namespace GestionFormation.Applications.Seats
             }
 
             var session = GetAggregate<Session>(seat.SessionId);
-            session.ReleaseSeat(seat.StudentId);
+            if(seat.StudentId.HasValue)
+                session.ReleaseSeat(seat.StudentId.Value);
 
             PublishUncommitedEvents(seat, agreement, session, manager);
         }

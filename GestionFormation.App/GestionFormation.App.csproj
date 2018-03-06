@@ -239,6 +239,10 @@
     </Compile>
     <Compile Include="Views\EditableLists\CreateItemVm.cs" />
     <Compile Include="Views\Seats\AgreementState.cs" />
+    <Compile Include="Views\Seats\EditStudentWindow.xaml.cs">
+      <DependentUpon>EditStudentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Seats\EditStudentWindowVm.cs" />
     <Compile Include="Views\Seats\SeatState.cs" />
     <Compile Include="Views\Seats\Item.cs" />
     <Compile Include="Views\Seats\SeatItem.cs" />
@@ -337,6 +341,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditableLists\CreateItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Seats\EditStudentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -496,6 +504,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="presentation_UKl_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Warning_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -31,6 +31,7 @@ namespace GestionFormation.Infrastructure.Users.Projections
                 entity.Email = @event.Email;
                 entity.EncryptedPassword = @event.EncryptedPassword;
                 entity.Role = @event.Role;
+                entity.Signature = @event.Signature;
                 context.SaveChanges();
             }
         }
@@ -47,6 +48,7 @@ namespace GestionFormation.Infrastructure.Users.Projections
                 entity.Firstname = @event.Firstname;
                 entity.IsEnabled = @event.IsEnabled;
                 entity.Email = @event.Email;
+                entity.Signature = @event.Signature;
                 context.SaveChanges();
             }
         }

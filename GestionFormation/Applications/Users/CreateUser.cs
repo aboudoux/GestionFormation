@@ -15,12 +15,12 @@ namespace GestionFormation.Applications.Users
             _userQueries = userQueries ?? throw new ArgumentNullException(nameof(userQueries));
         }
 
-        public void Execute(string login, string password, string lastname, string firstname, string email, UserRole role)
+        public void Execute(string login, string password, string lastname, string firstname, string email, UserRole role, string signature)
         {
             if(_userQueries.Exists(login))
                 throw new UserAlreadyExistsException();
 
-            var user = User.Create(login, password, lastname, firstname, email, role);
+            var user = User.Create(login, password, lastname, firstname, email, role, signature);
             PublishUncommitedEvents(user);
         }
     }

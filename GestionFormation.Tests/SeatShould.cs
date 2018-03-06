@@ -5,7 +5,6 @@ using GestionFormation.CoreDomain.Seats.Events;
 using GestionFormation.CoreDomain.Seats.Exceptions;
 using GestionFormation.CoreDomain.Sessions;
 using GestionFormation.CoreDomain.Sessions.Events;
-using GestionFormation.Kernel;
 using GestionFormation.Tests.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -78,14 +77,14 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void not_be_validated_if_not_previously_waiting_for_validation()
+        public void be_validated_if_previously_waiting_for_validation()
         {
             var context = CreateTestSeat();
             context.Builder.AddEvent((new SeatRefused(Guid.NewGuid(), 2, "TEST")));
 
             var seat = context.Builder.Create();
             Action action = () => seat.Validate();
-            action.ShouldThrow<ValidateSeatException>();
+            action.ShouldNotThrow<ValidateSeatException>();
         }
 
         [TestMethod]
@@ -126,30 +125,62 @@ namespace GestionFormation.Tests
             action.ShouldThrow<AssignAgreementException>();
         }
 
+        [TestMethod]
+        public void raise_student_updated_when_updating_student_id()
+        {
+            var context = CreateTestSeat(true);
+            var seat = context.Builder.Create();
+
+            var newStudentId = Guid.NewGuid();
+            seat.UpdateStudent(newStudentId);
+
+            seat.UncommitedEvents.GetStream().Should().Contain(new SeatStudentUpdated(Guid.Empty, 0, newStudentId));
+        }
+
+        [TestMethod]
+        public void dont_raise_student_updated_twice_if_same_student()
+        {
+            var context = CreateTestSeat();
+            var seat = context.Builder.Create();
+
+            seat.UpdateStudent(context.StudentId);
+            seat.UncommitedEvents.GetStream().Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public void prevent_validation_for_undefined_student()
+        {
+            var context = CreateTestSeat( true);
+            var seat = context.Builder.Create();
+
+            Action action = () => seat.Validate();
+            action.ShouldThrow<UndefinedStudentExceptionValidationException>();
+        }
+
         private class TestSeatContext
         {
-            public TestSeatContext(Aggregate.AggregateBuilder<Seat> builder, Guid sessionid, Guid societeId, Guid stagiaireId)
+            public TestSeatContext(Aggregate.AggregateBuilder<Seat> builder, Guid sessionid, Guid companyId, Guid? studentId)
             {
                 Builder = builder;
                 Sessionid = sessionid;
-                SocieteId = societeId;
-                StagiaireId = stagiaireId;
+                CompanyId = companyId;
+                StudentId = studentId;
             }
 
-            private Guid StagiaireId { get; }
-            private Guid SocieteId { get; }
-            private Guid Sessionid { get; }
+            public Guid? StudentId { get; }
+            public Guid CompanyId { get; }
+            public Guid Sessionid { get; }
             public Aggregate.AggregateBuilder<Seat> Builder { get; }
         }
 
-        private TestSeatContext CreateTestSeat()
+        private TestSeatContext CreateTestSeat(bool emptyStudent = false)
         {
-            var stagiaireId = Guid.NewGuid();
-            var societeId = Guid.NewGuid();
+            var studentId = emptyStudent ? (Guid?)null : Guid.NewGuid();
+            var companyId = Guid.NewGuid();
             var sessionId = Guid.NewGuid();
-            var builder = Aggregate.Make<Seat>().AddEvent(new SeatCreated(Guid.Empty, 1, sessionId, stagiaireId, societeId));
+            var builder = Aggregate.Make<Seat>().AddEvent(new SeatCreated(Guid.Empty, 1, sessionId, studentId, companyId));
 
-            return new TestSeatContext(builder, sessionId, societeId, stagiaireId);
+            return new TestSeatContext(builder, sessionId, companyId, studentId);
         }
     }
 }

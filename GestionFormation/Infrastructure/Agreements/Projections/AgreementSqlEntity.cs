@@ -14,5 +14,7 @@ namespace GestionFormation.Infrastructure.Agreements.Projections
         public Guid? DocumentId { get; set; }    
         public string AgreementNumber { get; set; }
         public AgreementType AgreementTypeAgreement { get; set; }
+        public decimal PricePerDayAndPerStudent { get; set; }        
+        public decimal PackagePrice { get; set; }
     }
 }

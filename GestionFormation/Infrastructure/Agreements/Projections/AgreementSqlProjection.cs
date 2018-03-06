@@ -1,5 +1,4 @@
 ﻿using GestionFormation.CoreDomain.Agreements.Events;
-using GestionFormation.EventStore;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Infrastructure.Agreements.Projections
@@ -7,7 +6,8 @@ namespace GestionFormation.Infrastructure.Agreements.Projections
     public class AgreementSqlProjection : IProjectionHandler,
         IEventHandler<AgreementCreated>,
         IEventHandler<AgreementSigned>,
-        IEventHandler<AgreementRevoked>
+        IEventHandler<AgreementRevoked>,
+        IEventHandler<AgreementUpdated>
     {
         public void Handle(AgreementCreated @event)
         {
@@ -33,9 +33,7 @@ namespace GestionFormation.Infrastructure.Agreements.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = context.Agreements.Find(@event.AggregateId);
-                if( entity == null)
-                    throw new EntityNotFoundException(@event.AggregateId, "Agreement");
+                var entity = context.GetEntity<AgreementSqlEntity>(@event.AggregateId);
                 entity.DocumentId = @event.DocumentId;
                 context.SaveChanges();
             }
@@ -48,6 +46,17 @@ namespace GestionFormation.Infrastructure.Agreements.Projections
                 var entity = new AgreementSqlEntity() { AgreementId = @event.AggregateId };
                 context.Agreements.Attach(entity);
                 context.Agreements.Remove(entity);
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(AgreementUpdated @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.GetEntity<AgreementSqlEntity>(@event.AggregateId);
+                entity.PricePerDayAndPerStudent = @event.PricePerDayAndPerStudent;                
+                entity.PackagePrice = @event.PackagePrice;
                 context.SaveChanges();
             }
         }

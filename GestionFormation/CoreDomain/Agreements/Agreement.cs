@@ -27,6 +27,16 @@ namespace GestionFormation.CoreDomain.Agreements
             return convention;
         }
 
+        public void UpdatePricePerDayAndPerStudent(decimal pricePerDayAndPerStudent)
+        {            
+            RaiseEvent(new AgreementUpdated(AggregateId, GetNextSequence(), pricePerDayAndPerStudent, 0));
+        }
+
+        public void UpdatePackagePrice(decimal packagePrice)
+        {
+            RaiseEvent(new AgreementUpdated(AggregateId, GetNextSequence(), 0, packagePrice));
+        }
+
         public void Revoke()
         {
             if(!_isRevoked)

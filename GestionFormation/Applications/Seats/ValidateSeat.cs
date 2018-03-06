@@ -10,7 +10,6 @@ namespace GestionFormation.Applications.Seats
     {
         private readonly INotificationQueries _notificationQueries;
 
-
         public ValidateSeat(EventBus eventBus, INotificationQueries notificationQueries) : base(eventBus)
         {
             _notificationQueries = notificationQueries ?? throw new ArgumentNullException(nameof(notificationQueries));

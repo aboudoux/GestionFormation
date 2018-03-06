@@ -7,7 +7,8 @@ namespace GestionFormation.Infrastructure.Trainers.Projections
     public class TrainerSqlProjection : IProjectionHandler,
         IEventHandler<TrainerCreated>,
         IEventHandler<TrainerUpdated>,
-        IEventHandler<TrainerDeleted>
+        IEventHandler<TrainerDeleted>,
+        IEventHandler<TrainerDisabled>
     {
         public void Handle(TrainerCreated @event)
         {
@@ -24,6 +25,7 @@ namespace GestionFormation.Infrastructure.Trainers.Projections
                 entity.Lastname = @event.Lastname;
                 entity.Firstname = @event.Firstname;
                 entity.Email = @event.Email;
+                entity.Enabled = true;
                 context.SaveChanges();
             }
         }
@@ -47,9 +49,19 @@ namespace GestionFormation.Infrastructure.Trainers.Projections
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                var entity = new TrainerSqlEntity(){ TrainerId = @event.AggregateId };
+                var entity = context.GetEntity<TrainerSqlEntity>(@event.AggregateId);
                 context.Trainers.Attach(entity);
                 context.Trainers.Remove(entity);
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(TrainerDisabled @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.GetEntity<TrainerSqlEntity>(@event.AggregateId);
+                entity.Enabled = false;
                 context.SaveChanges();
             }
         }

@@ -6,7 +6,15 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-    Title="Gestion des conventions" Height="350" Width="525">
+    xmlns:users="clr-namespace:GestionFormation.App.Views.EditableLists.Users"
+    xmlns:seats="clr-namespace:GestionFormation.App.Views.Seats"
+    xmlns:seats1="clr-namespace:GestionFormation.App.Views.Seats;assembly=GestionFormation"
+    Title="Gestion des conventions" Height="400" Width="525">
+    <dx:DXWindow.Resources>
+        <ResourceDictionary>
+            <users:BoolToEnumConverter x:Key="BoolToEnumConverter"/>
+        </ResourceDictionary>
+    </dx:DXWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
@@ -41,7 +49,45 @@
                     <TextBlock Text="{Binding Path=AAgreementType}"></TextBlock>
                 </dxlc:LayoutItem>
             </dxlc:LayoutGroup>
+            <Grid Visibility="{Binding Path=ShowPrices}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="0">
+                    <dxlc:LayoutGroup>
+                        <RadioButton IsChecked="{Binding Path=AgreementPriceType, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static seats1:AgreementPriceType.DetailedPrice}}" x:Name="CalculatedPrice">Prix calculés</RadioButton>
+                        <RadioButton IsChecked="{Binding Path=AgreementPriceType, Mode=TwoWay, Converter={StaticResource BoolToEnumConverter}, ConverterParameter={x:Static seats1:AgreementPriceType.PackagePrice}}" x:Name="PackagePrice">Prix au forfait</RadioButton>
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup Orientation="Horizontal" Visibility="{Binding Path=IsChecked, ElementName=CalculatedPrice, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <dxlc:LayoutItem Label="Prix par jour et par stagiaire">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="10"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <dxe:SpinEdit MinValue="0" Grid.Column="0" EditValue="{Binding Path=PricePerDayAndPerStudent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:SpinEdit>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">€</TextBlock>
+                            </Grid>
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+                    <dxlc:LayoutGroup Orientation="Horizontal" Visibility="{Binding Path=IsChecked, ElementName=PackagePrice, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                        <dxlc:LayoutItem Label="Prix total">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="10"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <dxe:SpinEdit MinValue="0" Grid.Column="0" EditValue="{Binding Path=PackagePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></dxe:SpinEdit>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">€</TextBlock>
+                            </Grid>
+                        </dxlc:LayoutItem>
+                    </dxlc:LayoutGroup>
+                </StackPanel>
+                <Button Grid.Column="1" Command="{Binding Path=SavePricesCommand}">Enregistrer</Button>
+            </Grid>
         </dxlc:LayoutControl>
+        
 
         <Grid Grid.Row="2" Visibility="{Binding Path=ShowSavedDocument, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>

@@ -49,7 +49,7 @@ namespace GestionFormation.CoreDomain.Trainers
 
             Delete(new TrainerDeleted(AggregateId, GetNextSequence()));
         }
-
+      
         public void Assign(DateTime sessionStart, int duration)
         {
             if (!_assignedSession.IsFreeFor(sessionStart, duration))

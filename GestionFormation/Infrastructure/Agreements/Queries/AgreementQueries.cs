@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.CoreDomain.Agreements.Queries;
-using GestionFormation.EventStore;
 using GestionFormation.Infrastructure.Agreements.Projections;
 using GestionFormation.Kernel;
 
@@ -39,7 +38,16 @@ namespace GestionFormation.Infrastructure.Agreements.Queries
                     join session in context.Sessions on seat.SessionId equals session.SessionId
                     join training in context.Trainings on session.TrainingId equals training.TrainingId
                     join location in context.Locations on session.LocationId equals location.Id 
-                    select new { ConventionNumber = agreement.AgreementNumber, TypeConvention = agreement.AgreementTypeAgreement,Formation = training.Name, DateDebut = session.SessionStart, DuréeEnJour = session.Duration, Lieu = location.Name};
+                    select new {
+                        ConventionNumber = agreement.AgreementNumber,
+                        TypeConvention = agreement.AgreementTypeAgreement,
+                        Formation = training.Name,
+                        DateDebut = session.SessionStart,
+                        DuréeEnJour = session.Duration,
+                        Lieu = location.Name,
+                        agreement.PricePerDayAndPerStudent,                        
+                        agreement.PackagePrice
+                    };
 
                 var conv = query.First();
 
@@ -50,7 +58,9 @@ namespace GestionFormation.Infrastructure.Agreements.Queries
                     Training = conv.Formation,
                     Location = conv.Lieu,
                     StartDate = conv.DateDebut,
-                    Duration = conv.DuréeEnJour
+                    Duration = conv.DuréeEnJour,                    
+                    PricePerDayAndPerStudent = conv.PricePerDayAndPerStudent,                    
+                    PackagePrice = conv.PackagePrice
                 };                    
             }
         }

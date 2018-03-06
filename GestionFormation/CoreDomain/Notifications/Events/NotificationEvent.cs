@@ -3,7 +3,7 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Notifications.Events
 {
-    public abstract class NotificationEvent : DomainEvent
+    public abstract class NotificationEvent : DomainEvent, INotificationEvent
     {
         [IgnoreEquality]
         public Guid NotificationId { get; }

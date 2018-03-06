@@ -30,12 +30,12 @@ namespace GestionFormation.App.Views.EditableLists.Users
 
         protected override async Task CreateAsync(EditableUserCreate item)
         {
-            await Task.Run(()=>ApplicationService.Command<CreateUser>().Execute(item.Login, item.Password, item.Lastname, item.Firstname, item.Email, UserRole.Guest));
+            await Task.Run(()=>ApplicationService.Command<CreateUser>().Execute(item.Login, item.Password, item.Lastname, item.Firstname, item.Email, UserRole.Guest, item.Signature));
         }
 
         protected override async Task UpdateAsync(EditableUserUpdate item)
         {
-            await Task.Run(() => ApplicationService.Command<UpdateUser>().Execute(item.GetId(), item.Nom, item.Prenom, item.Email, item.IsEnabled));
+            await Task.Run(() => ApplicationService.Command<UpdateUser>().Execute(item.GetId(), item.Lastname, item.Firstname, item.Email, item.IsEnabled, item.Signature));
         }
 
         protected override async Task DeleteAsync(EditableUserUpdate item)
@@ -91,12 +91,15 @@ namespace GestionFormation.App.Views.EditableLists.Users
         [DisplayName("Mot de passe")]
         public string Password { get; set; }
         [DisplayName("Email")]
-        public string Email { get; set; }                
+        public string Email { get; set; }
+        [DisplayName("Signature")]
+        [DataType(DataType.MultilineText)]
+        public string Signature { get; set; }
     }
 
     public class EditableUserUpdate : EditableItem
     {
-        private UserRole _role;
+        private readonly UserRole _role;
 
         public EditableUserUpdate()
         {
@@ -106,11 +109,12 @@ namespace GestionFormation.App.Views.EditableLists.Users
         public EditableUserUpdate(IUserResult result) : base(result.Id)
         {
             Login = result.Login;
-            Nom = result.Lastname;
-            Prenom = result.Firsname;
+            Lastname = result.Lastname;
+            Firstname = result.Firsname;
             Email = result.Email;
             IsEnabled = result.IsEnabled;
             _role = result.Role;
+            Signature = result.Signature;
 
             switch (result.Role)
             {
@@ -135,12 +139,21 @@ namespace GestionFormation.App.Views.EditableLists.Users
             }
         }
 
+        [DisplayName("Login")]
         public string Login { get; }
-        public string Nom { get; set; }
-        public string Prenom { get; set; }
+        [DisplayName("Nom")]
+        public string Lastname { get; set; }
+        [DisplayName("Prénom")]
+        public string Firstname { get; set; }
+        [DisplayName("Actif")]
         public bool IsEnabled { get; set; }
+        [DisplayName("Email")]
         public string Email { get; set; }
+        [DisplayName("Rôle")]
         public string Role { get; }
+        [DisplayName("Signature")]
+        [DataType(DataType.MultilineText)]
+        public string Signature { get; set; }
 
         public UserRole GetRole()
         {

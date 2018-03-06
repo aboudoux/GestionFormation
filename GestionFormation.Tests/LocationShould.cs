@@ -175,7 +175,7 @@ namespace GestionFormation.Tests
         [DataRow("17/01/2017", 1)]
         [DataRow("10/01/2017", 10)]
         [DataRow("20/01/2017", 10)]
-        public void throw_error_if_location_already_assigned_to_a_session(string startDate, int durée)
+        public void throw_error_if_location_already_assigned_to_a_session(string startDate, int duration)
         {
             var history = new History();
             history.Add(new LocationCreated(Guid.NewGuid(), 1, "Lyon", "test", 5));
@@ -183,7 +183,7 @@ namespace GestionFormation.Tests
             var location = new Location(history);
 
             var start = DateTime.ParseExact(startDate, "dd/MM/yyyy", new DateTimeFormatInfo());
-            Action action = () => location.Assign(start, durée);
+            Action action = () => location.Assign(start, duration);
             action.ShouldThrow<LocationAlreadyAssignedException>();
         }
 
@@ -273,6 +273,17 @@ namespace GestionFormation.Tests
             Action action = () => location.Delete();
             action.ShouldThrow<ForbiddenDeleteLocationException>();
         }
+
+        [TestMethod]
+        public void raise_location_disabled_when_disable_location()
+        {
+            var history = new History();
+            history.Add(new LocationCreated(Guid.NewGuid(), 1, "Paris", "test", 5));
+
+            var location = new Location(history);
+            location.Disable();
+            location.UncommitedEvents.GetStream().Should().Contain(new LocationDisabled(Guid.Empty, 1));
+        }      
 
         [TestMethod]
         public void raise_locationdeleted_if_call_delete_and_location_not_assigned()

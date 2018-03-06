@@ -21,7 +21,7 @@ namespace GestionFormation.Infrastructure.Locations.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Locations.FirstOrDefault(a => a.Name == name)?.Id;
+                return context.Locations.FirstOrDefault(a => a.Enabled && a.Name == name)?.Id;
             }
         }
     }

@@ -11,5 +11,6 @@ namespace GestionFormation.CoreDomain.Users.Queries
         bool IsEnabled { get; }
         string Email { get; }
         UserRole Role { get; }
+        string Signature { get; }
     }
 }

@@ -16,7 +16,8 @@ namespace GestionFormation.Infrastructure.Seats.Projections
         IEventHandler<AgreementAssociated>,
         IEventHandler<AgreementRevoked>,
         IEventHandler<MissingStudentReported>,
-        IEventHandler<CertificatOfAttendanceSent>
+        IEventHandler<CertificatOfAttendanceSent>,
+        IEventHandler<SeatStudentUpdated>
     {
         public void Handle(SeatCreated @event)
         {
@@ -100,6 +101,16 @@ namespace GestionFormation.Infrastructure.Seats.Projections
             {
                 var seat = context.GetEntity<SeatSqlentity>(@event.AggregateId);
                 seat.CertificateOfAttendanceId = @event.DocumentId;
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(SeatStudentUpdated @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var seat = context.GetEntity<SeatSqlentity>(@event.AggregateId);
+                seat.StudentId= @event.NewStudentId;
                 context.SaveChanges();
             }
         }

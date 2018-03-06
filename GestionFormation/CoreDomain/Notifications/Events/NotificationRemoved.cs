@@ -3,7 +3,7 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.CoreDomain.Notifications.Events
 {
-    public class NotificationRemoved : DomainEvent
+    public class NotificationRemoved : DomainEvent, INotificationEvent
     {
         public Guid NotificationId { get; }
 

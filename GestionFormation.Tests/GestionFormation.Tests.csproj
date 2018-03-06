@@ -106,8 +106,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Applications\SessionApplicationShould.cs" />
+    <Compile Include="Applications\SessionCommandShould.cs" />
     <Compile Include="AgreementShould.cs" />
+    <Compile Include="Applications\LocationCommandShould.cs" />
     <Compile Include="CompanyShould.cs" />
     <Compile Include="ConnectionStringShould.cs" />
     <Compile Include="CreateTrainingShould.cs" />

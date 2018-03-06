@@ -48,7 +48,8 @@ namespace GestionFormation.CoreDomain.Sessions
                 .Add<SessionSeatBooked>(e =>
                 {
                     _bookedSeats++;
-                    _bookedStudent.Add(e.StudentId);
+                    if(e.StudentId.HasValue)
+                        _bookedStudent.Add(e.StudentId.Value);
                 })
                 .Add<SessionSeatReleased>(e =>
                 {
@@ -101,9 +102,8 @@ namespace GestionFormation.CoreDomain.Sessions
             RaiseEvent(new SessionCanceled(AggregateId, GetNextSequence(), reason));
         }
 
-        public Seat BookSeat(Guid studentId, Guid companyId)
+        public Seat BookSeat(Guid? studentId, Guid companyId)
         {
-            studentId.EnsureNotEmpty(nameof(studentId));
             companyId.EnsureNotEmpty(nameof(companyId));
 
             if(_availableSeats - _bookedSeats <= 0)

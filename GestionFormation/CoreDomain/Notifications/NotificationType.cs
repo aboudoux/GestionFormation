@@ -4,6 +4,7 @@
     {
         SeatToValidate = 1,
         AgreementToCreate = 2,
-        AgreementToSign = 3
+        AgreementToSign = 3,
+        StudentToDefine = 4
     }
 }

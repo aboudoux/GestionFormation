@@ -26,7 +26,7 @@ namespace GestionFormation.App.Views.Seats
 
         public Guid SeatId { get; }
 
-        public Guid StudentId { get; }
+        public Guid? StudentId { get; }
         public Guid CompanyId { get;  }
 
         public string StudentName { get; }

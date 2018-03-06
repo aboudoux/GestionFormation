@@ -12,6 +12,7 @@ using GestionFormation.Applications.Sessions;
 using GestionFormation.CoreDomain;
 using GestionFormation.CoreDomain.Seats.Queries;
 using GestionFormation.CoreDomain.Sessions.Queries;
+using GestionFormation.CoreDomain.Users.Queries;
 using GestionFormation.Infrastructure;
 using GestionFormation.Kernel;
 
@@ -25,6 +26,7 @@ namespace GestionFormation.App.Views.Sessions
         private readonly ISeatQueries _seatQueries;
         private readonly IDocumentCreator _documentCreator;
         private readonly IComputerService _computerService;
+        private readonly IUserQueries _userQueries;
         private readonly DocumentManager _documentManager;
 
         private string _trainingName;
@@ -47,10 +49,11 @@ namespace GestionFormation.App.Views.Sessions
 
         public CloseSessionWindowVm(Guid sessionId, IApplicationService applicationService, 
             IDocumentRepository documentRepository, ISessionQueries sessionQueries, 
-            ISeatQueries seatQueries, IDocumentCreator documentCreator, IComputerService computerService)
+            ISeatQueries seatQueries, IDocumentCreator documentCreator, IComputerService computerService, IUserQueries userQueries)
         {
             if (documentCreator == null) throw new ArgumentNullException(nameof(documentCreator));
             if (computerService == null) throw new ArgumentNullException(nameof(computerService));
+            if (userQueries == null) throw new ArgumentNullException(nameof(userQueries));
             GuidAssert.AreNotEmpty(sessionId);
             Seats = new ObservableCollection<StudentItem>();
             _sessionId = sessionId;
@@ -60,6 +63,7 @@ namespace GestionFormation.App.Views.Sessions
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
             _documentCreator = documentCreator;
             _computerService = computerService;
+            _userQueries = userQueries;
             SendTimesheetCommand = new RelayCommandAsync(ExecuteSendTimesheetAsync);
             DisplayTimesheetCommand = new RelayCommandAsync(ExecuteDisplayTimesheetAsync);            
         }        
@@ -136,11 +140,6 @@ namespace GestionFormation.App.Views.Sessions
                 return;
             }
              
-            if (!firstSeat.AgreementId.HasValue) {
-                MessageBox.Show("La convention n'est pas disponible", "Erreur", MessageBoxButtons.OK,MessageBoxIcon.Error);
-                return;
-            }
-
             if (!Seats.Where(a => a.Company == companyName).All(b => b.CertificateOfAttendanceId.HasValue))
             {
                 MessageBox.Show("Il manque un certificat d'assiduité", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -149,14 +148,18 @@ namespace GestionFormation.App.Views.Sessions
             
             var documents = new List<MailAttachement>();
 
-            var firstPage = _documentCreator.CreateFirstPage(_trainingName, _sessionStart, firstSeat.Company, firstSeat.Contact, firstSeat.Address, firstSeat.ZipCode, firstSeat.City);
+            var signature = await Task.Run(() => _userQueries.GetUser(_applicationService.LoggedUser.UserId).Signature);
+            var firstPage = _documentCreator.CreateFirstPage(_trainingName, _sessionStart, firstSeat.Company, firstSeat.Contact, firstSeat.Address, firstSeat.ZipCode, firstSeat.City, signature);
             documents.Add(new MailAttachement(firstPage, "Courrier fin de stage"));
 
             var timesheet = await Task.Run(() => _documentManager.Repo.GetDocument(TimesheetId.Value));
             documents.Add(new MailAttachement(timesheet, "Feuille de présence"));
 
-            var signedAgreement = await Task.Run(()=>_documentManager.Repo.GetDocument(firstSeat.AgreementId.Value));
-            documents.Add(new MailAttachement(signedAgreement, "Convention signée"));
+            if (firstSeat.AgreementAvailable)
+            {
+                var signedAgreement = await Task.Run(() => _documentManager.Repo.GetDocument(firstSeat.AgreementId.Value));
+                documents.Add(new MailAttachement(signedAgreement, "Convention signée"));
+            }
 
             foreach (var item in Seats.Where(a=>a.Company == companyName))
             {
@@ -166,8 +169,8 @@ namespace GestionFormation.App.Views.Sessions
 
             _computerService.OpenMailInOutlook($"Stage TREND - {_trainingName} du {_sessionStart:D}", 
                 "Madame, Monsieur," + Environment.NewLine + Environment.NewLine +
-                $"Suite au stage dispensé pour la formation «{_trainingName}» du {_sessionStart:D}, veuillez trouver, ci-joint, les documents de fin de stage suivants:" + Environment.NewLine + Environment.NewLine +
-                "\t- La convention de formation dûment signée." + Environment.NewLine +
+                $"Suite au stage dispensé pour la formation «{_trainingName}» du {_sessionStart:D}, veuillez trouver, ci-joint, les documents de fin de stage suivants:" + Environment.NewLine + Environment.NewLine +                
+                (firstSeat.AgreementAvailable ? "\t- La convention de formation dûment signée." + Environment.NewLine : string.Empty)  +
                 "\t- La feuille de présence émargée." + Environment.NewLine +
                 "\t- Les certificats d’assiduités." + Environment.NewLine + Environment.NewLine +
                 "Nous vous souhaitons bonne réception de ces éléments et restons à votre disposition pour tout renseignement complémentaire." + Environment.NewLine + Environment.NewLine +
@@ -229,7 +232,7 @@ namespace GestionFormation.App.Views.Sessions
             _documentManager = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
             _applicationService = applicationService ?? throw new ArgumentNullException(nameof(applicationService));
 
-            GenerateFinalMailCommand = new RelayCommandAsync(ExecuteGenerateFinalMailAsync, () => _parent.Seats.Where(a => a.Company == Company).All(b => b.AgreementAvailable && b.CertificatAvailable && _parent.TimesheetAvailable));
+            GenerateFinalMailCommand = new RelayCommandAsync(ExecuteGenerateFinalMailAsync, () => _parent.Seats.Where(a => a.Company == Company).All(b => b.CertificatAvailable && _parent.TimesheetAvailable));
 
             Student = seat.Student.ToString();
             Company = seat.Company;
@@ -316,7 +319,7 @@ namespace GestionFormation.App.Views.Sessions
             {
                 if (AgreementId.HasValue)
                     return "/Images/Apply_32x32.png";
-                return "/Images/Cancel_32x32.png";
+                return "/Images/Warning_32x32.png";
             }
         }
 

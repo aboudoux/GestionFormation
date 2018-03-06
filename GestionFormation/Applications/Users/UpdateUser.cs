@@ -10,10 +10,10 @@ namespace GestionFormation.Applications.Users
         {
         }
 
-        public void Execute(Guid userId, string lastname, string firstname, string email, bool isEnabled)
+        public void Execute(Guid userId, string lastname, string firstname, string email, bool isEnabled, string signature)
         {
             var user = GetAggregate<User>(userId);
-            user.Update(lastname, firstname, email, isEnabled);
+            user.Update(lastname, firstname, email, isEnabled, signature);
             PublishUncommitedEvents(user);
         }
     }

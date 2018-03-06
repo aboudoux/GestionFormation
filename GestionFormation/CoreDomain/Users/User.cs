@@ -20,7 +20,7 @@ namespace GestionFormation.CoreDomain.Users
             player.Add<UserCreated>(e => _currentRole = e.Role);
         }
 
-        public static User Create(string login, string password, string lastname, string firstname, string email, UserRole role)
+        public static User Create(string login, string password, string lastname, string firstname, string email, UserRole role, string signature)
         {
             if(string.IsNullOrWhiteSpace(login))
                 throw new UserEmptyException("Le login");
@@ -32,16 +32,16 @@ namespace GestionFormation.CoreDomain.Users
             var user = new User(History.Empty);
             user.AggregateId = Guid.NewGuid();
             
-            user.UncommitedEvents.Add(new UserCreated(user.AggregateId, 1, login, password.GetHash(), lastname, firstname, email, role));
+            user.UncommitedEvents.Add(new UserCreated(user.AggregateId, 1, login, password.GetHash(), lastname, firstname, email, role, signature));
             return user;
         }
 
-        public void Update(string lastname, string firstname, string email, bool isEnabled)
+        public void Update(string lastname, string firstname, string email, bool isEnabled, string signature)
         {                     
             if (string.IsNullOrWhiteSpace(lastname))
                 throw new UserEmptyException("Le lastname");
 
-            Update(new UserUpdated(AggregateId, GetNextSequence(), lastname, firstname, email, isEnabled));
+            Update(new UserUpdated(AggregateId, GetNextSequence(), lastname, firstname, email, isEnabled, signature));
         }
 
         public void Delete()

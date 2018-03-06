@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GalaSoft.MvvmLight.Command;
 using GestionFormation.App.Core;
 using GestionFormation.App.Views.EditableLists;
 using GestionFormation.Applications.Companies;
@@ -38,9 +39,9 @@ namespace GestionFormation.App.Views.Seats
             _studentQueries = studentQueries ?? throw new ArgumentNullException(nameof(studentQueries));
             _seatQueries = seatQueries ?? throw new ArgumentNullException(nameof(seatQueries));
 
-            AddSeatCommand = new RelayCommandAsync(()=>ExecuteAddPlaceAsync(false), () => SelectedCompany != null && SelectedStudent != null);
-            AddValidatedSeatCommand = new RelayCommandAsync(()=>ExecuteAddPlaceAsync(true), () => SelectedCompany != null && SelectedStudent != null);
-            CreateStudentCommand = new RelayCommandAsync(ExecuteCreateStagiaireAsync);
+            AddSeatCommand = new RelayCommandAsync(()=>ExecuteAddSeatAsync(false), () => SelectedCompany != null);
+            AddValidatedSeatCommand = new RelayCommandAsync(()=>ExecuteAddSeatAsync(true), () => SelectedCompany != null && SelectedStudent != null);
+            CreateStudentCommand = new RelayCommandAsync(ExecuteCreateStudentAsync);
             CreateCompanyCommand = new RelayCommandAsync(ExecuteCreateSocieteAsync);
 
             SelectedSeats = new ObservableCollection<SeatItem>();
@@ -55,11 +56,13 @@ namespace GestionFormation.App.Views.Seats
             ValidateSeatCommand = new RelayCommandAsync(ExecuteValidateSeatAsync, () => SelectedSeats.Any());
             RefuseSeatCommand= new RelayCommandAsync(ExecuteRefuseSeatAsync, () => SelectedSeats.Any());
             RefreshSeatsCommand = new RelayCommandAsync(ExecuteRefreshSeatsAsync);
+            DefineStudentCommand = new RelayCommand(() => { DefineStudent = !DefineStudent; SelectedStudent = null; });
+            EditStudentCommand = new RelayCommandAsync(ExecuteEditStudentAsync);
 
             GenerateAgreementCommand = new RelayCommandAsync(ExecuteGenerateAgreementAsync);
             OpenAgreementCommand = new RelayCommandAsync(ExecuteOpenAgreementAsync);
             Security = new Security(applicationService);
-        }
+        }       
 
         private ObservableCollection<SeatItem> _seats;
         private ObservableCollection<Item> _students;
@@ -73,6 +76,7 @@ namespace GestionFormation.App.Views.Seats
         private int _validatedSeats;
         private ObservableCollection<SeatItem> _selectedSeats;
         private SessionInfos _sessionInfos;
+        private bool _defineStudent;
         public override string Title => "Gestion des places";
 
         public Security Security { get; }
@@ -153,6 +157,14 @@ namespace GestionFormation.App.Views.Seats
             set { Set(()=>ValidatedSeats, ref _validatedSeats, value); }
         }
 
+        public bool DefineStudent
+        {
+            get => _defineStudent;
+            set { Set(()=>DefineStudent, ref _defineStudent, value); }
+        }
+
+        public RelayCommand DefineStudentCommand { get; }
+
         private void RefreshCompteurs()
         {
             TotalSeats = _sessionPlaces;
@@ -174,15 +186,15 @@ namespace GestionFormation.App.Views.Seats
             Companies = new ObservableCollection<Item>(companies.Result);
             SessionInfos = new SessionInfos(session.Result);
 
-            await RefreshPlaces();
+            await RefreshSeats();
             RefreshCompteurs();
         }
 
         public RelayCommandAsync AddSeatCommand { get; set; }
         public RelayCommandAsync AddValidatedSeatCommand { get; set; }
-        private async Task ExecuteAddPlaceAsync(bool validate)
+        private async Task ExecuteAddSeatAsync(bool validate)
         {
-            if (SelectedStudent == null || SelectedCompany == null)
+            if (SelectedCompany == null)
             {
                 MessageBox.Show("Veuillez indiquer le stagiaire ET la société pour réserver une place dans cette session.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -190,17 +202,17 @@ namespace GestionFormation.App.Views.Seats
 
             await HandleMessageBoxError.ExecuteAsync(async () =>
             {
-                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStudent.Id, SelectedCompany.Id,!validate));
+                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStudent?.Id, SelectedCompany.Id,!validate));
                 if(validate)
                     await Task.Run(()=>_applicationService.Command<ValidateSeat>().Execute(seat.AggregateId));
 
-                await RefreshPlaces();
+                await RefreshSeats();
                 SelectedStudent = null;
                 SelectedCompany = null;
             });
         }
 
-        private async Task RefreshPlaces()
+        private async Task RefreshSeats()
         {
             var items = await Task.Run(() => _seatQueries.GetAll(_sessionId).Select(a => new SeatItem(a, new FullName(a.StudentLastname, a.StudentFirstname).ToString(), a.CompanyName)));
             Seats = new ObservableCollection<SeatItem>(items);
@@ -208,7 +220,7 @@ namespace GestionFormation.App.Views.Seats
         }
 
         public RelayCommandAsync CreateStudentCommand { get; }
-        private async Task ExecuteCreateStagiaireAsync()
+        private async Task ExecuteCreateStudentAsync()
         {
             var vm = await _applicationService.OpenPopup<CreateItemVm>("Créer un stagiaire", new EditableStudent());
             if (vm.IsValidated)
@@ -265,7 +277,7 @@ namespace GestionFormation.App.Views.Seats
                     });
                 }
             }
-            await RefreshPlaces();
+            await RefreshSeats();
         }
         public RelayCommandAsync ValidateSeatCommand { get; set; }
         private async Task ExecuteValidateSeatAsync()
@@ -280,7 +292,7 @@ namespace GestionFormation.App.Views.Seats
                     });                    
                 });
             }
-            await RefreshPlaces();
+            await RefreshSeats();
         }
         public RelayCommandAsync RefuseSeatCommand { get; set; }
         private async Task ExecuteRefuseSeatAsync()
@@ -299,20 +311,20 @@ namespace GestionFormation.App.Views.Seats
                     });
                 }
             }
-            await RefreshPlaces();
+            await RefreshSeats();
         }
 
         public RelayCommandAsync RefreshSeatsCommand { get; }
         private async Task ExecuteRefreshSeatsAsync()
         {
-            await RefreshPlaces();
+            await RefreshSeats();
         }
 
         public RelayCommandAsync GenerateAgreementCommand { get; }
         private async Task ExecuteGenerateAgreementAsync()
         {
             await _applicationService.OpenPopup<CreateAgreementWindowVm>(_sessionInfos, SelectedSeats.ToList());
-            await RefreshPlaces();
+            await RefreshSeats();
         }
 
         public RelayCommandAsync OpenAgreementCommand { get; }
@@ -322,8 +334,24 @@ namespace GestionFormation.App.Views.Seats
             if (place.AgreementId.HasValue && !string.IsNullOrWhiteSpace(place.Agreement))
             {                
                 await _applicationService.OpenPopup<ManageAgreementWindowVm>(place.AgreementId);
-                await RefreshPlaces();
+                await RefreshSeats();
             }
         }      
+
+        public RelayCommandAsync EditStudentCommand { get; }
+        private async Task ExecuteEditStudentAsync()
+        {
+            var selectedSeat = SelectedSeats.FirstOrDefault();
+
+            var vm = await _applicationService.OpenPopup<EditStudentWindowVm>(Students, selectedSeat.StudentId.HasValue ? selectedSeat.StudentId.Value : Guid.Empty);
+            if (vm.IsValidated)
+            {
+                await HandleMessageBoxError.ExecuteAsync(async () =>
+                {                    
+                    await Task.Run(() =>_applicationService.Command<UpdateSeatStudent>().Execute(selectedSeat.SeatId, vm.SelectedStudent?.Id));
+                    await RefreshSeats();
+                });
+            }            
+        }
     }
 }

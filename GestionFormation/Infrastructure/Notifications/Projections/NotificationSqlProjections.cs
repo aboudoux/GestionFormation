@@ -11,7 +11,8 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
         IEventHandler<AgreementToCreateNotificationSent>,    
         IEventHandler<AgreementToSignNotificationSent>,
         IEventHandler<NotificationRemoved>,
-        IEventHandler<NotificationManagerCreated>
+        IEventHandler<NotificationManagerCreated>,
+        IEventHandler<SeatToDefineStudentNotificationSent>
     {
         public void Handle(SeatToValidateNotificationSent @event)
         {
@@ -31,6 +32,29 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
                 entity.Label = "Place(s) à valider.";
                 entity.AffectedRole = UserRole.Manager;
                 entity.ReminderType = NotificationType.SeatToValidate;
+
+                context.SaveChanges();
+            }
+        }
+
+        public void Handle(SeatToDefineStudentNotificationSent @event)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.Notifications.FirstOrDefault(a => a.Id == @event.NotificationId);
+                if (entity == null)
+                {
+                    entity = new NotificationSqlEntity();
+                    context.Notifications.Add(entity);
+                }
+
+                entity.Id = @event.NotificationId;
+                entity.SeatId = @event.SeatId;
+                entity.SessionId = @event.SessionId;
+                entity.CompanyId = @event.CompanyId;
+                entity.Label = "Stagiaire(s) à définir";
+                entity.AffectedRole = UserRole.Manager;
+                entity.ReminderType = NotificationType.StudentToDefine;
 
                 context.SaveChanges();
             }
@@ -105,6 +129,6 @@ namespace GestionFormation.Infrastructure.Notifications.Projections
 
                 context.SaveChanges();
             }
-        }
+        }       
     }
 }

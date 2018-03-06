@@ -18,8 +18,11 @@ namespace DataMigration
         }
 
         public Guid GetId(string key)
-        {
+        {            
             return _dictionary[key.ToLower()];
         }
+
+        public IEnumerable<Guid> GetValues() => _dictionary.Values;
+
     }
 }

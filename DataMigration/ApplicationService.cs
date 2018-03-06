@@ -49,7 +49,8 @@ namespace DataMigration
             UserId = Guid.Empty;
             Login = "MIGRATION";
             Nom = "Programme de migration";
-            Role = UserRole.Admin;            
+            Role = UserRole.Admin;
+            Signature = string.Empty;
         }
 
         public Guid UserId { get; }
@@ -57,5 +58,6 @@ namespace DataMigration
         public string Nom { get; }
         public string Prenom { get; }
         public UserRole Role { get; }
+        public string Signature { get; }
     }
 }

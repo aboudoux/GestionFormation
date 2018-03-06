@@ -11,6 +11,7 @@ namespace GestionFormation.CoreDomain.Locations
     public class Location : AggregateRootUpdatableAndDeletable<LocationUpdated, LocationDeleted>, IAssignable
     {
         private readonly AssignedSession _assignedSession = new AssignedSession();
+        private bool _disabled = false;
         public Location(History history) : base(history)
         {
         }
@@ -20,7 +21,8 @@ namespace GestionFormation.CoreDomain.Locations
             base.AddPlayers(player);
             player.Add<LocationAssigned>(e => _assignedSession.Add(e.SessionStart, e.Duration))
                 .Add<LocationReassigned>(e => _assignedSession.Update(e.OldSessionStart, e.OldDuration, e.NewSessionStart, e.NewDuration))
-                .Add<LocationUnassigned>(e => _assignedSession.Remove(e.SessionStart, e.Duration));
+                .Add<LocationUnassigned>(e => _assignedSession.Remove(e.SessionStart, e.Duration))
+                .Add<LocationDisabled>(a=>_disabled = true);
         }
 
         public static Location Create(string name, string address, int seats)
@@ -78,6 +80,12 @@ namespace GestionFormation.CoreDomain.Locations
             {
                 RaiseEvent(new LocationUnassigned(AggregateId, GetNextSequence(), sessionStart, duration));
             }
+        }
+
+        public void Disable()
+        {
+            if(!_disabled)
+                RaiseEvent(new LocationDisabled(AggregateId, GetNextSequence()));
         }
     }
 }

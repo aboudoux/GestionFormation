@@ -11,11 +11,13 @@ namespace GestionFormation.EventStore
             Login = "SYSTEM";
             Nom = "Application";
             Role = UserRole.Admin;
+            Signature = string.Empty;
         }
         public Guid UserId { get; }
         public string Login { get; }
         public string Nom { get; }
         public string Prenom { get; }
         public UserRole Role { get; }
+        public string Signature { get; }
     }
 }

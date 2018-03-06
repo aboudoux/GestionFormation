@@ -65,6 +65,7 @@ namespace GestionFormation.App.Core
                 .Element<StatisticWindowVm, StatisticWindow>()
                 .Element<SeatsListerVm, ListerWindow>()
                 .Element<SessionListerVm, ListerWindow>()
+                .Element<EditStudentWindowVm, EditStudentWindow>()
                 .Build();
 
             var dispatcher = new EventDispatcher();

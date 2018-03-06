@@ -33,13 +33,75 @@ namespace GestionFormation.Tests
 
             context.AddSeat();
             
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
 
-          var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
+            var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
             handler.Notifications.Should().HaveCount(1)
                 .And.Contain(a => a.Type == NotificationType.SeatToValidate);
-
         }
+
+        [TestMethod]
+        public void send_student_to_defin_notification_if_define_empty_student_seat()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, null);
+            notif.SignalSeatRedefined(context.Seat(0).SeatId, context.Seat(0).CompanyId, null);
+
+            var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
+            handler.Notifications.Should().HaveCount(1)
+                .And.Contain(a => a.Type == NotificationType.StudentToDefine);
+        }
+
+        [TestMethod]
+        public void remove_student_to_define_notification_when_defined()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, null);
+            notif.SignalSeatRedefined(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+
+            var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
+            handler.Notifications.Should().HaveCount(0);
+        }
+
+        [TestMethod]
+        public void raise_SeatToDefineStudentNotificationSent_when_signal_seat_created_with_empty_student()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, null);
+
+            var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
+            handler.Notifications.Should().HaveCount(1)
+                .And.Contain(a => a.Type == NotificationType.StudentToDefine);
+        }
+
+        [TestMethod]
+        public void resend_define_student_notification_if_redefine_to_null()
+        {
+            var context = TestSessionNotification.Create();
+            var notif = context.Builder.Create();
+
+            context.AddSeat();
+
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatRedefined(context.Seat(0).SeatId, context.Seat(0).CompanyId, null);
+
+            var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
+            handler.Notifications.Should().HaveCount(1)
+                .And.Contain(a => a.Type == NotificationType.StudentToDefine);
+        }
+
 
         [TestMethod]
         public void dont_remove_ToValidateNotification()
@@ -50,8 +112,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);            
 
@@ -68,7 +130,7 @@ namespace GestionFormation.Tests
             var notif = context.Builder.Create();
 
             context.AddSeat();
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
 
             var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
@@ -84,8 +146,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -103,7 +165,7 @@ namespace GestionFormation.Tests
             context.AddSeat();
             var agreementId = Guid.NewGuid();
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalAgreementAssociated(agreementId, context.Seat(0).SeatId, context.Seat(0).CompanyId);
 
@@ -122,8 +184,8 @@ namespace GestionFormation.Tests
 
             var agreementId = Guid.NewGuid();
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
             notif.SignalAgreementAssociated(agreementId, context.Seat(0).SeatId, context.Seat(0).CompanyId);
@@ -142,7 +204,7 @@ namespace GestionFormation.Tests
             context.AddSeat();
             var agreementId = Guid.NewGuid();
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalAgreementAssociated(agreementId, context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalAgreementSigned(agreementId);
@@ -158,7 +220,7 @@ namespace GestionFormation.Tests
             var notif = context.Builder.Create();
 
             context.AddSeat();
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
             notif.SignalSeatRefused(context.Seat(0).SeatId, context.Seat(0).CompanyId);          
 
             var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
@@ -172,7 +234,7 @@ namespace GestionFormation.Tests
             var notif = context.Builder.Create();
 
             context.AddSeat();
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
             notif.SignalSeatCanceled(context.Seat(0).SeatId, context.Seat(0).CompanyId);
 
             var handler = new FakeNotificationHanlder(notif.UncommitedEvents);
@@ -188,8 +250,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -210,8 +272,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -233,8 +295,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -260,8 +322,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, false);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, false);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid(),false);
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid(), false);
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -271,7 +333,7 @@ namespace GestionFormation.Tests
             notif.SignalAgreementAssociated(agreementId, context.Seat(1).SeatId, context.Seat(1).CompanyId);
 
             context.AddSeat(context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(2).SeatId, context.Seat(2).CompanyId, false);
+            notif.SignalSeatCreated(context.Seat(2).SeatId, context.Seat(2).CompanyId, Guid.NewGuid(), false);
             notif.SignalSeatValidated(context.Seat(2).SeatId, context.Seat(2).CompanyId);
             notif.SignalSeatRefused(context.Seat(2).SeatId, context.Seat(2).CompanyId);
            
@@ -288,8 +350,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -317,8 +379,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -344,8 +406,8 @@ namespace GestionFormation.Tests
             context.AddSeat();
             context.AddSeat(context.Seat(0).CompanyId);
 
-            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
-            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
+            notif.SignalSeatCreated(context.Seat(0).SeatId, context.Seat(0).CompanyId, Guid.NewGuid());
+            notif.SignalSeatCreated(context.Seat(1).SeatId, context.Seat(1).CompanyId, Guid.NewGuid());
 
             notif.SignalSeatValidated(context.Seat(0).SeatId, context.Seat(0).CompanyId);
             notif.SignalSeatValidated(context.Seat(1).SeatId, context.Seat(1).CompanyId);
@@ -360,7 +422,7 @@ namespace GestionFormation.Tests
             var hanlder = new FakeNotificationHanlder(notif.UncommitedEvents);
             hanlder.Notifications.Should().HaveCount(1)
                 .And.Contain(a => a.Type == NotificationType.AgreementToSign && a.AgreementId == agreementId2);
-        }
+        }        
 
         private class TestSessionNotification
         {
@@ -416,7 +478,7 @@ namespace GestionFormation.Tests
 
             foreach (var @event in events.GetStream())
             {
-                if(@event is NotificationEvent || @event is NotificationRemoved)
+                if(@event is INotificationEvent)
                     Handle((dynamic)@event);
             }
         }
@@ -424,6 +486,11 @@ namespace GestionFormation.Tests
         private void Handle(SeatToValidateNotificationSent @event)
         {
             Notifications.Add(new FakeNotification(@event.NotificationId, NotificationType.SeatToValidate));
+        }
+
+        private void Handle(SeatToDefineStudentNotificationSent @event)
+        {
+            Notifications.Add(new FakeNotification(@event.NotificationId, NotificationType.StudentToDefine));
         }
 
         private void Handle(AgreementToCreateNotificationSent @event)

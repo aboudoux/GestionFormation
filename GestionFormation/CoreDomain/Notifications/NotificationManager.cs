@@ -10,7 +10,7 @@ namespace GestionFormation.CoreDomain.Notifications
     public class NotificationManager : AggregateRoot
     {
         private Guid _sessionId;
-        private readonly List<NotificationEvent> _notifications = new List<NotificationEvent>();
+        private readonly List<INotificationEvent> _notifications = new List<INotificationEvent>();
         private readonly List<SeatState> _seatStates = new List<SeatState>();
 
         public NotificationManager(History history) : base(history)
@@ -28,7 +28,8 @@ namespace GestionFormation.CoreDomain.Notifications
                 .Add<ValidateSeatSignaled>(a=> UpdateSeatState(a.SeatId, SeatStatus.Valid))
                 .Add<RefuseSeatSignaled>(a => UpdateSeatState(a.SeatId, SeatStatus.Refused))
                 .Add<CancelSeatSignaled>(a => UpdateSeatState(a.SeatId, SeatStatus.Canceled))
-                .Add<AgreementAssociatedToSeatSignaled>(a=> UpdateSeatAgreement(a.SeatId, a.AgreementId))
+                .Add<AgreementAssociatedToSeatSignaled>(a=> UpdateSeatAgreement(a.SeatId, a.AgreementId)) 
+                .Add<SeatToDefineStudentNotificationSent>(a=>_notifications.Add(a))
                 ;
         }
 
@@ -55,14 +56,17 @@ namespace GestionFormation.CoreDomain.Notifications
             return notification;
         }
 
-        public void SignalSeatCreated(Guid seatId, Guid companyId, bool sendNotification = true)
+        public void SignalSeatCreated(Guid seatId, Guid companyId, Guid? studentId, bool sendNotification = true)
         {
             GuidAssert.AreNotEmpty(seatId, companyId);
 
             RaiseEvent(new CreateSeatSignaled(AggregateId, GetNextSequence(), seatId, companyId));
 
-            if (sendNotification)
+            if (sendNotification && studentId.HasValue)
                 RaiseEvent(new SeatToValidateNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, seatId, Guid.NewGuid()));
+
+            if(!studentId.HasValue)
+                RaiseEvent(new SeatToDefineStudentNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, seatId, Guid.NewGuid()));
         }
 
         public void SignalSeatValidated(Guid seatId, Guid companyId)
@@ -75,7 +79,7 @@ namespace GestionFormation.CoreDomain.Notifications
                 RaiseEvent(new AgreementToCreateNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, Guid.NewGuid()));
 
             RemoveNotifications<SeatToValidateNotificationSent>(a => a.SeatId == seatId);         
-        }
+        }        
       
         public void SignalAgreementAssociated(Guid agreementId, Guid seatId, Guid companyId)
         {
@@ -87,7 +91,16 @@ namespace GestionFormation.CoreDomain.Notifications
                 RaiseEvent(new AgreementToSignNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, agreementId, Guid.NewGuid()));
 
             RemoveNotifications<AgreementToCreateNotificationSent>(a => a.CompanyId == companyId);
-        }       
+        }
+
+        public void SignalSeatRedefined(Guid seatId, Guid companyId, Guid? studentId)
+        {            
+            RemoveNotifications<SeatToValidateNotificationSent>(a=>a.SeatId == seatId);
+            RemoveNotifications<SeatToDefineStudentNotificationSent>(a=>a.SeatId == seatId);
+            
+            if(!studentId.HasValue)
+                RaiseEvent(new SeatToDefineStudentNotificationSent(AggregateId, GetNextSequence(), _sessionId, companyId, seatId,Guid.NewGuid()));
+        }
 
         public void SignalAgreementSigned(Guid agreementId)
         {
@@ -137,11 +150,11 @@ namespace GestionFormation.CoreDomain.Notifications
         }
 
         private void RemoveNotifications<T>(Func<T, bool> predicate)
-        where T : NotificationEvent
+        where T : INotificationEvent
         {
             foreach (var notification in _notifications.OfType<T>().Where(predicate).ToList())
                 RaiseEvent(new NotificationRemoved(AggregateId, GetNextSequence(), notification.NotificationId));
-        }
+        }       
 
         private class SeatState
         {
@@ -155,66 +168,6 @@ namespace GestionFormation.CoreDomain.Notifications
             public Guid CompanyId { get; }
             public SeatStatus Status { get; set; }
             public Guid? AssociatedAgreement { get; set; }
-        }
-    }   
-
-    public class CreateSeatSignaled : SignaledEvent
-    {
-        public Guid CompanyId { get; }
-
-        public CreateSeatSignaled(Guid aggregateId, int sequence, Guid seatId, Guid companyId) : base(aggregateId, sequence, seatId)
-        {
-            CompanyId = companyId;
-        }
-
-        protected override string Description => "Création de place signalée au système de notification";
-    }
-
-    public class ValidateSeatSignaled : SignaledEvent
-    {
-        public ValidateSeatSignaled(Guid aggregateId, int sequence, Guid seatId) : base(aggregateId, sequence, seatId)
-        {
-        }
-
-        protected override string Description => "Validation de place signalé au système de notification";
-    }
-
-    public class RefuseSeatSignaled : SignaledEvent
-    {
-        public RefuseSeatSignaled(Guid aggregateId, int sequence, Guid seatId) : base(aggregateId, sequence, seatId)
-        {
-        }
-        protected override string Description => "Refus de place signalée au système de notification";
-    }
-
-    public class CancelSeatSignaled : SignaledEvent
-    {
-        public CancelSeatSignaled(Guid aggregateId, int sequence, Guid seatId) : base(aggregateId, sequence, seatId)
-        {
-        }
-
-        protected override string Description => "Annulation de place signalée au système de notification";
-    }
-
-    public class AgreementAssociatedToSeatSignaled : SignaledEvent
-    {
-        public Guid AgreementId { get; }
-
-        public AgreementAssociatedToSeatSignaled(Guid aggregateId, int sequence, Guid seatId, Guid agreementId) : base(aggregateId, sequence, seatId)
-        {
-            AgreementId = agreementId;
-        }
-
-        protected override string Description => "Convention associée à une place signalée au système de notification";
-    }
-
-    public abstract class SignaledEvent : DomainEvent
-    {
-        public Guid SeatId { get; }
-
-        protected SignaledEvent(Guid aggregateId, int sequence, Guid seatId) : base(aggregateId, sequence)
-        {
-            SeatId = seatId;
         }
     }
 }

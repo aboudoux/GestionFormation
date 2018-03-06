@@ -14,7 +14,6 @@ namespace GestionFormation.Infrastructure.Trainings.Projections
         public string Name { get; set; }
         public int Seats { get; set; }
         public int Color { get; set; }
-
-       
+        public bool Removed { get; set; }        
     }
 }

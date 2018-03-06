@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using GestionFormation.App.Views.Seats;
 using GestionFormation.CoreDomain;
 using GestionFormation.Kernel;
 
@@ -62,8 +63,8 @@ namespace GestionFormation.Infrastructure
                 throw new ArgumentNullException(nameof(participants));
             if(!participants.Any())
                 throw new Exception("Impossible de générer votre document car il n'y a aucun participant.");
-            if(participants.Count() > 20)
-                throw new Exception("Impossible de générer une feuille de présence car il y à plus de 20 participants");
+            if(participants.Count() > 8)
+                throw new Exception("Impossible de générer une feuille de présence car il y à plus de 8 participants");
 
             var document = MakeDocument(Timesheet)
                 .Merge("$formation$", training)
@@ -73,14 +74,20 @@ namespace GestionFormation.Infrastructure
                 .Merge("$formateur$", trainer.ToString())
                 .Merge("$longdate$", DateTime.Now.ToString("D"));
 
-            for (var i = 1; i <= 20; i++)
+            for (var i = 1; i <= 8; i++)
             {
                 if (participants.Count >= i)
                     document.Merge($"$stagiaire{i}$", participants[i - 1].Student.ToString()).Merge($"$societe{i}$", participants[i-1].Company);
                 else
                     document.Merge($"$stagiaire{i}$", string.Empty).Merge($"$societe{i}$", string.Empty);                        
             }
-            return document.Generate();
+
+            for (var i = 1; i <= 6; i++)
+            {
+                document.Merge($"$jour{i}$", startSession.AddDays(i - 1).ToString("d"));
+            }
+
+                return document.Generate();
         }
 
         public string CreateSurvey(FullName trainer, string training)
@@ -130,7 +137,7 @@ namespace GestionFormation.Infrastructure
 
         public string CreatePaidAgreement(string agreementNumber, string company, string address, string zipCode, string city,
             FullName contact, string training, DateTime startSession, int duration, string location,
-            IReadOnlyList<Attendee> participants)
+            IReadOnlyList<Attendee> participants, AgreementPriceType priceType, decimal price)
         {
             if (participants == null)
                 throw new ArgumentNullException(nameof(participants));
@@ -150,9 +157,13 @@ namespace GestionFormation.Infrastructure
                 .Merge("$datedebut$", startSession.ToString("d"))
                 .Merge("$datefin$", startSession.AddDays(duration - 1).ToString("d"))
                 .Merge("$duree$", duration.ToString())
-                .Merge("$lieu$", location)
-                .Merge("$prix$", (participants.Count() * 450 * duration).ToString())
+                .Merge("$lieu$", location)            
                 .Merge("$longdate$", DateTime.Now.ToString("D"));
+
+            if(priceType == AgreementPriceType.DetailedPrice)
+                document.Merge("$prix$", $"coût H.T. {price} par jour et par stagiaire, soit : {(participants.Count() * price * duration)} Euros");
+            else
+                document.Merge("$prix$", $"coût H.T. {price} Euros");
 
             for (var i = 1; i <= 8; i++)
             {
@@ -165,7 +176,7 @@ namespace GestionFormation.Infrastructure
             return document.Generate();
         }
 
-        public string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city)
+        public string CreateFirstPage(string training, DateTime startSession, string company, FullName contact, string address, string zipCode, string city, string signature)
         {
             return MakeDocument(FirstPage)
                 .Merge("$societe$", company)
@@ -176,6 +187,7 @@ namespace GestionFormation.Infrastructure
                 .Merge("$date$", DateTime.Now.ToString("d"))
                 .Merge("$formation$", training)
                 .Merge("$longdate$", startSession.ToString("D"))
+                .Merge("$signature$", signature)
                 .Generate();
         }
 
@@ -203,7 +215,7 @@ namespace GestionFormation.Infrastructure
 
             public DocumentGenerator Merge(string mergeField, string value)
             {
-                _content = _content.Replace(mergeField, value);
+                _content = _content.Replace(mergeField, value?.Replace(Environment.NewLine, "\\line "));
                 return this;
             }
 

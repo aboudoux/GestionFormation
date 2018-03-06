@@ -11,8 +11,9 @@ namespace GestionFormation.CoreDomain.Users.Events
         public string Firstname { get; }
         public string Email { get; }
         public UserRole Role { get; }
+        public string Signature { get; }
 
-        public UserCreated(Guid aggregateId, int sequence, string login, string encryptedPassword, string lastname, string firstname, string email, UserRole role) : base(aggregateId, sequence)
+        public UserCreated(Guid aggregateId, int sequence, string login, string encryptedPassword, string lastname, string firstname, string email, UserRole role, string signature) : base(aggregateId, sequence)
         {
             Login = login;
             EncryptedPassword = encryptedPassword;
@@ -20,6 +21,7 @@ namespace GestionFormation.CoreDomain.Users.Events
             Firstname = firstname;
             Email = email;
             Role = role;
+            Signature = signature;
         }
 
         protected override string Description => "Utilisateur créé";

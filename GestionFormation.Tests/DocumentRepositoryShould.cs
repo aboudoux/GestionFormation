@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using FluentAssertions;
+using GestionFormation.App.Views.Seats;
 using GestionFormation.CoreDomain;
 using GestionFormation.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,7 +68,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void GeneratePaidAgreement()
+        public void GenerateDetailedPaidAgreement()
         {
             var attendees = new List<Attendee>();
             attendees.Add(new Attendee(new FullName("boudoux", "aurelien"), "DOT SHARK"));
@@ -76,7 +76,20 @@ namespace GestionFormation.Tests
             attendees.Add(new Attendee(new FullName("Aldebert", "Gregory"), "TREND"));
 
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-            var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", attendees);
+            var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", attendees, AgreementPriceType.DetailedPrice, 500);
+            //Process.Start(doc);
+        }
+
+        [TestMethod]
+        public void GeneratePackagePaidAgreement()
+        {
+            var attendees = new List<Attendee>();
+            attendees.Add(new Attendee(new FullName("boudoux", "aurelien"), "DOT SHARK"));
+            attendees.Add(new Attendee(new FullName("revel", "alexandre"), "TREND"));
+            attendees.Add(new Attendee(new FullName("Aldebert", "Gregory"), "TREND"));
+
+            var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
+            var doc = repo.CreatePaidAgreement("2018 6001 T", "DOT SHARK", "111 rue francis de pressensé", "69100", "VILLEURBANNE", new FullName("boudoux", "aurelien"), "SET Niveau IV", new DateTime(2018, 1, 23), 3, "Saint PRIEST", attendees, AgreementPriceType.PackagePrice, 3500);
             //Process.Start(doc);
         }
 
@@ -84,7 +97,13 @@ namespace GestionFormation.Tests
         public void GenerateFirstPage()
         {
             var repo = new DocumentCreator(Path.Combine(Directory.GetCurrentDirectory(), "..\\..\\"));
-            var doc = repo.CreateFirstPage("SET Niveau I", DateTime.Now, "DOT SHARK",new FullName("boudoux", "aurelien"), "111 rue francis de pressensé", "69100", "Villeurbanne");
+
+            var signature = "Mélanie DUCOURTIOUX - yolo " + Environment.NewLine +
+                            "Service Formation" + Environment.NewLine +
+                            "Tél. : 04.37.54 13 60" + Environment.NewLine +
+                            "Fax: 04 72 50 97 93" + Environment.NewLine;
+
+            var doc = repo.CreateFirstPage("SET Niveau I", DateTime.Now, "DOT SHARK",new FullName("boudoux", "aurelien"), "111 rue francis de pressensé", "69100", "Villeurbanne", signature);
             //Process.Start(doc);
         }
     }

@@ -16,6 +16,7 @@ namespace GestionFormation.Infrastructure.Users.Queries
             Email = entity.Email;
             IsEnabled = entity.IsEnabled;
             Role = entity.Role;
+            Signature = entity.Signature;
         }
         public Guid Id { get; }
         public string Login { get; }
@@ -24,5 +25,6 @@ namespace GestionFormation.Infrastructure.Users.Queries
         public bool IsEnabled { get; }
         public string Email { get; }
         public UserRole Role { get; }
+        public string Signature { get; }
     }
 }

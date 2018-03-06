@@ -16,7 +16,7 @@ namespace GestionFormation.Applications.Sessions
             _notificationManagerQueries = notificationManagerQueries ?? throw new ArgumentNullException(nameof(notificationManagerQueries));
         }
 
-        public Seat Execute(Guid sessionId, Guid studentId, Guid companyId, bool sendNotification)
+        public Seat Execute(Guid sessionId, Guid? studentId, Guid companyId, bool sendNotification)
         {
             var session = GetAggregate<Session>(sessionId);
             var seat = session.BookSeat(studentId, companyId);
@@ -24,7 +24,7 @@ namespace GestionFormation.Applications.Sessions
             var managerId = _notificationManagerQueries.GetNotificationManagerId(sessionId);
             var manager = GetAggregate<NotificationManager>(managerId);
             
-            manager.SignalSeatCreated(seat.AggregateId, companyId, sendNotification);
+            manager.SignalSeatCreated(seat.AggregateId, companyId, studentId, sendNotification);
 
             PublishUncommitedEvents(session, seat, manager);
             return seat;

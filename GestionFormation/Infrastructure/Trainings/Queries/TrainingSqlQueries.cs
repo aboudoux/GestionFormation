@@ -13,7 +13,7 @@ namespace GestionFormation.Infrastructure.Trainings.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Trainings.ToList().Select(entity => new TrainingResult(entity)).ToList();
+                return context.Trainings.Where(a=>a.Removed == false).ToList().Select(entity => new TrainingResult(entity)).ToList();
             }
         }
 
@@ -21,7 +21,7 @@ namespace GestionFormation.Infrastructure.Trainings.Queries
         {
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {
-                return context.Trainings.FirstOrDefault(a=>a.Name.ToLower()==trainingName.ToLower())?.TrainingId;
+                return context.Trainings.FirstOrDefault(a=>a.Removed == false && a.Name.ToLower()==trainingName.ToLower())?.TrainingId;
             }
         }        
     }

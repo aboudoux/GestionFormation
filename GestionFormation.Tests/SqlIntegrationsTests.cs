@@ -43,7 +43,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void test_convention_query()
+        public void test_agreement_query()
         {
             // given
             var trainer = _service.Command<CreateTrainer>().Execute("TEST CONVENTION", DateTime.Now.ToString("G"), "test@test.com");
@@ -93,7 +93,7 @@ namespace GestionFormation.Tests
         }
 
         [TestMethod]
-        public void get_places_without_convention()
+        public void get_seats_without_agreement()
         {
             var trainer = _service.Command<CreateTrainer>().Execute("TEST CONVENTION " + Guid.NewGuid(), DateTime.Now.ToString("G"), "test@test.com");
             var location = _service.Command<CreateLocation>().Execute(DateTime.Now.ToString("G") + " - " + Guid.NewGuid(), "test convention", 5);

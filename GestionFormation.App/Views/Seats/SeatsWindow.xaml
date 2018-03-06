@@ -55,18 +55,31 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="20">Réserver une nouvelle place</TextBlock>
-                <TextBlock Grid.Row="1" Grid.Column="0">Stagiaire :</TextBlock>
-                <TextBlock Grid.Row="2" Grid.Column="0">société :</TextBlock>
-                <dxe:ComboBoxEdit Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Students}" EditValue="{Binding Path=SelectedStudent, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
-                    <dxe:ComboBoxEdit.Buttons>
-                        <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=CreateStudentCommand}"/>
-                    </dxe:ComboBoxEdit.Buttons>
-                </dxe:ComboBoxEdit>
-                <dxe:ComboBoxEdit Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Path=Companies}" EditValue="{Binding Path=SelectedCompany, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
+                <TextBlock Grid.Row="2" Grid.Column="0">Stagiaire :</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0">société :</TextBlock>
+                <dxe:ComboBoxEdit Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Companies}" EditValue="{Binding Path=SelectedCompany, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" IncrementalFiltering="True" FilterCondition="Contains">
                     <dxe:ComboBoxEdit.Buttons>
                         <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=CreateCompanyCommand}"/>
                     </dxe:ComboBoxEdit.Buttons>
                 </dxe:ComboBoxEdit>
+
+                <Button Grid.Row="2" Grid.Column="1" Command="{Binding Path=DefineStudentCommand}" Visibility="{Binding Path=DefineStudent, Converter={StaticResource InverseBooleanToVisibilityConverter}}">Définir</Button>
+
+                <Grid Grid.Row="2" Grid.Column="1"  Visibility="{Binding Path=DefineStudent, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                      
+                <dxe:ComboBoxEdit Grid.Column="0" ItemsSource="{Binding Path=Students}" 
+                                  EditValue="{Binding Path=SelectedStudent, UpdateSourceTrigger=PropertyChanged}" DisplayMember="Label" AutoComplete="True" 
+                                  IncrementalFiltering="True" FilterCondition="Contains">
+                        <dxe:ComboBoxEdit.Buttons>
+                            <dxe:ButtonInfo GlyphKind="Plus" Command="{Binding Path=CreateStudentCommand}"/>
+                        </dxe:ComboBoxEdit.Buttons>
+                    </dxe:ComboBoxEdit>
+                    <Button Grid.Column="1" Command="{Binding Path=DefineStudentCommand}">Non défini</Button>
+                </Grid>
 
                 <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,10,10,0">
                     <Grid.ColumnDefinitions>
@@ -76,8 +89,6 @@
                     <dx:SimpleButton Grid.Column="0"  Margin="5,0,5,0" Glyph="{dx:DXImage Image=Show_32x32.png}" Command="{Binding Path=AddSeatCommand}">Reserver AVEC demande de validation</dx:SimpleButton>
                     <dx:SimpleButton Grid.Column="1"  Margin="5,0,5,0" Glyph="{dx:DXImage Image=Hide_32x32.png}" Command="{Binding Path=AddValidatedSeatCommand}">Reserver SANS demande de validation</dx:SimpleButton>
                 </Grid>
-
-                
             </Grid>
             <dxb:BarContainerControl ContainerType="Top" Margin="0,20,0,0">
                 <dxb:ToolBarControl AllowCustomizationMenu="False" AllowQuickCustomization="False">
@@ -93,7 +104,15 @@
             </dxb:BarContainerControl>
             <dxg:GridControl ItemsSource="{Binding Path=Seats}" SelectionMode="Row" SelectedItems="{Binding Path=SelectedSeats}">
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="StudentName"  Header="Stagiaire"/>
+                    <dxg:GridColumn FieldName="StudentName"  Header="Stagiaire">
+                        <dxg:GridColumn.EditSettings>
+                            <dxe:ButtonEditSettings AllowDefaultButton="False">
+                                <dxe:ButtonEditSettings.Buttons>
+                                    <dxe:ButtonInfo Command="{Binding Path=EditStudentCommand}" GlyphKind="Edit"/>
+                                </dxe:ButtonEditSettings.Buttons>
+                            </dxe:ButtonEditSettings>
+                        </dxg:GridColumn.EditSettings>
+                    </dxg:GridColumn>
                     <dxg:GridColumn FieldName="CompanyName" Header="Société"/>
                     <dxg:GridColumn FieldName="SeatState.Label"  Header="Etat">
                         <dxg:GridColumn.CellTemplate>

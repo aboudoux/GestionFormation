@@ -14,7 +14,7 @@ namespace GestionFormation.CoreDomain.Seats
 
         public Guid SessionId { get; private set; }
         public Guid CompanyId { get; private set; }
-        public Guid StudentId { get; private set; }
+        public Guid? StudentId { get; private set; }
 
         private bool _missingStudent;
 
@@ -37,13 +37,13 @@ namespace GestionFormation.CoreDomain.Seats
                 })
                 .Add<AgreementAssociated>(e => AssociatedAgreementId = e.AgreementId)
                 .Add<AgreementDisassociated>(e => AssociatedAgreementId = null)
-                .Add<MissingStudentReported>(e => _missingStudent = true);
+                .Add<MissingStudentReported>(e => _missingStudent = true)
+                .Add<SeatStudentUpdated>(e => StudentId = e.NewStudentId);
         }
 
-        public static Seat Create(Guid sessionId, Guid studentId, Guid companyId)
+        public static Seat Create(Guid sessionId, Guid? studentId, Guid companyId)
         {
             sessionId.EnsureNotEmpty(nameof(sessionId));
-            studentId.EnsureNotEmpty(nameof(studentId));
             companyId.EnsureNotEmpty(nameof(companyId));
 
             var seat = new Seat(History.Empty);
@@ -67,8 +67,8 @@ namespace GestionFormation.CoreDomain.Seats
 
         public void Validate()
         {
-            if (_currentSeatStatus != SeatStatus.ToValidate)
-                throw new ValidateSeatException();
+            if (!StudentId.HasValue)
+                throw new UndefinedStudentExceptionValidationException();            
             if (_currentSeatStatus == SeatStatus.Valid) return;
             RaiseEvent(new SeatValided(AggregateId, GetNextSequence()));
         }
@@ -107,6 +107,12 @@ namespace GestionFormation.CoreDomain.Seats
         public void SendCertificatOfAttendance(Guid documentId)
         {
             RaiseEvent(new CertificatOfAttendanceSent(AggregateId, GetNextSequence(), documentId));
+        }
+
+        public void UpdateStudent(Guid? newStudentId)
+        {
+            if(newStudentId != StudentId)
+                RaiseEvent(new SeatStudentUpdated(AggregateId, GetNextSequence(), newStudentId));
         }
     }
 }

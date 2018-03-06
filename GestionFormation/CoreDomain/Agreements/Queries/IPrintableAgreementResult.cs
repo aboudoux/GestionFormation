@@ -10,5 +10,8 @@ namespace GestionFormation.CoreDomain.Agreements.Queries
         string Location { get; }
         DateTime StartDate { get; }
         int Duration { get; }
+        
+        decimal PricePerDayAndPerStudent { get; }
+        decimal PackagePrice { get; }
     }
 }

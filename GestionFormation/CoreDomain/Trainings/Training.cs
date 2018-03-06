@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using GestionFormation.CoreDomain.Trainings.Events;
 using GestionFormation.CoreDomain.Trainings.Exceptions;
 using GestionFormation.Kernel;
@@ -8,10 +7,18 @@ namespace GestionFormation.CoreDomain.Trainings
 {
     public class Training : AggregateRootUpdatableAndDeletable<TrainingUpdated, TrainingDeleted>
     {
+        private bool _disabled = false;
+
         public Training(History history) : base(history)
         {
         }
-     
+
+        protected override void AddPlayers(EventPlayer player)
+        {
+            base.AddPlayers(player);
+            player.Add<TrainingDisabled>(e => _disabled = true);
+        }
+
         public static Training Create(string name, int seats, int color)
         {            
             if(string.IsNullOrEmpty(name))
@@ -34,6 +41,12 @@ namespace GestionFormation.CoreDomain.Trainings
         public void Delete()
         {
             Delete(new TrainingDeleted(AggregateId, GetNextSequence()));            
+        }
+
+        public void Disable()
+        {
+            if(!_disabled)
+                RaiseEvent(new TrainingDisabled(AggregateId, GetNextSequence()));
         }
     }
 }

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using DataMigration.Creators;
+using GestionFormation.Applications.Locations;
+using GestionFormation.Applications.Trainers;
+using GestionFormation.Applications.Trainings;
 
 namespace DataMigration
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var app = new ApplicationService();
 
@@ -33,8 +37,23 @@ namespace DataMigration
                 session.Create(DateTime.Parse(row["Date"].ToString()), int.Parse(row["NbJour"].ToString()), row["Formation"].ToString(), row["Formateur"].ToString(), row["Lieu"].ToString(), row["Stagiaire"].ToString(), row["Societe"].ToString());
             }
 
+            DisableAll("Formations", training.GetAll(), id => app.Command<DisableTraining>().Execute(id));
+            DisableAll("Lieux", location.GetAll(), id => app.Command<DisableLocation>().Execute(id));
+            DisableAll("Formateur", trainer.GetAll(), id => app.Command<DisableTrainer>().Execute(id));
+
             Console.WriteLine("\r\nImport terminé !");
             Console.ReadKey();
         }
+
+        private static void DisableAll(string label, IEnumerable<Guid> ids, Action<Guid> action)
+        {
+            var i = 1;
+            Console.WriteLine("\r\nDesactivation des " + label);
+            foreach (var guid in ids)
+            {
+                Console.Write($"Traitement de la ligne {i++}\r");
+                action(guid);
+            }
+        }        
     }
 }

@@ -20,7 +20,7 @@ namespace GestionFormation.Tests.Applications
 {
     [TestClass]
     [TestCategory("UnitTests")]
-    public class SessionApplicationShould
+    public class SessionCommandShould
     {
         [TestMethod]
         public void be_planned_if_trainner_available_for_session()

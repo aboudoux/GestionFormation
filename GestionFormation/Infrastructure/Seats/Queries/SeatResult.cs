@@ -32,7 +32,7 @@ namespace GestionFormation.Infrastructure.Seats.Queries
         }
 
         public Guid SeatId { get; }
-        public Guid StudentId { get; }
+        public Guid? StudentId { get; }
         public Guid CompanyId { get; }
         public SeatStatus Status { get; }
         public string Reason { get; }

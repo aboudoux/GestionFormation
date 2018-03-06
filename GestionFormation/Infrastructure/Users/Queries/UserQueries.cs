@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GestionFormation.CoreDomain.Users.Queries;
 using GestionFormation.EventStore;
+using GestionFormation.Infrastructure.Users.Projections;
 using GestionFormation.Kernel;
 
 namespace GestionFormation.Infrastructure.Users.Queries
@@ -31,6 +33,15 @@ namespace GestionFormation.Infrastructure.Users.Queries
             using (var context = new ProjectionContext(ConnectionString.Get()))
             {             
                 return context.Users.Any(a => a.Login == login);
+            }
+        }
+
+        public IUserResult GetUser(Guid userId)
+        {
+            using (var context = new ProjectionContext(ConnectionString.Get()))
+            {
+                var entity = context.GetEntity<UserSqlEntity>(userId);
+                return new UserResult(entity);
             }
         }
     }

@@ -20,7 +20,8 @@ namespace GestionFormation.Infrastructure.Notifications.Queries
                     join session in context.Sessions on n.SessionId equals session.SessionId
                     join training in context.Trainings on session.TrainingId equals training.TrainingId
                     where n.ReminderType == NotificationType.AgreementToCreate ||
-                          n.ReminderType == NotificationType.AgreementToSign
+                          n.ReminderType == NotificationType.AgreementToSign ||
+                          n.ReminderType == NotificationType.StudentToDefine
                     select new {Notification = n, CompanyName = company.Name, TrainingName = training.Name, Date = session.SessionStart};
 
                 var allValidationNotification = from n in context.Notifications
@@ -42,11 +43,7 @@ namespace GestionFormation.Infrastructure.Notifications.Queries
 
                 result.AddRange(allAgreementNotification.Where(a => a.Notification.AffectedRole == role).ToList().Select(a => new NotificationResult(a.Notification, a.CompanyName, a.TrainingName, string.Empty, string.Empty, a.Date)));
                 result.AddRange(allValidationNotification.Where(a => a.Notification.AffectedRole == role).ToList().Select(a => new NotificationResult(a.Notification, a.CompanyName, a.TrainingName, a.StudentFirstname, a.StudentLastname, a.Date)));
-                return result;
-
-                /*if ( role == UserRole.Admin)
-                    return context.Notifications.ToList().Select(a => new NotificationResult(a));                
-                return context.Notifications.Where(a => a.AffectedRole == role).ToList().Select(a => new NotificationResult(a));*/
+                return result;                
             }
         }
 

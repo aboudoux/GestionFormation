@@ -12,6 +12,6 @@ namespace GestionFormation.Infrastructure.Locations.Projections
         public string Name { get; set; }
         public string Address { get; set; }
         public bool Enabled { get; set; }
-        public int Seats { get; set; }
+        public int Seats { get; set; }        
     }
 }

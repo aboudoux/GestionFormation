@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataMigration.Creators
@@ -21,6 +22,11 @@ namespace DataMigration.Creators
         public virtual string ConstructKey(string source)
         {
             return source;
+        }
+
+        public IEnumerable<Guid> GetAll()
+        {
+            return Mapper.GetValues();
         }
     }
 }
