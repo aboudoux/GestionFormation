@@ -74,7 +74,14 @@ namespace GestionFormation.Tests
 
             var  agreementId = Guid.NewGuid();
             _notifications.OfType<AgreementToSignNotificationSent>().All(a => a.CompanyId != companyId || a.AgreementId != agreementId).Should().BeTrue();
-        }        
+        }
+
+        [TestMethod]
+        public void print_test()
+        {
+            var service = new ComputerService();
+            service.Print("C:\\Users\\H264376\\AppData\\Local\\Temp\\6c92b5c6-01b7-42b0-ab30-c60a5dac92e5.rtf");
+        }
     }
 
     public class TestCommand : ActionCommand

@@ -31,6 +31,6 @@ namespace GestionFormation.App.Views.Sessions
         {
             if(e.MenuType != ContextMenuType.CellContextMenu)
                 e.Cancel = true;
-        }
+        }       
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
 using GestionFormation.App.Core;
 using GestionFormation.Applications.Users;
 using GestionFormation.CoreDomain;

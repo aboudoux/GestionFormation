@@ -289,7 +289,7 @@ namespace GestionFormation.Tests
                 companyId = company.AggregateId;
             }
 
-            var seat = _service.Command<ReserveSeat>().Execute(SessionId, student.AggregateId, companyId.Value, sendValidationNotification);
+            var seat = _service.Command<BookSeat>().Execute(SessionId, student.AggregateId, companyId.Value, sendValidationNotification);
             
             seat.SessionId.Should().NotBeEmpty();            
 

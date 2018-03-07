@@ -41,7 +41,7 @@ namespace DataMigration.Creators
                     Mapper.Add(key, session.AggregateId);
                 }                    
 
-                var seat = App.Command<ReserveSeat>().Execute(Mapper.GetId(key),
+                var seat = App.Command<BookSeat>().Execute(Mapper.GetId(key),
                     _studentCreator.GetId(_studentCreator.ConstructKey(student)),
                     _companyCreator.GetCompanyId(_companyCreator.ConstructKey(company)), false);
 

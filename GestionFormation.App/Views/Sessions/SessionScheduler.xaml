@@ -36,7 +36,7 @@
             </dxb:ToolBarControl>
         </dxb:BarContainerControl>
 
-        <dxe:DateNavigator Grid.Row="1" Grid.Column="0">
+        <dxe:DateNavigator Grid.Row="1" Grid.Column="0" > 
             <dxe:DateNavigator.StyleSettings>
                 <dxsch:SchedulerDateNavigatorStyleSettings Scheduler="{Binding ElementName=scheduler}"/>
             </dxe:DateNavigator.StyleSettings>
@@ -52,7 +52,7 @@
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="InitNewAppointment" Command="{Binding Path=CreateSession}" PassEventArgsToCommand="True"/>
             </dxmvvm:Interaction.Behaviors>
-            
+
             <dxsch:SchedulerControl.OptionsWindows>
                 <dxsch:OptionsWindows AppointmentWindowType="{x:Type sessions:CreateSessionWindow}" />
             </dxsch:SchedulerControl.OptionsWindows>

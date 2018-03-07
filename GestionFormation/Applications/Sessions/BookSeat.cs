@@ -7,11 +7,11 @@ using GestionFormation.Kernel;
 
 namespace GestionFormation.Applications.Sessions
 {
-    public class ReserveSeat : ActionCommand
+    public class BookSeat : ActionCommand
     {
         private readonly INotificationQueries _notificationManagerQueries;
 
-        public ReserveSeat(EventBus eventBus, INotificationQueries notificationManagerQueries) : base(eventBus)
+        public BookSeat(EventBus eventBus, INotificationQueries notificationManagerQueries) : base(eventBus)
         {
             _notificationManagerQueries = notificationManagerQueries ?? throw new ArgumentNullException(nameof(notificationManagerQueries));
         }

@@ -77,12 +77,16 @@
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <Label Margin="5" Height="30" Content="{Binding DataContext.Company, StringFormat=Société : {0}}"></Label>
-                                <Button Margin="10" Grid.Column="1" Command="{Binding DataContext.GenerateFinalMailCommand}">Générer le mail de clôture</Button>
+                                <dx:DropDownButton Margin="10" Grid.Column="1" Content="Clôturer" Command="{Binding Path=DataContext.CloseButtonEnabled}">
+                                    <StackPanel Width="220">
+                                        <dx:SimpleButton Height="32" Margin="5" Command="{Binding DataContext.GenerateFinalMailCommand}" Glyph="{dx:DXImage Image=Mail_32x32.png}">Générer le mail de clôture</dx:SimpleButton>
+                                        <dx:SimpleButton Height="32" Margin="5" Command="{Binding DataContext.PrintAllDocumentsCommand}" Glyph="{dx:DXImage Image=Printer_32x32.png}">Imprimer tous les documents</dx:SimpleButton>
+                                    </StackPanel>
+                                </dx:DropDownButton>
                             </Grid>
                         </ItemContainerTemplate>
                     </dxg:TableView.GroupRowTemplate>
                 </dxg:TableView>
-
             </dxg:GridControl.View>
         </dxg:GridControl>
         <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="5" Command="{Binding Path=ValiderCommand}">Fermer</Button>

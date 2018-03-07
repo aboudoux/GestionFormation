@@ -202,7 +202,7 @@ namespace GestionFormation.App.Views.Seats
 
             await HandleMessageBoxError.ExecuteAsync(async () =>
             {
-                var seat = await Task.Run(() => _applicationService.Command<ReserveSeat>().Execute(_sessionId, SelectedStudent?.Id, SelectedCompany.Id,!validate));
+                var seat = await Task.Run(() => _applicationService.Command<BookSeat>().Execute(_sessionId, SelectedStudent?.Id, SelectedCompany.Id,!validate));
                 if(validate)
                     await Task.Run(()=>_applicationService.Command<ValidateSeat>().Execute(seat.AggregateId));
 

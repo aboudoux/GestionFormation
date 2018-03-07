@@ -61,11 +61,11 @@ namespace GestionFormation.Tests
             var createdTraining = _service.Command<CreateTraining>().Execute("Essai convention" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
             var session = _service.Command<PlanSession>().Execute(createdTraining.AggregateId, new DateTime(2018, 1, 15), 3, 5, location.AggregateId, trainer.AggregateId);
 
-            var seat1 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
-            var seat2 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
-            var seat3 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
-            var seat4 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
-            var seat5 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company3.AggregateId, true);
+            var seat1 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat2 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat3 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
+            var seat4 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company2.AggregateId, true);
+            var seat5 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company3.AggregateId, true);
 
             _service.Command<ValidateSeat>().Execute(seat1.AggregateId);
             _service.Command<ValidateSeat>().Execute(seat2.AggregateId);
@@ -103,9 +103,9 @@ namespace GestionFormation.Tests
             var createdTraining = _service.Command<CreateTraining>().Execute($"Essai convention {Guid.NewGuid()}" + DateTime.Now.ToString("G"), 2, Color.Empty.ToArgb());
             var session = _service.Command<PlanSession>().Execute(createdTraining.AggregateId, new DateTime(2018, 1, 15), 3, 5, location.AggregateId, trainer.AggregateId);
 
-            var seat1 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
-            var seat2 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
-            var seat3 = _service.Command<ReserveSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat1 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat2 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
+            var seat3 = _service.Command<BookSeat>().Execute(session.AggregateId, student.AggregateId, company1.AggregateId, true);
 
             _service.Command<ValidateSeat>().Execute(seat2.AggregateId);
             _service.Command<ValidateSeat>().Execute(seat3.AggregateId);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using GestionFormation.CoreDomain;
 using GestionFormation.Kernel;
@@ -27,6 +28,11 @@ namespace GestionFormation.Infrastructure
         public string GetLocalUserName()
         {
             return Environment.UserName;
+        }
+
+        public void Print(string documentPath)
+        {            
+            Process.Start("CMD", $"/C PRINT \"{documentPath}\"");
         }
     }
 
