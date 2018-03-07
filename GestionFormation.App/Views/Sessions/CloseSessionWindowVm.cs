@@ -29,6 +29,7 @@ namespace GestionFormation.App.Views.Sessions
         private readonly IDocumentCreator _documentCreator;
         private readonly IComputerService _computerService;
         private readonly IUserQueries _userQueries;
+        private readonly IConfigurationFile _configurationFile;
         private readonly DocumentManager _documentManager;
 
         private string _trainingName;
@@ -51,7 +52,7 @@ namespace GestionFormation.App.Views.Sessions
 
         public CloseSessionWindowVm(Guid sessionId, IApplicationService applicationService, 
             IDocumentRepository documentRepository, ISessionQueries sessionQueries, 
-            ISeatQueries seatQueries, IDocumentCreator documentCreator, IComputerService computerService, IUserQueries userQueries)
+            ISeatQueries seatQueries, IDocumentCreator documentCreator, IComputerService computerService, IUserQueries userQueries, IConfigurationFile configurationFile)
         {
             GuidAssert.AreNotEmpty(sessionId);
             Seats = new ObservableCollection<StudentItem>();
@@ -63,6 +64,7 @@ namespace GestionFormation.App.Views.Sessions
             _documentCreator = documentCreator ?? throw new ArgumentNullException(nameof(documentCreator));
             _computerService = computerService ?? throw new ArgumentNullException(nameof(computerService));
             _userQueries = userQueries ?? throw new ArgumentNullException(nameof(userQueries));
+            _configurationFile = configurationFile ?? throw new ArgumentNullException(nameof(configurationFile));
             SendTimesheetCommand = new RelayCommandAsync(ExecuteSendTimesheetAsync);
             DisplayTimesheetCommand = new RelayCommandAsync(ExecuteDisplayTimesheetAsync);            
         }        
@@ -137,7 +139,7 @@ namespace GestionFormation.App.Views.Sessions
                 "\t- Les certificats d’assiduités." + Environment.NewLine + Environment.NewLine +
                 "Nous vous souhaitons bonne réception de ces éléments et restons à votre disposition pour tout renseignement complémentaire." + Environment.NewLine + Environment.NewLine +
                 "Cordialement,"
-                , documents, firstSeat.Email);
+                , documents, firstSeat.Email, _configurationFile.GetCloseSessionEmail());
         }
 
         public async Task PrintAllDocumentsAsync(string companyName)

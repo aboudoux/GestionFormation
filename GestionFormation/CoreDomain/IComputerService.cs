@@ -6,7 +6,7 @@ namespace GestionFormation.CoreDomain
 {
     public interface IComputerService
     {
-        void OpenMailInOutlook(string subject, string body, List<MailAttachement> attachements = null, string recipient = null);
+        void OpenMailInOutlook(string subject, string body, List<MailAttachement> attachements = null, string recipient = null, string bccRecipient = null);
         string GetLocalUserName();
         void Print(string documentPath);
     }
