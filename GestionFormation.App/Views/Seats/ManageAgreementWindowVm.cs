@@ -201,7 +201,7 @@ namespace GestionFormation.App.Views.Seats
                 var doc = await GenerateAgreementDocument();
                 var conv = await Task.Run(() => _agreementQueries.GetPrintableAgreement(_agreementId));
                 
-                _computerService.OpenMailInOutlook($"TREND - Convention de formation {conv.Training} du {conv.StartDate:d}", 
+                _computerService.OpenMailInOutlook($"Convention de formation {conv.Training} du {conv.StartDate:d}", 
                     "Bonjour," + Environment.NewLine +
                     $"Veuillez trouver ci-joint la convention à nous retourner signée pour la formation {conv.Training} du {conv.StartDate:D} qui se déroulera sur {conv.Duration} jour(s)" + Environment.NewLine + Environment.NewLine +
                     "En vous souhaitant bonne réception." + Environment.NewLine +

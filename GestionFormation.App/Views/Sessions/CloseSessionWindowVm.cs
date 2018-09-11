@@ -131,7 +131,7 @@ namespace GestionFormation.App.Views.Sessions
             var firstSeat = Seats.FirstOrDefault(a => a.Company == companyName);
             var documents = await GenerateAllAttachements(companyName);
 
-            _computerService.OpenMailInOutlook($"Stage TREND - {_trainingName} du {_sessionStart:D}", 
+            _computerService.OpenMailInOutlook($"Stage {_trainingName} du {_sessionStart:D}", 
                 "Madame, Monsieur," + Environment.NewLine + Environment.NewLine +
                 $"Suite au stage dispensé pour la formation «{_trainingName}» du {_sessionStart:D}, veuillez trouver, ci-joint, les documents de fin de stage suivants:" + Environment.NewLine + Environment.NewLine +                
                 (firstSeat.AgreementAvailable ? "\t- La convention de formation dûment signée." + Environment.NewLine : string.Empty)  +

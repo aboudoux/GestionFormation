@@ -5,7 +5,7 @@
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
     xmlns:logins="clr-namespace:GestionFormation.App.Views.Logins"
-    Title="Gestion de formation TREND" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+    Title="Gestion de formation" Height="300" Width="400" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <dxmvvm:BooleanNegationConverter x:Key="BooleanNegationConverter"/>
     </Window.Resources>
