@@ -33,69 +33,87 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>presentation_UKl_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\CommonServiceLocator.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Data.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Charts.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Data.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Images.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Images.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Images.v17.1.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Mvvm.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Mvvm.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Mvvm.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Printing.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Office.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Printing.v17.1.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Controls.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.PivotGrid.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Controls.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Core.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.RichEdit.v17.2.Export, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Core.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Docking.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Printing.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Docking.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Utils.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Grid.v17.1.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\DevExpress 17.2\Components\Bin\Framework\DevExpress.Utils.v17.2.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Charts.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Controls.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Grid.v17.1.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Layout.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.CodeView.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Layout.v17.1.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.LayoutControl.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Core.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.LayoutControl.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Ribbon.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Docking.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Ribbon.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Scheduler.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.PivotGrid.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Printing.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Scheduler.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Themes.Office2016White.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Grid.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.Xpf.Themes.Office2016White.v17.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.XtraScheduler.v17.1.Core, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    <Reference Include="DevExpress.Xpf.Grid.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\DevExpress 17.1\Components\Bin\Framework\DevExpress.XtraScheduler.v17.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Layout.v17.2.Core, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.LayoutControl.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.PropertyGrid.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Ribbon.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Scheduling.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 17.2\Components\Bin\Framework\DevExpress.Xpf.Scheduling.v17.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisDark.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Themes.MetropolisLight.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 17.2\Components\Bin\Framework\DevExpress.Xpf.Themes.MetropolisLight.v17.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Themes.Office2016White.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Themes.VS2010.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v17.2, Version=17.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 17.2\Components\Bin\Framework\DevExpress.XtraPrinting.v17.2.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
@@ -123,6 +141,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -139,26 +158,20 @@
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
-    <Reference Include="Unity.Abstractions, Version=2.4.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Abstractions.dll</HintPath>
+    <Reference Include="Unity.Abstractions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.7.0\lib\net46\Unity.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Configuration, Version=5.1.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Configuration.dll</HintPath>
+    <Reference Include="Unity.Configuration, Version=5.2.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.7.0\lib\net46\Unity.Configuration.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Container, Version=5.4.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Container.dll</HintPath>
+    <Reference Include="Unity.Container, Version=5.7.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.7.0\lib\net46\Unity.Container.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Interception, Version=5.2.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Interception.dll</HintPath>
+    <Reference Include="Unity.Interception, Version=5.5.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.7.0\lib\net46\Unity.Interception.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Interception.Configuration, Version=5.1.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.Interception.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RegistrationByConvention, Version=2.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.RegistrationByConvention.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ServiceLocation, Version=2.0.9.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.4.0\lib\net45\Unity.ServiceLocation.dll</HintPath>
+    <Reference Include="Unity.RegistrationByConvention, Version=2.1.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.5.7.0\lib\net46\Unity.RegistrationByConvention.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -191,24 +204,61 @@
     <Compile Include="Core\ExceptionExtention.cs" />
     <Compile Include="Core\HandleMessageBoxError.cs" />
     <Compile Include="Core\Security.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\BoolToEnumConverter.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml.cs">
+    <Compile Include="Views\EditableLists\ColorHelper.cs" />
+    <Compile Include="Views\EditableLists\CreateContactWindow.xaml.cs">
+      <DependentUpon>CreateContactWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditableLists\CreateContactWindowVm.cs" />
+    <Compile Include="Views\EditableLists\EditableStudent.cs" />
+    <Compile Include="Views\EditableLists\Users\BoolToEnumConverter.cs" />
+    <Compile Include="Views\EditableLists\Users\ChangePasswordWindow.xaml.cs">
       <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangePasswordWindowVm.cs" />
+    <Compile Include="Views\EditableLists\Users\ChangePasswordWindowVm.cs" />
     <Compile Include="Views\EditableLists\ContactListVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindow.xaml.cs">
+    <Compile Include="Views\EditableLists\Users\ChangeRoleWindow.xaml.cs">
       <DependentUpon>ChangeRoleWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditableLists\Utilisateurs\ChangeRoleWindowVm.cs" />
-    <Compile Include="Views\Places\CreateConventionWindow.xaml.cs">
-      <DependentUpon>CreateConventionWindow.xaml</DependentUpon>
+    <Compile Include="Views\EditableLists\Users\ChangeRoleWindowVm.cs" />
+    <Compile Include="Views\Admins\History\HistoryWindow.xaml.cs">
+      <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\CreateConventionWindowVm.cs" />
+    <Compile Include="Views\Admins\History\HistoryWindowVm.cs" />
+    <Compile Include="Views\Listers\Bases\ListerWindow.xaml.cs">
+      <DependentUpon>ListerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Listers\Bases\ListerWindowVm.cs" />
+    <Compile Include="Views\Listers\SeatsListerVm.cs" />
+    <Compile Include="Views\Listers\Bases\StatisticWindow.xaml.cs">
+      <DependentUpon>StatisticWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Listers\Bases\StatisticWindowVm.cs" />
+    <Compile Include="Views\Listers\SessionListerVm.cs" />
+    <Compile Include="Views\Logins\LoginImage.xaml.cs">
+      <DependentUpon>LoginImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Seats\ContactItem.cs" />
+    <Compile Include="Views\Seats\CreateAgreementWindow.xaml.cs">
+      <DependentUpon>CreateAgreementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Seats\CreateAgreementWindowVm.cs" />
     <Compile Include="Views\EditableLists\CreateItem.xaml.cs">
       <DependentUpon>CreateItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\CreateItemVm.cs" />
+    <Compile Include="Views\Seats\AgreementState.cs" />
+    <Compile Include="Views\Seats\EditStudentWindow.xaml.cs">
+      <DependentUpon>EditStudentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Seats\EditStudentWindowVm.cs" />
+    <Compile Include="Views\Seats\SeatState.cs" />
+    <Compile Include="Views\Seats\Item.cs" />
+    <Compile Include="Views\Seats\SeatItem.cs" />
+    <Compile Include="Views\Seats\SessionInfos.cs" />
+    <Compile Include="Views\Sessions\CloseSessionWindow.xaml.cs">
+      <DependentUpon>CloseSessionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Sessions\CloseSessionWindowVm.cs" />
     <Compile Include="Views\Sessions\CreateSessionWindow.xaml.cs">
       <DependentUpon>CreateSessionWindow.xaml</DependentUpon>
     </Compile>
@@ -219,8 +269,8 @@
     </Compile>
     <Compile Include="Views\Logins\LoginWindowsVm.cs" />
     <Compile Include="Core\PopupWindowVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurList.xaml.cs">
-      <DependentUpon>UtilisateurList.xaml</DependentUpon>
+    <Compile Include="Views\EditableLists\Users\UserList.xaml.cs">
+      <DependentUpon>UserList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditableLists\EditableList.xaml.cs">
       <DependentUpon>EditableList.xaml</DependentUpon>
@@ -233,51 +283,80 @@
     <Compile Include="Core\PageLocator.cs" />
     <Compile Include="Core\RelayCommandAsync.cs" />
     <Compile Include="Core\UnityIocContainer.cs" />
-    <Compile Include="Views\EventReplayerWindow.xaml.cs">
+    <Compile Include="Views\Admins\Replayers\EventReplayerWindow.xaml.cs">
       <DependentUpon>EventReplayerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EventReplayerWindowVm.cs" />
-    <Compile Include="Views\EditableLists\FormateurListVm.cs" />
-    <Compile Include="Views\EditableLists\FormationListVm.cs" />
+    <Compile Include="Views\Admins\Replayers\EventReplayerWindowVm.cs" />
+    <Compile Include="Views\EditableLists\TrainerListVm.cs" />
+    <Compile Include="Views\EditableLists\TrainingListVm.cs" />
     <Compile Include="MainWindowsVm.cs" />
-    <Compile Include="Views\Places\GestionConventionWindow.xaml.cs">
-      <DependentUpon>GestionConventionWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\ManageAgreementWindow.xaml.cs">
+      <DependentUpon>ManageAgreementWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\GestionConventionWindowVm.cs" />
+    <Compile Include="Views\Seats\ManageAgreementWindowVm.cs" />
     <Compile Include="Views\ILoadableVm.cs" />
-    <Compile Include="Views\EditableLists\LieuListVm.cs" />
-    <Compile Include="Views\Places\PlacesWindow.xaml.cs">
-      <DependentUpon>PlacesWindow.xaml</DependentUpon>
+    <Compile Include="Views\EditableLists\LocationListVm.cs" />
+    <Compile Include="Views\Seats\SeatsWindow.xaml.cs">
+      <DependentUpon>SeatsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\PlacesWindowVm.cs" />
-    <Compile Include="Views\Places\RaisonWindow.xaml.cs">
-      <DependentUpon>RaisonWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\SeatsWindowVm.cs" />
+    <Compile Include="Views\Seats\ReasonWindow.xaml.cs">
+      <DependentUpon>ReasonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Places\RaisonWindowVm.cs" />
-    <Compile Include="Views\Sessions\DeroulementWindow.xaml.cs">
-      <DependentUpon>DeroulementWindow.xaml</DependentUpon>
+    <Compile Include="Views\Seats\ReasonWindowVm.cs" />
+    <Compile Include="Views\Sessions\TrainingFlowWindow.xaml.cs">
+      <DependentUpon>TrainingFlowWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sessions\DeroulementWindowVm.cs" />
+    <Compile Include="Views\Sessions\TrainingFlowWindowVm.cs" />
     <Compile Include="Views\Sessions\SessionScheduler.xaml.cs">
       <DependentUpon>SessionScheduler.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Sessions\SessionSchedulerVm.cs" />
-    <Compile Include="Views\EditableLists\SocieteListVm.cs" />
-    <Compile Include="Views\EditableLists\StagiaireListVm.cs" />
-    <Compile Include="Views\EditableLists\Utilisateurs\UtilisateurListVm.cs" />
-    <Page Include="Views\EditableLists\Utilisateurs\ChangePasswordWindow.xaml">
+    <Compile Include="Views\EditableLists\CompanyListVm.cs" />
+    <Compile Include="Views\EditableLists\StudentListVm.cs" />
+    <Compile Include="Views\EditableLists\Users\UserListVm.cs" />
+    <Compile Include="Views\EditableLists\CustomEditFormCellTemplateSelector.cs" />
+    <Page Include="Views\EditableLists\CreateContactWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditableLists\Utilisateurs\ChangeRoleWindow.xaml">
+    <Page Include="Views\EditableLists\Users\ChangePasswordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\CreateConventionWindow.xaml">
+    <Page Include="Views\EditableLists\Users\ChangeRoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Admins\History\HistoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Listers\Bases\ListerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Listers\Bases\StatisticWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Logins\LoginImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Seats\CreateAgreementWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditableLists\CreateItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Seats\EditStudentWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Sessions\CloseSessionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -289,7 +368,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditableLists\Utilisateurs\UtilisateurList.xaml">
+    <Page Include="Views\EditableLists\Users\UserList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -309,23 +388,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\EventReplayerWindow.xaml">
+    <Page Include="Views\Admins\Replayers\EventReplayerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\GestionConventionWindow.xaml">
+    <Page Include="Views\Seats\ManageAgreementWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\PlacesWindow.xaml">
+    <Page Include="Views\Seats\SeatsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Places\RaisonWindow.xaml">
+    <Page Include="Views\Seats\ReasonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sessions\DeroulementWindow.xaml">
+    <Page Include="Views\Sessions\TrainingFlowWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -351,11 +430,33 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\CertificatAssiduite.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\ConventionG.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\ConventionP.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Diplome.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\FirstPage.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Presence.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Questionnaire.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +482,39 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Etats\Places\canceled.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\pending_validation.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\refused.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\Etats\Places\validated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\students.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Etats\Conventions\revoked.png" />
+    <Resource Include="Images\Etats\Conventions\signature_pending.png" />
+    <Resource Include="Images\Etats\Conventions\signed.png" />
+    <Resource Include="Images\Etats\Conventions\to_create.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Apply_32x32.png" />
+    <Resource Include="Images\Cancel_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="presentation_UKl_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Warning_32x32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
