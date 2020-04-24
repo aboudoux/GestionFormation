@@ -170,6 +170,10 @@ namespace GestionFormation.App.Views.Sessions
 
     public class SessionItem
     {
+	    public SessionItem()
+	    {
+		    
+	    }
         public SessionItem(ICompleteSessionResult result)
         {
             if (result == null) throw new ArgumentNullException(nameof(result));
