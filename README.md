@@ -1,6 +1,6 @@
 # Gestion Formation
 
-Démonstration d'une application de gestion ecrite en CQRS/ES & MVVM
+Démonstration d'une application de gestion écrite en CQRS/ES & MVVM
 
 ## Introduction
 
