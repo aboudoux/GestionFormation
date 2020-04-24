@@ -44,7 +44,7 @@ Les personnes autour de la table commencent à comprendre le concept, et envoien
 
 Au bout de 4H de taf, de nettoyage et de réorganisation de la pensée de chacun, une sorte de poulpe commence à émerger
 
-![Event_storming](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/eventstorming.PNG)
+![Event_storming](https://github.com/aboudoux/GestionFormation/blob/master/Captures/eventstorming.PNG)
 
 ## Développement
 
@@ -56,27 +56,27 @@ Mes compétences en interfaces graphiques étant faibles (promis, je suis en tra
 
 ### Le login
 
-![login](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/1.PNG)
+![login](https://github.com/aboudoux/GestionFormation/blob/master/Captures/1.PNG)
 
 ### Le planning
 
-![Planning formation](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/2.PNG)
+![Planning formation](https://github.com/aboudoux/GestionFormation/blob/master/Captures/2.PNG)
 
 ### La gestion du referenciel
 
-![Referenciel](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/3.png)
+![Referenciel](https://github.com/aboudoux/GestionFormation/blob/master/Captures/3.png)
 
 ### La reservation des places
 
-![Referenciel](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/5.PNG)
+![Referenciel](https://github.com/aboudoux/GestionFormation/blob/master/Captures/5.PNG)
 
 ### La clôture d'une session
 
-![Referenciel](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/6.PNG)
+![Referenciel](https://github.com/aboudoux/GestionFormation/blob/master/Captures/6.PNG)
 
 ### Les actions de workflow
 
-![Referenciel](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/7.PNG)
+![Referenciel](https://github.com/aboudoux/GestionFormation/blob/master/Captures/7.PNG)
 
 ## La cerise sur le gateau
 
@@ -90,7 +90,7 @@ Je me connecte donc en mode administrateur et explique qu'il existe une fonction
 
 Effectivement, notre source de vérité ne tient que dans une seule table, la table "Event", toutes les autres tables ne sont que des conteneurs de données plates donc le but est de faire de la lecture. Toute modification du système doit passer par là, ce qui en assure une sorte de sécurité intrinsèque.
 
-![Event](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/10.png)
+![Event](https://github.com/aboudoux/GestionFormation/blob/master/Captures/10.png)
 
 En voyant cela, les managers se détendent et se disent que l'on peut effectivement mettre un peu plus de souplesse dans le système dans la mesure où on sera capable d'identifier qui et quand a fait une action.
 
