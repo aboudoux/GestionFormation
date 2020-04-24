@@ -86,7 +86,7 @@ Cela fait bien sûr sursauter les managers qui veulent empêcher au maximum les 
 
 Je me connecte donc en mode administrateur et explique qu'il existe une fonctionnalités cachée liée à notre architecture basée sur les évènements (event sourcing) : la possibilité d'avoir une trace de chaque modification apportée au système
 
-![AuditLog](https://github.com/aboudoux/GestionFormation/blob/readme/Captures/9.png)
+![AuditLog](https://github.com/aboudoux/GestionFormation/blob/master/Captures/9.png)
 
 Effectivement, notre source de vérité ne tient que dans une seule table, la table "Event", toutes les autres tables ne sont que des conteneurs de données plates donc le but est de faire de la lecture. Toute modification du système doit passer par là, ce qui en assure une sorte de sécurité intrinsèque.
 
